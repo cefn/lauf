@@ -1,0 +1,10 @@
+{
+  "extends": "./tsconfig.build.json",
+  "compilerOptions": {
+    "baseUrl": "./packages",
+    "paths": {
+      "@lauf/lauf-runner": ["lauf-runner/src"],
+      "@lauf/lauf-store": ["lauf-store/src"]
+    }
+  }
+}
