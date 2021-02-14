@@ -1,4 +1,4 @@
-import produce, { Draft } from "immer";
+import type { Draft } from "immer";
 
 interface ImmutableArray<T> extends ReadonlyArray<Immutable<T>> {}
 

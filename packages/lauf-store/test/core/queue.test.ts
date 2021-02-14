@@ -1,4 +1,4 @@
-import { BasicMessageQueue } from "../../src/core/queue";
+import { BasicMessageQueue } from "@lauf/lauf-store/core/queue";
 
 describe("BasicMessageQueue behaviour", () => {
   test("Create a BasicMessageQueue", () => {

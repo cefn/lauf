@@ -1,5 +1,5 @@
-import { Immutable, Editor } from "./immutable";
-import { Unwatch, Watchable, WatchableValue } from "./watchable";
+import type { Immutable, Editor } from "./immutable";
+import type { Unwatch, Watchable, WatchableValue } from "./watchable";
 
 export interface Store<T> extends WatchableValue<Immutable<T>> {
   editValue: (editor: Editor<Immutable<T>>) => Immutable<T>;

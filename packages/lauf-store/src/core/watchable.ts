@@ -23,13 +23,10 @@ export class BasicWatchable<T> implements Watchable<T> {
 export class BasicWatchableValue<T>
   extends BasicWatchable<T>
   implements WatchableValue<T> {
-  protected value: T;
-  constructor(
-    value: T = undefined,
-    watchers: ReadonlyArray<Watcher<T>> = undefined
-  ) {
+  protected value!: T;
+  constructor(value: T, watchers: ReadonlyArray<Watcher<T>> = undefined) {
     super(watchers);
-    this.value = value;
+    this.setValue(value);
   }
   setValue(value: T) {
     this.value = value;
