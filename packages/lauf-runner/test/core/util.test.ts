@@ -1,8 +1,7 @@
+import assert from "assert";
 import { RootProcedure } from "@lauf/lauf-runner/types";
 import { executeRootProcedure } from "@lauf/lauf-runner/core/util";
-
-import { Delay, delay } from "../src/domain/delay";
-import assert from "assert";
+import { Delay, delay } from "@lauf/lauf-runner/domain/delay";
 
 describe("Define, run and regression test simple procedure", () => {
   const procedure: RootProcedure<number> = function* () {
