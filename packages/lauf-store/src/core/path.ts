@@ -3,6 +3,8 @@ import lodashSet from "lodash/set";
 import type { Store } from "../types/store";
 import type { Immutable } from "../types/immutable";
 
+type PathMap<V = any> = Record<string, V>;
+
 export function setStorePath<T>(
   store: Store<T>,
   path: string,
@@ -17,9 +19,9 @@ export function getStorePath<T>(store: Store<T>, path: string): Immutable<any> {
   return lodashGet(store.getValue(), path);
 }
 
-export function setStorePathMap<T>(
+export function setStorePathMap<T, V = any>(
   store: Store<T>,
-  pathMap: Record<string, any>
+  pathMap: PathMap<V>
 ): Immutable<T> {
   return store.editValue((draft) => {
     for (const [path, value] of Object.entries(pathMap)) {
