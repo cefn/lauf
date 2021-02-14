@@ -4,7 +4,9 @@
     "baseUrl": "./packages",
     "paths": {
       "@lauf/lauf-runner": ["lauf-runner/src"],
-      "@lauf/lauf-store": ["lauf-store/src"]
+      "@lauf/lauf-store": ["lauf-store/src"],
+      "@lauf/lauf-runner/*": ["lauf-runner/src/*"],
+      "@lauf/lauf-store/*": ["lauf-store/src/*"]
     }
   }
 }
