@@ -1,10 +1,10 @@
+import { Store, BasicStore } from "@lauf/lauf-store";
+
 import {
-  Store,
-  BasicStore,
   getStorePath,
   setStorePath,
   setStorePathMap,
-} from "@lauf/lauf-store";
+} from "@lauf/lauf-store/core/path";
 
 describe("Store operations using paths", () => {
   test("getStorePath retrieves an array index path", () => {
