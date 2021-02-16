@@ -2,12 +2,10 @@
  * @jest-environment jsdom
  */
 
-import React, { createContext } from "react";
-import { createStoreConsumer, useSelected, useStore } from "../src/react";
+import React from "react";
+import { useSelected, useStore } from "../src/react";
 import { render, fireEvent, waitFor, screen } from "@testing-library/react";
-import { executeSequence } from "@lauf/lauf-runner";
-import { Store } from "@lauf/lauf-store";
-import { editValue } from "@lauf/lauf-store-runner";
+import { Selector, Store } from "@lauf/lauf-store";
 import { act } from "react-dom/test-utils";
 
 const planets = ["earth", "mars"] as const;
@@ -20,59 +18,43 @@ type StoreProps = {
   store: Store<State>;
 };
 
-const planetSelector = (state: State) => state.planet;
+const planetSelector: Selector<State, Planet> = (state) => state.planet;
 
-function ensureAmulet(store: Store<State>) {
-  return executeSequence(
-    editValue(store, (draft) => (draft.haveAmulet = true))
-  );
+function chooseNextPlanet(store: Store<State>) {
+  store.editValue((draft) => {
+    let planetIndex = planets.indexOf(draft.planet);
+    planetIndex += 1;
+    planetIndex %= planets.length;
+    draft.planet = planets[planetIndex] as Planet;
+  });
 }
 
-function changePlanet(store: Store<State>) {
-  return executeSequence(
-    editValue(store, (draft) => {
-      let planetIndex = planets.indexOf(draft.planet);
-      planetIndex += 1;
-      planetIndex %= planets.length;
-      draft.planet = planets[planetIndex] as Planet;
-    })
-  );
+function secureAmulet(store: Store<State>) {
+  store.editValue((draft) => (draft.haveAmulet = true));
+}
+
+function loseAmulet(store: Store<State>) {
+  store.editValue((draft) => (draft.haveAmulet = false));
 }
 
 const PlanetLabel = ({ planet }: { planet: string }) => (
   <p>This is planet {planet}</p>
 );
 
-describe("Memoized consumer", () => {
-  const StateContext = createContext<State>({ planet: "earth" });
-  const PlanetConsumer = createStoreConsumer(StateContext, planetSelector);
-
-  test("Consumer gets selected data from provider", async () => {
-    render(
-      <StateContext.Provider value={{ planet: "earth" }}>
-        <PlanetConsumer>
-          {(planet) => <PlanetLabel planet={planet}></PlanetLabel>}
-        </PlanetConsumer>
-      </StateContext.Provider>
-    );
-
-    await waitFor(() => screen.getByText(/This is planet earth/));
-  });
-});
-
 describe("useStore : initialises, resolves a store", () => {
-  test("Store data can be used", () => {
+  test("Store data can be used", async () => {
     const StoreRoot = () => {
       const store = useStore<State>({ planet: "mars" });
       const planet = planetSelector(store.getValue());
       return <PlanetLabel planet={planet} />;
     };
     render(<StoreRoot />);
+    await waitFor(() => screen.getByText(/This is planet mars/));
   });
 });
 
 describe("useSelected : (re)render using subset of store", () => {
-  test("", async () => {
+  test("Render count as expected before and after store edits", async () => {
     const rootSpy = jest.fn();
     const branchSpy = jest.fn();
 
@@ -84,11 +66,12 @@ describe("useSelected : (re)render using subset of store", () => {
 
     const Branch = ({ store }: StoreProps) => {
       branchSpy();
-      const amuletClick = () => ensureAmulet(store);
-      const planetClick = () => changePlanet(store);
+      const amuletClick = () => secureAmulet(store);
+      const planetClick = () => chooseNextPlanet(store);
       const planet = useSelected(store, planetSelector);
       return (
-        //changes to planet value is rendered, amulet value is not
+        //planet value is rendered
+        //amulet value is not rendered
         <>
           <p>This is planet {planet}</p>
           <button onClick={planetClick}>Change Planet</button>
@@ -100,14 +83,17 @@ describe("useSelected : (re)render using subset of store", () => {
     const treeToRender = <Root />;
     render(treeToRender);
 
-    expect(rootSpy).toHaveBeenCalledTimes(0);
-    expect(branchSpy).toHaveBeenCalledTimes(0);
+    expect(rootSpy).toHaveBeenCalledTimes(1);
+    expect(branchSpy).toHaveBeenCalledTimes(1);
+
     rootSpy.mockClear();
     branchSpy.mockClear();
 
-    await act(() => {
-      //TODO HERE - click the Planet or Amulet buttons
-      fireEvent;
+    await act(async () => {
+      expect(rootSpy).toHaveBeenCalledTimes(0);
+      expect(branchSpy).toHaveBeenCalledTimes(0);
+      rootSpy.mockClear();
+      branchSpy.mockClear();
     });
   });
 });

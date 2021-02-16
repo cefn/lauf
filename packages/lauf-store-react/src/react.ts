@@ -25,7 +25,7 @@ export function useStore<T>(initialTree: Immutable<T>): Store<T> {
 
 export function useSelected<State, Selected = any>(
   store: Store<State>,
-  selector: Selector<Immutable<State>, Immutable<Selected>>
+  selector: Selector<State, Selected>
 ) {
   const [selected, setSelected] = useState(() => {
     return selector(store.getValue());
@@ -50,12 +50,12 @@ export function createStoreContext<S>(store: Store<S>) {
 }
 
 export function createStoreConsumer<In, Out>(
-  context: Context<In>,
+  context: Context<Store<In>>,
   selector: Selector<In, Out>
 ) {
-  return ({ children }: { children: FunctionComponent<Out> }) => {
-    const state: In = useContext(context);
-    const out: Out = selector(state);
+  return ({ children }: { children: any }) => {
+    const state: Immutable<In> = useContext(context).getValue();
+    const out: Immutable<Out> = selector(state);
     return useMemo(() => children(out), [out]);
   };
 }
