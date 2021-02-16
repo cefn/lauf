@@ -5,8 +5,9 @@
 import React, { createContext } from "react";
 import { createStoreConsumer, useSelected, useStore } from "../src/react";
 import { render, fireEvent, waitFor, screen } from "@testing-library/react";
-import { editState, Store } from "@lauf/lauf-store;
-import { executeSequence } from "@lauf/lauf-runner;
+import { executeSequence } from "@lauf/lauf-runner";
+import { Store } from "@lauf/lauf-store";
+import { editValue } from "@lauf/lauf-store-runner";
 import { act } from "react-dom/test-utils";
 
 const planets = ["earth", "mars"] as const;
@@ -23,13 +24,13 @@ const planetSelector = (state: State) => state.planet;
 
 function ensureAmulet(store: Store<State>) {
   return executeSequence(
-    editState(store, (draft) => (draft.haveAmulet = true))
+    editValue(store, (draft) => (draft.haveAmulet = true))
   );
 }
 
 function changePlanet(store: Store<State>) {
   return executeSequence(
-    editState(store, (draft) => {
+    editValue(store, (draft) => {
       let planetIndex = planets.indexOf(draft.planet);
       planetIndex += 1;
       planetIndex %= planets.length;
