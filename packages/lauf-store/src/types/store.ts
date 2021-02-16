@@ -8,3 +8,7 @@ export interface Store<T> extends WatchableValue<Immutable<T>> {
 export interface Stream<In, Out = In> extends Watchable<Out> {
   source(watchable: Watchable<In>): Unwatch;
 }
+
+export type Selector<In extends Immutable<any>, Out extends Immutable<any>> = (
+  value: In
+) => Out;
