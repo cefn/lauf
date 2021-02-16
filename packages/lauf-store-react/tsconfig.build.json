@@ -9,9 +9,5 @@
     "jsx": "react-jsx"
   },
 
-  "references": [
-    // { "path": "../foo/tsconfig.build.json"}
-  ],
-
   "include": ["src/**/*"]
 }
