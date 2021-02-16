@@ -35,10 +35,19 @@ describe("BasicStore behaviour", () => {
     });
     const valueBefore = store.getValue();
     store.editValue((draft) => {
+      draft.ancient = draft.ancient || [];
       draft.ancient[0] = "Roses are white";
     });
     const valueAfter = store.getValue();
     expect(Object.is(valueBefore, valueAfter)).toBe(false);
+    expect(
+      [
+        valueBefore.ancient,
+        valueAfter.ancient,
+        valueBefore.ancient,
+        valueAfter.ancient,
+      ].every((item) => Array.isArray(item))
+    ).toBe(true);
     expect(Object.is(valueBefore.ancient, valueAfter.ancient)).toBe(false);
     expect(Object.is(valueBefore.modern, valueAfter.modern)).toBe(true);
   });
