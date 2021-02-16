@@ -5,7 +5,11 @@ import type { Immutable } from "../types/immutable";
 
 type PathMap<V = any> = Record<string, V>;
 
-export function setStorePath<T>(
+export function getByPath<T>(store: Store<T>, path: string): Immutable<any> {
+  return lodashGet(store.getValue(), path);
+}
+
+export function setByPath<T>(
   store: Store<T>,
   path: string,
   value: any
@@ -15,11 +19,7 @@ export function setStorePath<T>(
   });
 }
 
-export function getStorePath<T>(store: Store<T>, path: string): Immutable<any> {
-  return lodashGet(store.getValue(), path);
-}
-
-export function setStorePathMap<T, V = any>(
+export function setByPathMap<T, V = any>(
   store: Store<T>,
   pathMap: PathMap<V>
 ): Immutable<T> {

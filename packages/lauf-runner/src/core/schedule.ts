@@ -6,20 +6,6 @@ import {
   executeSequence,
 } from "./util";
 
-export class Background<Outcome> implements Action<Outcome> {
-  constructor(readonly procedure: RootProcedure<Outcome>) {}
-  act() {
-    return executeRootProcedure(this.procedure);
-  }
-}
-
-export class BackgroundAll<Outcome> implements Action<Outcome[]> {
-  constructor(readonly procedures: RootProcedure<Outcome>[]) {}
-  act() {
-    return Promise.all(this.procedures.map(executeRootProcedure));
-  }
-}
-
 export class Foreground<Outcome> implements Action<Outcome> {
   constructor(readonly procedure: RootProcedure<Outcome>) {}
   async act() {
@@ -27,10 +13,17 @@ export class Foreground<Outcome> implements Action<Outcome> {
   }
 }
 
-export class Join<Outcome> implements Action<Outcome> {
-  constructor(readonly sequence: Sequence<Outcome>) {}
+export class ForegroundAll<Outcome> implements Action<Outcome[]> {
+  constructor(readonly procedures: RootProcedure<Outcome>[]) {}
+  async act() {
+    return await Promise.all(this.procedures.map(executeRootProcedure));
+  }
+}
+
+export class BackgroundAll<Outcome> implements Action<Promise<Outcome>[]> {
+  constructor(readonly procedures: RootProcedure<Outcome>[]) {}
   act() {
-    return executeSequence(this.sequence);
+    return this.procedures.map(executeRootProcedure);
   }
 }
 
@@ -75,11 +68,10 @@ class Wait<Outcome = any> implements Action<Outcome> {
 
 /** Spawn procedures */
 export const foreground = createActionProcedure(Foreground);
-export const background = createActionProcedure(Background);
+export const foregroundAll = createActionProcedure(ForegroundAll);
 export const backgroundAll = createActionProcedure(BackgroundAll);
 
 /** Compose sequences */
-export const join = createActionProcedure(Join);
 export const race = createActionProcedure(Race);
 export const team = createActionProcedure(Team);
 export const timeout = createActionProcedure(Timeout);

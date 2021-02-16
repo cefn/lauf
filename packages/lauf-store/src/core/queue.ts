@@ -11,10 +11,11 @@ export class BasicMessageQueue<T> implements MessageQueue<T> {
   send(item: T) {
     if (this.watchers.length) {
       let consumer: Watcher<T>;
-      [consumer, ...this.watchers] = this.watchers;
+      [consumer, ...this.watchers] = this.watchers as [Watcher<T>];
       consumer(item);
       return true;
-    } else if (this.items.length < this.maxItems) {
+    }
+    if (this.items.length < this.maxItems) {
       this.items = [...this.items, item];
       return true;
     } else {
@@ -24,7 +25,7 @@ export class BasicMessageQueue<T> implements MessageQueue<T> {
   receive() {
     if (this.items.length) {
       let item: T;
-      [item, ...this.items] = this.items;
+      [item, ...this.items] = this.items as [T];
       return Promise.resolve(item);
     } else if (this.watchers.length < this.maxWatchers) {
       return new Promise<T>((resolve) => {

@@ -1,6 +1,7 @@
 import lodashShuffle from "lodash/shuffle";
 import {
-  background,
+  foreground,
+  foregroundAll,
   backgroundAll,
   race,
   team,
@@ -16,41 +17,59 @@ import {
 import { RootProcedure } from "@lauf/lauf-runner/types";
 import { executeRootProcedure } from "@lauf/lauf-runner/core/util";
 
-describe("Scheduling Action Sequences", () => {
-  test("run : executes inner procedure to completion", async () => {
-    const inner: RootProcedure<Expiry> = function* () {
-      return yield* delay(10);
-    };
-    const outer: RootProcedure<Expiry> = function* () {
-      return yield* background(inner);
-    };
-    const result = await executeRootProcedure(outer);
+describe("Foreground and Background operations", () => {
+  const delayMs = 10;
+  const simpleProcedure: RootProcedure<Expiry> = function* () {
+    return yield* delay(delayMs);
+  };
+
+  const procedureGroup: RootProcedure<Expiry>[] = [
+    simpleProcedure,
+    simpleProcedure,
+    simpleProcedure,
+  ];
+
+  test("foreground : executes inner procedure to completion", async () => {
+    const result = await executeRootProcedure(function* () {
+      return yield* foreground(simpleProcedure);
+    });
     expect(isExpiry(result)).toBeTruthy();
   });
 
-  test("runAll : executes inner procedures in parallel to completion", async () => {
-    const innerProcedures: RootProcedure<Expiry>[] = [
-      function* () {
-        return yield* delay(15);
-      },
-      function* () {
-        return yield* delay(15);
-      },
-      function* () {
-        return yield* delay(15);
-      },
-    ];
+  test("foregroundAll : executes inner procedures in parallel to completion", async () => {
     const before = new Date().getTime();
-    const allOutcomes = await executeRootProcedure(function* () {
-      return yield* backgroundAll(innerProcedures);
+    const outcomes = await executeRootProcedure(function* () {
+      return yield* foregroundAll(procedureGroup);
     });
     const after = new Date().getTime();
     const duration = after - before;
-    expect(duration).toBeGreaterThan(10);
-    expect(duration).toBeLessThan(30);
-    expect(allOutcomes.every(isExpiry)).toBeTruthy();
+    //it waited
+    expect(duration).toBeGreaterThan(delayMs);
+    //they were run in parallel, not series
+    expect(duration).toBeLessThan(delayMs * procedureGroup.length);
+    //they all completed
+    expect(outcomes.every(isExpiry)).toBeTruthy();
   });
 
+  test("backgroundAll : yields array of completion promises", async () => {
+    const before = new Date().getTime();
+    const outcomePromises = await executeRootProcedure(function* () {
+      return yield* backgroundAll(procedureGroup);
+    });
+    const after = new Date().getTime();
+    const duration = after - before;
+    //it didn't wait for any to complete
+    expect(duration).toBeLessThan(delayMs);
+    //it returned promises
+    expect(
+      outcomePromises.every((promise) => promise instanceof Promise)
+    ).toBeTruthy();
+    //they can be resolved later
+    const outcomes = await Promise.all(outcomePromises);
+    expect(outcomes.every(isExpiry)).toBeTruthy();
+  });
+});
+describe("Scheduling Action Sequences", () => {
   test("wait : waits on result of any promise", async () => {
     const special = ["special"];
     const specialPromise = new Promise((resolve) =>
@@ -62,7 +81,7 @@ describe("Scheduling Action Sequences", () => {
     expect(result).toStrictEqual(special);
   });
 
-  test("race : executes multiple first result and sequence ", async () => {
+  test("race : executes sequences in parallel, yields winning [result,sequence]", async () => {
     const goldSequence = wait(promiseDelay(2).then(() => "gold"));
     const silverSequence = wait(promiseDelay(4).then(() => "silver"));
     const bronzeSequence = wait(promiseDelay(6).then(() => "bronze"));
@@ -79,18 +98,22 @@ describe("Scheduling Action Sequences", () => {
   });
 
   test("timeout : handles success sequence ", async () => {
-    const quickSequence = wait(promiseDelay(1).then(() => "success"));
+    const delayMs = 2;
+    const timeoutMs = 10;
+    const quickSequence = wait(promiseDelay(delayMs).then(() => "success"));
     const quickResult = await executeRootProcedure(function* () {
-      return yield* timeout(quickSequence, 5);
+      return yield* timeout(quickSequence, timeoutMs);
     });
     expect(quickResult).toStrictEqual("success");
     expect(isExpiry(quickResult)).toBeFalsy();
   });
 
   test("timeout : handles failure sequence ", async () => {
-    const slowSequence = wait(promiseDelay(10).then(() => "success"));
+    const delayMs = 10;
+    const timeoutMs = 2;
+    const slowSequence = wait(promiseDelay(delayMs).then(() => "success"));
     const slowResult = await executeRootProcedure(function* () {
-      return yield* timeout(slowSequence, 5);
+      return yield* timeout(slowSequence, timeoutMs);
     });
     expect(slowResult).not.toEqual("success");
     expect(isExpiry(slowResult)).toBeTruthy();
