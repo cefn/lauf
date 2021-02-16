@@ -5,7 +5,8 @@
 import React, { createContext } from "react";
 import { createStoreConsumer, useSelected, useStore } from "../src/react";
 import { render, fireEvent, waitFor, screen } from "@testing-library/react";
-import { editState, executeSequence, Store } from "../../src/lauf/src";
+import { editState, Store } from "@lauf/lauf-store;
+import { executeSequence } from "@lauf/lauf-runner;
 import { act } from "react-dom/test-utils";
 
 const planets = ["earth", "mars"] as const;
@@ -62,7 +63,7 @@ describe("useStore : initialises, resolves a store", () => {
   test("Store data can be used", () => {
     const StoreRoot = () => {
       const store = useStore<State>({ planet: "mars" });
-      const planet = planetSelector(store.getState());
+      const planet = planetSelector(store.getValue());
       return <PlanetLabel planet={planet} />;
     };
     render(<StoreRoot />);

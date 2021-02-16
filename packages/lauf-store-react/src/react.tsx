@@ -1,4 +1,5 @@
-import { Store, Selector } from "@lauf/lauf-store";
+import { BasicStore, Selector, Store } from "@lauf/lauf-store";
+import { Immutable } from "@lauf/lauf-store/types/immutable";
 import {
   FunctionComponent,
   Context,
@@ -9,11 +10,11 @@ import {
   createContext,
 } from "react";
 
-export function useStore<T>(initialTree: T): Store<T> {
+export function useStore<T>(initialTree: Immutable<T>): Store<T> {
   const [store, setStore] = useState(() => {
-    return new Store<T>({ state: initialTree });
+    return new BasicStore<T>(initialTree);
   });
-  const [tree, setTree] = useState(store.getState());
+  const [tree, setTree] = useState(store.getValue());
   useEffect(() => {
     return store.watch((state) => {
       return setTree(state);
@@ -27,11 +28,11 @@ export function useSelected<State, Selected = any>(
   selector: Selector<State, Selected>
 ) {
   const [selected, setSelected] = useState(() => {
-    return selector(store.getState());
+    return selector(store.getValue());
   });
   useEffect(() => {
-    const unwatch = store.watch((state: State) => {
-      const nextSelected = selector(state);
+    const unwatch = store.watch((value: Immutable<State>) => {
+      const nextSelected = selector(value);
       // if(Object.is(selected, nextSelected)){
       //   return;
       // }
