@@ -1,5 +1,6 @@
 import React, { MouseEvent } from "react";
-import { executeSequence, Store } from "../lauf/src";
+import { executeSequence } from "@lauf/lauf-runner";
+import { Store } from "@lauf/lauf-store";
 import { Picker } from "../components/Picker";
 import { Posts } from "../components/Posts";
 import {
@@ -11,7 +12,7 @@ import {
   syncFocused,
   AppState,
 } from "../domain";
-import { useSelected, useStore } from "../lauf/react";
+import { useSelected, useStore } from "@lauf/lauf-store-react";
 
 type AppParams = {
   store: Store<AppState>;

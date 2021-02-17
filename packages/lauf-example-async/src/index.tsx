@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { executeSequence } from "./lauf/src";
-import { createMainSequence, createStore, ensureFocusPosts } from "./domain";
+import { executeSequence } from "@lauf/lauf-runner";
+import { createMainSequence, createStore } from "./domain";
 import { App } from "./containers/App";
 
 const store = createStore();

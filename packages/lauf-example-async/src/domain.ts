@@ -1,10 +1,7 @@
-import {
-  Action,
-  createActionProcedure,
-  editState,
-  wait,
-  Store,
-} from "./lauf/src";
+import { Action, createActionProcedure, wait } from "@lauf/lauf-runner";
+import { Store, BasicStore } from "@lauf/lauf-store";
+import { editValue } from "@lauf/lauf-store-runner";
+import { Immutable } from "@lauf/lauf-store/types/immutable";
 
 /** STORE DEFINITION */
 
@@ -32,20 +29,21 @@ export const initialAppState: AppState = {
   caches: {},
 } as const;
 
-const initialCache: Cache = {
+const initialCache: Immutable<Cache> = {
   lastUpdated: null,
   isFetching: false,
   posts: [],
-};
+} as const;
 
 export function createStore(): Store<AppState> {
-  return new Store<AppState>({ state: initialAppState });
+  return new BasicStore<AppState>(initialAppState);
 }
 
 /** SELECTORS */
 
-export const focusedSelector = (state: AppState) => state.focused;
-export const cacheSelector = (state: AppState) => state.caches[state.focused];
+export const focusedSelector = (state: Immutable<AppState>) => state.focused;
+export const cacheSelector = (state: Immutable<AppState>) =>
+  state.caches[state.focused];
 
 /** ASYNC ACTIONS */
 
@@ -63,15 +61,15 @@ const fetchSubreddit = createActionProcedure(FetchSubreddit);
 /** PROCEDURES */
 
 export function* focus(store: Store<AppState>, name: SubredditName) {
-  yield* editState(store, (draft) => {
+  yield* editValue(store, (draft) => {
     draft.focused = name;
   });
 }
 
 export function* ensureFocusPosts(store: Store<AppState>) {
   let prevFocused = undefined;
-  let nextFocused = focusedSelector(store.getState());
-  const unwatch = store.watch((state: AppState) => {
+  let nextFocused = focusedSelector(store.getValue());
+  const unwatch = store.watch((state) => {
     nextFocused = focusedSelector(state);
   });
   try {
@@ -98,21 +96,21 @@ export function* ensureFocusPosts(store: Store<AppState>) {
 }
 
 export function* syncFocused(store: Store<AppState>) {
-  const { focused } = store.getState();
+  const { focused } = store.getValue();
   if (focused) {
     yield* syncPosts(store, focused);
   }
 }
 
 export function* ensurePosts(store: Store<AppState>, focused: SubredditName) {
-  const cache = cacheSelector(store.getState());
+  const cache = cacheSelector(store.getValue());
   if (!cache?.posts) {
     yield* syncPosts(store, focused);
   }
 }
 
 export function* syncPosts(store: Store<AppState>, focused: SubredditName) {
-  yield* editState(store, (draft) => {
+  yield* editValue(store, (draft) => {
     draft.caches[focused] = {
       ...(draft.caches[focused] || initialCache),
       isFetching: true,
@@ -121,7 +119,7 @@ export function* syncPosts(store: Store<AppState>, focused: SubredditName) {
   const posts = yield* fetchSubreddit(focused);
   const lastUpdated = new Date().getTime();
   const isFetching = false;
-  yield* editState(store, (draft) => {
+  yield* editValue(store, (draft) => {
     draft.caches[focused] = {
       posts,
       lastUpdated,
