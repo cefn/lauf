@@ -1,17 +1,17 @@
 import React, { MouseEvent } from "react";
 import { Store } from "@lauf/lauf-store";
-import { Picker } from "../components/Picker";
-import { Posts } from "../components/Posts";
+import { useSelected } from "@lauf/lauf-store-react";
 import {
   SubredditName,
   subredditNames,
   focusSelector,
   focusedCacheSelector,
   AppState,
-  focusSubreddit,
-  refreshFocusedSubreddit,
+  triggerFocus,
+  triggerFetchFocused,
 } from "../domain";
-import { useSelected, useStore } from "@lauf/lauf-store-react";
+import { Picker } from "../components/Picker";
+import { Posts } from "../components/Posts";
 
 type AppParams = {
   store: Store<AppState>;
@@ -20,20 +20,20 @@ type AppParams = {
 export function App({ store }: AppParams) {
   const focused = useSelected(store, focusSelector);
   const cache = useSelected(store, focusedCacheSelector);
-
-  const triggerFocusSubreddit = (newName: SubredditName) => {
-    focusSubreddit(store, newName);
+  const onPickerSelect = (newName: SubredditName) => {
+    triggerFocus(store, newName);
   };
-
-  const onRefreshClick = (event: MouseEvent) => {
+  const onButtonClick = (event: MouseEvent) => {
     event.preventDefault();
-    refreshFocusedSubreddit(store);
+    triggerFetchFocused(store);
   };
 
-  let cachePane;
-  if (cache) {
+  let postsPanel;
+  if (!cache) {
+    postsPanel = <p>Loading</p>;
+  } else {
     const { posts, isFetching, lastUpdated } = cache;
-    cachePane = (
+    postsPanel = (
       <>
         <p>
           {lastUpdated && (
@@ -41,7 +41,7 @@ export function App({ store }: AppParams) {
               Last updated at {new Date(lastUpdated).toLocaleTimeString()}.{" "}
             </span>
           )}
-          {!isFetching && <button onClick={onRefreshClick}>Refresh</button>}
+          {!isFetching && <button onClick={onButtonClick}>Refresh</button>}
         </p>
         {posts.length === 0 ? (
           isFetching ? (
@@ -56,18 +56,16 @@ export function App({ store }: AppParams) {
         )}
       </>
     );
-  } else {
-    cachePane = <p>Loading</p>;
   }
 
   return (
     <div>
       <Picker
         selectedOption={focused}
-        handleChange={triggerFocusSubreddit}
+        handleChange={onPickerSelect}
         options={[...subredditNames]}
       />
-      {cachePane}
+      {postsPanel}
     </div>
   );
 }

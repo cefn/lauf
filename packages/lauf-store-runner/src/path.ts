@@ -1,4 +1,4 @@
-import { Action, createActionProcedure } from "@lauf/lauf-runner";
+import { Action, createActionScript } from "@lauf/lauf-runner";
 import { Store, getByPath, setByPath, setByPathMap } from "@lauf/lauf-store";
 import type { Immutable } from "@lauf/lauf-store/types/immutable";
 
@@ -30,6 +30,6 @@ class SetStorePathMap<T> implements Action<Immutable<T>> {
   }
 }
 
-export const getStorePath = createActionProcedure(GetStorePath);
-export const setStorePath = createActionProcedure(SetStorePath);
-export const setStorePathMap = createActionProcedure(SetStorePathMap);
+export const getStorePath = createActionScript(GetStorePath);
+export const setStorePath = createActionScript(SetStorePath);
+export const setStorePathMap = createActionScript(SetStorePathMap);

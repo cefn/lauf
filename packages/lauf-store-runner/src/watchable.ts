@@ -1,4 +1,4 @@
-import { Action, createActionProcedure } from "@lauf/lauf-runner";
+import { Action, createActionScript } from "@lauf/lauf-runner";
 import { Immutable } from "@lauf/lauf-store/types/immutable";
 import { WatchableValue } from "@lauf/lauf-store/types/watchable";
 
@@ -16,5 +16,5 @@ class SetValue<T> implements Action<T> {
   }
 }
 
-export const getValue = createActionProcedure(GetValue);
-export const setValue = createActionProcedure(SetValue);
+export const getValue = createActionScript(GetValue);
+export const setValue = createActionScript(SetValue);

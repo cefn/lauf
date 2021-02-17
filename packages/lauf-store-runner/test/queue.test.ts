@@ -1,14 +1,14 @@
 import { BasicMessageQueue } from "@lauf/lauf-store/core/queue";
 import { send, receive } from "@lauf/lauf-store-runner/queue";
-import { executeRootProcedure, executeSequence } from "@lauf/lauf-runner";
+import { executeProcedure, executeSequence } from "@lauf/lauf-runner";
 
 describe("send,receive behaviour", () => {
   test("Simple send and receive", async () => {
     const queue = new BasicMessageQueue();
-    const sendOutcome = await executeRootProcedure(function* () {
+    const sendOutcome = await executeProcedure(function* () {
       return yield* send(queue, "foo");
     });
-    const receiveOutcome = await executeRootProcedure(function* () {
+    const receiveOutcome = await executeProcedure(function* () {
       return yield* receive(queue);
     });
     expect(sendOutcome).toEqual(true);
@@ -26,7 +26,7 @@ describe("send,receive behaviour", () => {
       const third = yield* receive(queue);
       return [first, second, third];
     };
-    const outcome = await executeRootProcedure(procedure);
+    const outcome = await executeProcedure(procedure);
     expect(outcome).toEqual(["foo", "bar", "baz"]);
   });
 
@@ -36,7 +36,7 @@ describe("send,receive behaviour", () => {
       const received = yield* receive(queue);
       return received;
     };
-    const outcomePromise = executeRootProcedure(procedure); //don't await
+    const outcomePromise = executeProcedure(procedure); //don't await
     queue.send("foo");
     const outcome = await outcomePromise; //now await
     expect(outcome).toEqual("foo");

@@ -1,5 +1,5 @@
 import { Action } from "../types";
-import { createActionProcedure } from "../core/util";
+import { createActionScript } from "../core/util";
 
 export const EXPIRY = ["expiry"] as const;
 export type Expiry = typeof EXPIRY;
@@ -18,4 +18,4 @@ export class Delay implements Action<Expiry> {
   }
 }
 
-export const delay = createActionProcedure(Delay);
+export const delay = createActionScript(Delay);

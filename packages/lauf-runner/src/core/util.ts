@@ -1,7 +1,7 @@
 import type { Sequence, RootProcedure, ActionClass } from "../types";
 
 /** Streamline sequence creation from any Action class. */
-export function createActionProcedure<Params extends any[], Reaction = any>(
+export function createActionScript<Params extends any[], Reaction = any>(
   actionClass: ActionClass<Params, Reaction>
 ): (...actionParams: Params) => Sequence<Reaction> {
   return function* (...actionParams: Params) {
@@ -39,7 +39,7 @@ export function beginProcedure<Outcome>(
   return procedure();
 }
 
-export async function executeRootProcedure<Outcome>(
+export async function executeProcedure<Outcome>(
   procedure: RootProcedure<Outcome>
 ): Promise<Outcome> {
   const sequence = beginProcedure(procedure);

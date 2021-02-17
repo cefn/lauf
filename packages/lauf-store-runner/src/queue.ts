@@ -1,4 +1,4 @@
-import { Action, createActionProcedure } from "@lauf/lauf-runner";
+import { Action, createActionScript } from "@lauf/lauf-runner";
 import { MessageQueue } from "@lauf/lauf-store/types/queue";
 
 class Receive<T> implements Action<T> {
@@ -15,5 +15,5 @@ class Send<T> implements Action<boolean> {
   }
 }
 
-export const receive = createActionProcedure(Receive);
-export const send = createActionProcedure(Send);
+export const receive = createActionScript(Receive);
+export const send = createActionScript(Send);

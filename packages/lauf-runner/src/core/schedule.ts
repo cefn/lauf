@@ -1,29 +1,25 @@
 import { promiseDelay, Expiry } from "./delay";
 import { Action, RootProcedure, Sequence } from "../types";
-import {
-  createActionProcedure,
-  executeRootProcedure,
-  executeSequence,
-} from "./util";
+import { createActionScript, executeProcedure, executeSequence } from "./util";
 
 export class Foreground<Outcome> implements Action<Outcome> {
   constructor(readonly procedure: RootProcedure<Outcome>) {}
   async act() {
-    return await executeRootProcedure(this.procedure);
+    return await executeProcedure(this.procedure);
   }
 }
 
 export class ForegroundAll<Outcome> implements Action<Outcome[]> {
   constructor(readonly procedures: RootProcedure<Outcome>[]) {}
   async act() {
-    return await Promise.all(this.procedures.map(executeRootProcedure));
+    return await Promise.all(this.procedures.map(executeProcedure));
   }
 }
 
 export class BackgroundAll<Outcome> implements Action<Promise<Outcome>[]> {
   constructor(readonly procedures: RootProcedure<Outcome>[]) {}
   act() {
-    return this.procedures.map(executeRootProcedure);
+    return this.procedures.map(executeProcedure);
   }
 }
 
@@ -67,14 +63,14 @@ class Wait<Outcome = any> implements Action<Outcome> {
 //TODO add a fork, which yields the promise of sequence completion (complement of join)
 
 /** Spawn procedures */
-export const foreground = createActionProcedure(Foreground);
-export const foregroundAll = createActionProcedure(ForegroundAll);
-export const backgroundAll = createActionProcedure(BackgroundAll);
+export const foreground = createActionScript(Foreground);
+export const foregroundAll = createActionScript(ForegroundAll);
+export const backgroundAll = createActionScript(BackgroundAll);
 
 /** Compose sequences */
-export const race = createActionProcedure(Race);
-export const team = createActionProcedure(Team);
-export const timeout = createActionProcedure(Timeout);
+export const race = createActionScript(Race);
+export const team = createActionScript(Team);
+export const timeout = createActionScript(Timeout);
 
 /** Block on a promise. */
-export const wait = createActionProcedure(Wait);
+export const wait = createActionScript(Wait);

@@ -1,4 +1,4 @@
-import { Action, createActionProcedure, Procedure } from "@lauf/lauf-runner";
+import { Action, createActionScript, Procedure } from "@lauf/lauf-runner";
 import { BasicMessageQueue, Selector, Store } from "@lauf/lauf-store";
 import type { Editor, Immutable } from "@lauf/lauf-store/types/immutable";
 import { receive } from "./queue";
@@ -13,7 +13,7 @@ export class EditValue<T> implements Action<Immutable<T>> {
   }
 }
 
-export const editValue = createActionProcedure(EditValue);
+export const editValue = createActionScript(EditValue);
 
 export function* followValue<In, Out>(
   store: Store<In>,

@@ -1,6 +1,6 @@
 import assert from "assert";
 import { RootProcedure } from "@lauf/lauf-runner/types";
-import { executeRootProcedure } from "@lauf/lauf-runner/core/util";
+import { executeProcedure } from "@lauf/lauf-runner/core/util";
 import { Delay, delay } from "@lauf/lauf-runner/core/delay";
 
 describe("Define, run and regression test simple procedure", () => {
@@ -14,7 +14,7 @@ describe("Define, run and regression test simple procedure", () => {
   };
 
   test("Run procedure", async () => {
-    const totalMs = await executeRootProcedure(procedure);
+    const totalMs = await executeProcedure(procedure);
     expect(totalMs).toBeGreaterThan(3);
   });
 

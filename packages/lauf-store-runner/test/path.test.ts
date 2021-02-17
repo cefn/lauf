@@ -1,4 +1,4 @@
-import { executeRootProcedure } from "@lauf/lauf-runner";
+import { executeProcedure } from "@lauf/lauf-runner";
 import { Store, BasicStore } from "@lauf/lauf-store";
 import {
   getStorePath,
@@ -13,7 +13,7 @@ describe("Store operations using paths", () => {
     const procedure = function* () {
       return yield* getStorePath(store, "poem[0]");
     };
-    const outcome = await executeRootProcedure(procedure);
+    const outcome = await executeProcedure(procedure);
     expect(outcome).toStrictEqual("Roses are red");
   });
 
@@ -23,7 +23,7 @@ describe("Store operations using paths", () => {
     const procedure = function* () {
       return yield* setStorePath(store, "poem.roses", "white");
     };
-    const outcome = await executeRootProcedure(procedure);
+    const outcome = await executeProcedure(procedure);
     expect(outcome).toStrictEqual(store.getValue());
     expect(store.getValue()).toEqual({ poem: { roses: "white" } });
   });
@@ -34,7 +34,7 @@ describe("Store operations using paths", () => {
     const procedure = function* () {
       return yield* setStorePath(store, "poem[0]", "Roses are white");
     };
-    const outcome = await executeRootProcedure(procedure);
+    const outcome = await executeProcedure(procedure);
     expect(outcome).toStrictEqual(store.getValue());
     expect(store.getValue()).toEqual({ poem: ["Roses are white"] });
   });
@@ -50,7 +50,7 @@ describe("Store operations using paths", () => {
         "poem.violets": "green",
       });
     };
-    const outcome = await executeRootProcedure(procedure);
+    const outcome = await executeProcedure(procedure);
     expect(outcome).toStrictEqual(store.getValue());
     expect(store.getValue()).toEqual({
       poem: { roses: "white", violets: "green" },

@@ -3,8 +3,8 @@ import { Immutable } from "@lauf/lauf-store/types/immutable";
 import { editValue, followValue } from "@lauf/lauf-store-runner";
 import {
   Action,
-  createActionProcedure,
-  executeRootProcedure,
+  createActionScript,
+  executeProcedure,
 } from "@lauf/lauf-runner";
 
 /** STORE DEFINITION */
@@ -59,7 +59,7 @@ class FetchSubreddit implements Action<Post[]> {
   }
 }
 
-const fetchSubreddit = createActionProcedure(FetchSubreddit);
+const fetchSubreddit = createActionScript(FetchSubreddit);
 
 /** PROCEDURES */
 
@@ -99,16 +99,16 @@ export function* fetchScript(store: Store<AppState>, focused: SubredditName) {
 
 /** USER INPUTS */
 
-export function focusSubreddit(store: Store<AppState>, name: SubredditName) {
-  executeRootProcedure(function* () {
+export function triggerFocus(store: Store<AppState>, name: SubredditName) {
+  executeProcedure(function* () {
     yield* editValue(store, (draft) => {
       draft.focus = name;
     });
   });
 }
 
-export function refreshFocusedSubreddit(store: Store<AppState>) {
-  executeRootProcedure(function* () {
+export function triggerFetchFocused(store: Store<AppState>) {
+  executeProcedure(function* () {
     const { focus } = store.getValue();
     if (focus) {
       yield* fetchScript(store, focus);

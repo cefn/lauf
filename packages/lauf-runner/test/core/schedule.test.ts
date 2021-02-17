@@ -15,7 +15,7 @@ import {
   isExpiry,
 } from "@lauf/lauf-runner/core/delay";
 import { RootProcedure } from "@lauf/lauf-runner/types";
-import { executeRootProcedure } from "@lauf/lauf-runner/core/util";
+import { executeProcedure } from "@lauf/lauf-runner/core/util";
 
 describe("Foreground and Background operations", () => {
   const delayMs = 10;
@@ -30,7 +30,7 @@ describe("Foreground and Background operations", () => {
   ];
 
   test("foreground : executes inner procedure to completion", async () => {
-    const result = await executeRootProcedure(function* () {
+    const result = await executeProcedure(function* () {
       return yield* foreground(simpleProcedure);
     });
     expect(isExpiry(result)).toBeTruthy();
@@ -38,7 +38,7 @@ describe("Foreground and Background operations", () => {
 
   test("foregroundAll : executes inner procedures in parallel to completion", async () => {
     const before = new Date().getTime();
-    const outcomes = await executeRootProcedure(function* () {
+    const outcomes = await executeProcedure(function* () {
       return yield* foregroundAll(procedureGroup);
     });
     const after = new Date().getTime();
@@ -53,7 +53,7 @@ describe("Foreground and Background operations", () => {
 
   test("backgroundAll : yields array of completion promises", async () => {
     const before = new Date().getTime();
-    const outcomePromises = await executeRootProcedure(function* () {
+    const outcomePromises = await executeProcedure(function* () {
       return yield* backgroundAll(procedureGroup);
     });
     const after = new Date().getTime();
@@ -75,7 +75,7 @@ describe("Scheduling Action Sequences", () => {
     const specialPromise = new Promise((resolve) =>
       setTimeout(() => resolve(special), 10)
     );
-    const result = await executeRootProcedure(function* () {
+    const result = await executeProcedure(function* () {
       return yield* wait(specialPromise);
     });
     expect(result).toStrictEqual(special);
@@ -90,7 +90,7 @@ describe("Scheduling Action Sequences", () => {
       silverSequence,
       bronzeSequence,
     ]);
-    const [outcome, sequence] = await executeRootProcedure(function* () {
+    const [outcome, sequence] = await executeProcedure(function* () {
       return yield* race(sequences);
     });
     expect(outcome).toStrictEqual("gold");
@@ -101,7 +101,7 @@ describe("Scheduling Action Sequences", () => {
     const delayMs = 2;
     const timeoutMs = 10;
     const quickSequence = wait(promiseDelay(delayMs).then(() => "success"));
-    const quickResult = await executeRootProcedure(function* () {
+    const quickResult = await executeProcedure(function* () {
       return yield* timeout(quickSequence, timeoutMs);
     });
     expect(quickResult).toStrictEqual("success");
@@ -112,7 +112,7 @@ describe("Scheduling Action Sequences", () => {
     const delayMs = 10;
     const timeoutMs = 2;
     const slowSequence = wait(promiseDelay(delayMs).then(() => "success"));
-    const slowResult = await executeRootProcedure(function* () {
+    const slowResult = await executeProcedure(function* () {
       return yield* timeout(slowSequence, timeoutMs);
     });
     expect(slowResult).not.toEqual("success");
@@ -126,7 +126,7 @@ describe("Scheduling Action Sequences", () => {
       wait(promiseDelay(9).then(() => "bronze")),
     ];
     const before = new Date().getTime();
-    const result = await executeRootProcedure(function* () {
+    const result = await executeProcedure(function* () {
       return yield* team(sequences);
     });
     const after = new Date().getTime();
