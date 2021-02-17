@@ -1,7 +1,18 @@
-import { Action, createActionScript, Procedure } from "@lauf/lauf-runner";
-import { BasicMessageQueue, Selector, Store } from "@lauf/lauf-store";
+import {
+  Action,
+  createActionScript,
+  Procedure,
+  Sequence,
+} from "@lauf/lauf-runner";
+import {
+  BasicMessageQueue,
+  Selector,
+  Store,
+  MessageQueue,
+} from "@lauf/lauf-store";
 import type { Editor, Immutable } from "@lauf/lauf-store/types/immutable";
 import { receive } from "./queue";
+import { Continuation, Follower, isContinuation } from "./types";
 
 export class EditValue<T> implements Action<Immutable<T>> {
   constructor(
@@ -15,29 +26,42 @@ export class EditValue<T> implements Action<Immutable<T>> {
 
 export const editValue = createActionScript(EditValue);
 
-export function* followValue<In, Out>(
-  store: Store<In>,
-  selector: Selector<In, Out>,
-  handler: Procedure<[Out], boolean>
-) {
-  const queue = new BasicMessageQueue<Out>();
-  let prevSelected: Immutable<In> | void = undefined;
-  const watcher = (value: Immutable<In>) => {
+export function* withSelectorQueue<Value, Selected, Outcome>(
+  store: Store<Value>,
+  selector: Selector<Value, Selected>,
+  handleQueue: Procedure<[MessageQueue<Selected>], Outcome>
+): Sequence<Outcome> {
+  const queue = new BasicMessageQueue<Selected>();
+  let prevSelected: Immutable<Value> | void = undefined;
+  const selectedNotifier = (value: Immutable<Value>) => {
     const nextSelected = selector(value);
     if (!Object.is(nextSelected, prevSelected)) {
       prevSelected = value;
       queue.send(nextSelected);
     }
   };
-  const unwatch = store.watch(watcher); //subscribe future events
-  watcher(store.getValue()); //fire the initial state
+  const unwatch = store.watch(selectedNotifier); //subscribe future states
+  selectedNotifier(store.getValue()); //notify the initial state
   try {
-    let outcome = false;
-    do {
-      const selected = yield* receive(queue);
-      outcome = yield* handler(selected);
-    } while (outcome !== true);
+    return yield* handleQueue(queue);
   } finally {
     unwatch();
   }
+}
+
+/** TODO change pattern to return a queue (receive from multiple queues within a scope) */
+/** TODO change return to use a singleton value for continuation, (alongside arbitrary outcome type). */
+export function* followStoreSelector<Value, Selected, Outcome>(
+  store: Store<Value>,
+  selector: Selector<Value, Selected>,
+  follower: Follower<Selected, Outcome>
+): Sequence<Outcome> {
+  return yield* withSelectorQueue(store, selector, function* (queue) {
+    let outcome;
+    do {
+      const selected = yield* receive<Selected>(queue);
+      outcome = yield* follower(selected);
+    } while (isContinuation(outcome));
+    return outcome;
+  });
 }

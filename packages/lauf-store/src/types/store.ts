@@ -1,12 +1,10 @@
 import type { Immutable, Editor } from "./immutable";
-import type { Unwatch, Watchable, WatchableValue } from "./watchable";
+import { WatchableValue } from "./watchable";
 
-export interface Store<T> extends WatchableValue<Immutable<T>> {
-  editValue: (editor: Editor<Immutable<T>>) => Immutable<T>;
+export interface Store<Value> extends WatchableValue<Immutable<Value>> {
+  editValue: (editor: Editor<Immutable<Value>>) => Immutable<Value>;
 }
 
-export interface Stream<In, Out = In> extends Watchable<Out> {
-  source(watchable: Watchable<In>): Unwatch;
-}
-
-export type Selector<In, Out = any> = (value: Immutable<In>) => Out;
+export type Selector<Value, Selected = any> = (
+  value: Immutable<Value>
+) => Selected;

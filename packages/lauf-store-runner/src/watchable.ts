@@ -1,5 +1,4 @@
 import { Action, createActionScript } from "@lauf/lauf-runner";
-import { Immutable } from "@lauf/lauf-store/types/immutable";
 import { WatchableValue } from "@lauf/lauf-store/types/watchable";
 
 class GetValue<T> implements Action<T> {

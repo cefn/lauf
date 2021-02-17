@@ -1,11 +1,12 @@
 import { Store, BasicStore, Selector } from "@lauf/lauf-store";
 import { Immutable } from "@lauf/lauf-store/types/immutable";
-import { editValue, followValue } from "@lauf/lauf-store-runner";
+import { editValue, followStoreSelector } from "@lauf/lauf-store-runner";
 import {
   Action,
   createActionScript,
   executeProcedure,
 } from "@lauf/lauf-runner";
+import { CONTINUE } from "@lauf/lauf-store-runner/types";
 
 /** STORE DEFINITION */
 
@@ -64,14 +65,14 @@ const fetchSubreddit = createActionScript(FetchSubreddit);
 /** PROCEDURES */
 
 export function* mainScript(store: Store<AppState>) {
-  yield* followValue(store, focusSelector, function* (focus) {
+  yield* followStoreSelector(store, focusSelector, function* (focus) {
     if (focus) {
       const cache = focusedCacheSelector(store.getValue());
       if (!cache?.posts) {
         yield* fetchScript(store, focus);
       }
     }
-    return false;
+    return CONTINUE;
   });
 }
 
