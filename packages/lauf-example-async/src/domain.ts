@@ -21,14 +21,14 @@ export type AppState = {
 };
 
 export type Cache = {
-  posts: Post[];
-  lastUpdated: null | number; //in milliseconds
   isFetching: boolean;
+  lastUpdated: number | null; //in milliseconds
+  posts: Post[];
 };
 
 export type Post = { title: string };
 
-export const initialAppState: AppState = {
+export const initialAppState: Immutable<AppState> = {
   focus: subredditNames[0],
   caches: {},
 } as const;
@@ -45,9 +45,12 @@ export function createStore(): Store<AppState> {
 
 /** SELECTORS */
 
-export const focusSelector: Selector<AppState> = (state) => state.focus;
-export const focusedCacheSelector: Selector<AppState> = (state) =>
-  state.caches[state.focus];
+export const focusSelector: Selector<AppState, SubredditName> = (state) =>
+  state.focus;
+export const focusedCacheSelector: Selector<
+  AppState,
+  Immutable<Cache> | undefined
+> = (state) => state.caches[state.focus];
 
 /** ASYNC ACTIONS */
 
@@ -65,8 +68,8 @@ const fetchSubreddit = createActionScript(FetchSubreddit);
 /** PROCEDURES */
 
 export function* mainScript(store: Store<AppState>) {
-  //Script is called with initial value of selector, and every future change
-  //Returns CONTINUE to keep looping
+  //Script called on initial value and called again on every change
+  //Script returns CONTINUE to keep looping, (other values would end the loop, returning the value)
   return yield* followStoreSelector(store, focusSelector, function* (focus) {
     if (focus) {
       const cache = focusedCacheSelector(store.getValue());
@@ -78,26 +81,37 @@ export function* mainScript(store: Store<AppState>) {
   });
 }
 
-export function* fetchScript(store: Store<AppState>, focused: SubredditName) {
+export function* fetchScript(store: Store<AppState>, focus: SubredditName) {
   //initialise cache and transition to 'fetching' state
   yield* editValue(store, (draft) => {
-    draft.caches[focused] = {
-      ...(draft.caches[focused] || initialCache),
+    draft.caches[focus] = {
+      ...(draft.caches[focus] || initialCache),
       isFetching: true,
     };
   });
   //perform the fetch
-  const posts = yield* fetchSubreddit(focused);
-  //update the cache with the results
-  const lastUpdated = new Date().getTime();
-  const isFetching = false;
-  yield* editValue(store, (draft) => {
-    draft.caches[focused] = {
-      posts,
-      lastUpdated,
-      isFetching,
-    };
-  });
+  let posts: Post[];
+  try {
+    posts = yield* fetchSubreddit(focus);
+  } finally {
+    //update cache with results
+    yield* editValue(store, (draft) => {
+      if (posts) {
+        //save posts and update time, reset fetching status
+        draft.caches[focus] = {
+          posts,
+          lastUpdated: new Date().getTime(),
+          isFetching: false,
+        };
+      } else {
+        //just reset fetching status
+        draft.caches[focus] = {
+          ...(draft.caches[focus] || initialCache),
+          isFetching: false,
+        };
+      }
+    });
+  }
 }
 
 /** USER INPUTS */
