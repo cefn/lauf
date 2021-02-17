@@ -65,7 +65,9 @@ const fetchSubreddit = createActionScript(FetchSubreddit);
 /** PROCEDURES */
 
 export function* mainScript(store: Store<AppState>) {
-  yield* followStoreSelector(store, focusSelector, function* (focus) {
+  //Script is called with initial value of selector, and every future change
+  //Returns CONTINUE to keep looping
+  return yield* followStoreSelector(store, focusSelector, function* (focus) {
     if (focus) {
       const cache = focusedCacheSelector(store.getValue());
       if (!cache?.posts) {
