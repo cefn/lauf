@@ -25,9 +25,9 @@ export function useSelected<State, Selected = any>(
   useEffect(() => {
     const unwatch = store.watch((value: Immutable<State>) => {
       const nextSelected = selector(value);
-      // if(Object.is(selected, nextSelected)){
-      //   return;
-      // }
+      if (Object.is(selected, nextSelected)) {
+        return;
+      }
       setSelected(nextSelected);
     });
     return () => {
