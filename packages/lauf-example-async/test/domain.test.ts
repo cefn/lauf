@@ -1,7 +1,7 @@
-import { focusedSelector } from "../src/domain";
+import { focusSelector } from "../src/domain";
 
 describe("Test suite placeholder", () => {
   test("Dummy Test", () => {
-    expect(typeof focusedSelector === "function");
+    expect(typeof focusSelector === "function");
   });
 });

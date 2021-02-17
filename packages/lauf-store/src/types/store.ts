@@ -9,4 +9,4 @@ export interface Stream<In, Out = In> extends Watchable<Out> {
   source(watchable: Watchable<In>): Unwatch;
 }
 
-export type Selector<In, Out> = (value: In) => Out;
+export type Selector<In, Out = any> = (value: Immutable<In>) => Out;

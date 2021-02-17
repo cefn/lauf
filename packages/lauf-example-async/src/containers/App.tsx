@@ -1,16 +1,15 @@
 import React, { MouseEvent } from "react";
-import { executeSequence } from "@lauf/lauf-runner";
 import { Store } from "@lauf/lauf-store";
 import { Picker } from "../components/Picker";
 import { Posts } from "../components/Posts";
 import {
   SubredditName,
   subredditNames,
-  focusedSelector,
-  cacheSelector,
-  focus,
-  syncFocused,
+  focusSelector,
+  focusedCacheSelector,
   AppState,
+  focusSubreddit,
+  refreshFocusedSubreddit,
 } from "../domain";
 import { useSelected, useStore } from "@lauf/lauf-store-react";
 
@@ -19,16 +18,16 @@ type AppParams = {
 };
 
 export function App({ store }: AppParams) {
-  const focused = useSelected(store, focusedSelector);
-  const cache = useSelected(store, cacheSelector);
+  const focused = useSelected(store, focusSelector);
+  const cache = useSelected(store, focusedCacheSelector);
 
-  const triggerSubredditFocus = (newName: SubredditName) => {
-    executeSequence(focus(store, newName));
+  const triggerFocusSubreddit = (newName: SubredditName) => {
+    focusSubreddit(store, newName);
   };
 
-  const triggerSubredditSync = (event: MouseEvent) => {
+  const onRefreshClick = (event: MouseEvent) => {
     event.preventDefault();
-    executeSequence(syncFocused(store));
+    refreshFocusedSubreddit(store);
   };
 
   let cachePane;
@@ -42,9 +41,7 @@ export function App({ store }: AppParams) {
               Last updated at {new Date(lastUpdated).toLocaleTimeString()}.{" "}
             </span>
           )}
-          {!isFetching && (
-            <button onClick={triggerSubredditSync}>Refresh</button>
-          )}
+          {!isFetching && <button onClick={onRefreshClick}>Refresh</button>}
         </p>
         {posts.length === 0 ? (
           isFetching ? (
@@ -67,7 +64,7 @@ export function App({ store }: AppParams) {
     <div>
       <Picker
         selectedOption={focused}
-        handleChange={triggerSubredditFocus}
+        handleChange={triggerFocusSubreddit}
         options={[...subredditNames]}
       />
       {cachePane}

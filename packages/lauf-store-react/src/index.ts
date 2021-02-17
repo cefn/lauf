@@ -17,7 +17,7 @@ export function useStore<T>(initialTree: Immutable<T>): Store<T> {
 
 export function useSelected<State, Selected = any>(
   store: Store<State>,
-  selector: Selector<Immutable<State>, Selected>
+  selector: Selector<State, Selected>
 ) {
   const [selected, setSelected] = useState(() => {
     return selector(store.getValue());
