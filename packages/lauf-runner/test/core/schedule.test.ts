@@ -13,7 +13,7 @@ import {
   delay,
   Expiry,
   isExpiry,
-} from "@lauf/lauf-runner/domain/delay";
+} from "@lauf/lauf-runner/core/delay";
 import { RootProcedure } from "@lauf/lauf-runner/types";
 import { executeRootProcedure } from "@lauf/lauf-runner/core/util";
 

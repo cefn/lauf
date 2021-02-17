@@ -1,4 +1,4 @@
-import { promiseDelay, Expiry } from "../domain/delay";
+import { promiseDelay, Expiry } from "./delay";
 import { Action, RootProcedure, Sequence } from "../types";
 import {
   createActionProcedure,

@@ -1,4 +1,4 @@
-import { promiseDelay } from "../src/domain/delay";
+import { promiseDelay } from "../src/core/delay";
 
 const promiseCriterion = async function (
   criterion: () => boolean,
