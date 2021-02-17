@@ -3,7 +3,7 @@
  */
 
 import React from "react";
-import { useSelected, useStore } from "../src/react";
+import { useSelected, useStore } from "../src";
 import { render, fireEvent, waitFor, screen } from "@testing-library/react";
 import { Selector, Store } from "@lauf/lauf-store";
 import { act } from "react-dom/test-utils";

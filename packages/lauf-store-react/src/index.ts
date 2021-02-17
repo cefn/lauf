@@ -1,14 +1,6 @@
 import { BasicStore, Selector, Store } from "@lauf/lauf-store";
 import { Immutable } from "@lauf/lauf-store/types/immutable";
-import {
-  FunctionComponent,
-  Context,
-  useMemo,
-  useContext,
-  useState,
-  useEffect,
-  createContext,
-} from "react";
+import { useState, useEffect, createContext } from "react";
 
 export function useStore<T>(initialTree: Immutable<T>): Store<T> {
   const [store, setStore] = useState(() => {
@@ -25,7 +17,7 @@ export function useStore<T>(initialTree: Immutable<T>): Store<T> {
 
 export function useSelected<State, Selected = any>(
   store: Store<State>,
-  selector: Selector<State, Selected>
+  selector: Selector<Immutable<State>, Selected>
 ) {
   const [selected, setSelected] = useState(() => {
     return selector(store.getValue());
@@ -47,15 +39,4 @@ export function useSelected<State, Selected = any>(
 
 export function createStoreContext<S>(store: Store<S>) {
   return createContext(store);
-}
-
-export function createStoreConsumer<In, Out>(
-  context: Context<Store<In>>,
-  selector: Selector<In, Out>
-) {
-  return ({ children }: { children: any }) => {
-    const state: Immutable<In> = useContext(context).getValue();
-    const out: Immutable<Out> = selector(state);
-    return useMemo(() => children(out), [out]);
-  };
 }
