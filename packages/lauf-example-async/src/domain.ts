@@ -1,11 +1,7 @@
 import { Store, BasicStore, Selector } from "@lauf/lauf-store";
 import { Immutable } from "@lauf/lauf-store/types/immutable";
 import { editValue, followStoreSelector } from "@lauf/lauf-store-runner";
-import {
-  Action,
-  createActionScript,
-  executeProcedure,
-} from "@lauf/lauf-runner";
+import { Action, createActionScript, stageScript } from "@lauf/lauf-runner";
 import { CONTINUE } from "@lauf/lauf-store-runner/types";
 
 /** STORE DEFINITION */
@@ -117,7 +113,7 @@ export function* fetchScript(store: Store<AppState>, focus: SubredditName) {
 /** USER INPUTS */
 
 export function triggerFocus(store: Store<AppState>, name: SubredditName) {
-  executeProcedure(function* () {
+  stageScript(function* () {
     yield* editValue(store, (draft) => {
       draft.focus = name;
     });
@@ -125,7 +121,7 @@ export function triggerFocus(store: Store<AppState>, name: SubredditName) {
 }
 
 export function triggerFetchFocused(store: Store<AppState>) {
-  executeProcedure(function* () {
+  stageScript(function* () {
     const { focus } = store.getValue();
     if (focus) {
       yield* fetchScript(store, focus);

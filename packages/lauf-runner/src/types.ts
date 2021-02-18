@@ -1,30 +1,23 @@
-export interface ActionClass<Params extends any[], Reaction> {
-  new (...params: Params): Action<Reaction>;
-}
-
 export interface Action<Reaction> {
   act: () => Reaction | Promise<Reaction>;
 }
 
+export interface ActionClass<Params extends any[], Reaction> {
+  new (...params: Params): Action<Reaction>;
+}
+
 /** Generator with a next() that accepts the awaited result of
- * its own yielded actions until an outcome is returned.
+ * its own yielded actions until an Ending is returned.
  */
-export type Sequence<Outcome = void, Reaction = any> = Generator<
+export type Performance<Ending = void, Reaction = any> = Generator<
   Action<Reaction>,
-  Outcome,
+  Ending,
   Reaction
 >;
 
-/** A configurable sequence factory, as invoked within a 'root' sequence */
-export type Procedure<
+/** A Script is step-by-step instructions for a performance. */
+export type Script<
   Args extends any[] = any[],
-  Outcome = void,
+  Ending = void,
   Reaction = any
-> = (...args: Args) => Sequence<Outcome, Reaction>;
-
-/**  A 'root' sequence factory (has no-arg signature)  */
-export type RootProcedure<Outcome = void, Reaction = any> = Procedure<
-  [],
-  Outcome,
-  Reaction
->;
+> = (...args: Args) => Performance<Ending, Reaction>;
