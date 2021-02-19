@@ -3,7 +3,7 @@ const TsconfigPathsPlugin = require("tsconfig-paths-webpack-plugin");
 
 module.exports = (config) => {
   config.resolve.plugins = [
-    // remove plugin that throws  when importing anything outside of src/
+    // remove plugin that throws when importing anything outside of src/
     ...config.resolve.plugins.filter(
       (plugin) => plugin.constructor.name !== "ModuleScopePlugin"
     ),

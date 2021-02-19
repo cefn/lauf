@@ -37,7 +37,12 @@ async function aliasLocalPackages() {
             const workspaceConfig = JSON.parse(
                 fs.readFileSync(tsconfigPath).toString(),
             );
-            workspaceConfig.compilerOptions.composite = true;
+            if(! ["lauf-example-async"].includes(name)){
+                workspaceConfig.compilerOptions = {
+                    ...workspaceConfig.compilerOptions,
+                    composite:true
+                }    
+            }
             workspaceConfig.references = [];
             for (const dependency of workspace.workspaceDependencies) {
                 const dependencyLocation = path.resolve(
