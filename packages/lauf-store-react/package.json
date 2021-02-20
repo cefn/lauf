@@ -11,12 +11,12 @@
     "prepack": "yarn build",
     "build": "yarn clean && yarn compile",
     "compile": "tsc -p tsconfig.build.json",
-    "precoverage": "yarn add --dev react",
-    "postcoverage": "yarn remove react; yarn add --peer react",
     "coverage": "jest --coverage",
     "prepublishOnly": "npm run build",
     "pretest": "npm install react --no-save",
-    "posttest": "npm uninstall react --no-save; rm package-lock.json",
+    "posttest": "npm uninstall react; rm package-lock.json",
+    "precoverage": "yarn pretest",
+    "postcoverage": "yarn posttest",
     "test": "jest"
   },
   "peerDependencies": {
