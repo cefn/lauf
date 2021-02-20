@@ -15,8 +15,8 @@
     "postcoverage": "yarn remove react; yarn add --peer react",
     "coverage": "jest --coverage",
     "prepublishOnly": "npm run build",
-    "pretest": "yarn add --dev react",
-    "posttest": "yarn remove react; yarn add --peer react",
+    "pretest": "npm install react --no-save",
+    "posttest": "npm uninstall react --no-save; rm package-lock.json",
     "test": "jest"
   },
   "peerDependencies": {
