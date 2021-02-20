@@ -1,17 +1,18 @@
 import { BasicLock } from "@lauf/lauf-lock/src/core";
+import { promiseDelay, randomInteger } from "./util";
 
-async function proveLock(key: any | void) {
-  const lock = new BasicLock();
-  const unlock = await lock.acquire();
-  unlock();
-}
-
-describe("Can lock using arbitrary reference", () => {
+describe("Can lock using arbitrary references", () => {
   const validKeys = [undefined, 3, "hello", true, {}, []];
+
+  async function tryLock(key: any | void) {
+    const lock = new BasicLock();
+    const unlock = await lock.acquire();
+    unlock();
+  }
 
   for (const key of validKeys) {
     test(`Can lock with ${JSON.stringify(key)}`, async () => {
-      await proveLock(key);
+      await tryLock(key);
     });
   }
 });
@@ -19,14 +20,6 @@ describe("Can lock using arbitrary reference", () => {
 describe("Mutual Exclusion", () => {
   const parallelism = 16;
   const taskTime = 10;
-
-  function promiseDelay(ms: number): Promise<void> {
-    return new Promise((resolve) => setTimeout(resolve, ms));
-  }
-
-  function randomInteger(bound: number): number {
-    return Math.floor(Math.random() * bound);
-  }
 
   /** Insert sequence to array */
   async function pushSequenceTo(arr: string[]) {

@@ -8,11 +8,11 @@ export class BasicLock<T = any> implements Lock {
   protected keys: ReadonlyArray<T | void> = [];
   protected releasePromises: ReadonlyArray<Promise<void>> = [];
   async acquire(key?: T): Promise<Release> {
-    while (true) {
+    let release = null;
+    do {
       const index = this.keys.indexOf(key);
       if (index === -1) {
         //nobody has lock, issue to yourself and promise to release it
-        let release!: Release;
         const unlockPromise = new Promise<void>((resolve) => {
           release = () => {
             //remove record of lock
@@ -26,11 +26,11 @@ export class BasicLock<T = any> implements Lock {
         this.keys = [...this.keys, key];
         this.releasePromises = [...this.releasePromises, unlockPromise];
         //return callback to release lock
-        return release;
       } else {
         //await whoever currently has the lock
         await this.releasePromises[index];
       }
-    }
+    } while (release === null);
+    return release;
   }
 }
