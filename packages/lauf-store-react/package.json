@@ -11,9 +11,11 @@
     "prepack": "yarn build",
     "build": "yarn clean && yarn compile",
     "compile": "tsc -p tsconfig.build.json",
-    "test": "jest",
     "coverage": "jest --coverage",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run build",
+    "pretest": "yarn add --dev react",
+    "posttest": "yarn remove react; yarn add --peer react",
+    "test": "jest"
   },
   "peerDependencies": {
     "react": "^17.0.1"
