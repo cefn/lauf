@@ -63,7 +63,7 @@ describe("Mutual Exclusion", () => {
     }
     //run multiple in 'parallel'
     await Promise.all(Array.from({ length: parallelism }).map(withoutLock));
-    console.log(`Without lock: ${JSON.stringify(pushed)}`);
+    // console.log(`Without lock: ${JSON.stringify(pushed)}`);
 
     //some values should be interleaved
     expect(() => checkSequencesIn(pushed)).toThrow();
@@ -80,7 +80,7 @@ describe("Mutual Exclusion", () => {
     }
     //run multiple in 'parallel'
     await Promise.all(Array.from({ length: parallelism }).map(withLock));
-    console.log(`WITH lock: ${JSON.stringify(pushed)}`);
+    // console.log(`WITH lock: ${JSON.stringify(pushed)}`);
 
     //no values should be interleaved
     checkSequencesIn(pushed);
