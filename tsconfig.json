@@ -5,6 +5,8 @@
     "paths": {
       "@lauf/lauf-example-async": ["lauf-example-async/src"],
       "@lauf/lauf-example-async/*": ["lauf-example-async/src/*"],
+      "@lauf/lauf-lock": ["lauf-lock/src"],
+      "@lauf/lauf-lock/*": ["lauf-lock/src/*"],
       "@lauf/lauf-runner": ["lauf-runner/src"],
       "@lauf/lauf-runner/*": ["lauf-runner/src/*"],
       "@lauf/lauf-store": ["lauf-store/src"],
@@ -14,5 +16,23 @@
       "@lauf/lauf-store-runner": ["lauf-store-runner/src"],
       "@lauf/lauf-store-runner/*": ["lauf-store-runner/src/*"]
     }
-  }
+  },
+  "files": [],
+  "references": [
+    {
+      "path": "packages/lauf-example-async"
+    },
+    {
+      "path": "packages/lauf-runner"
+    },
+    {
+      "path": "packages/lauf-store-react"
+    },
+    {
+      "path": "packages/lauf-store-runner"
+    },
+    {
+      "path": "packages/lauf-store"
+    }
+  ]
 }
