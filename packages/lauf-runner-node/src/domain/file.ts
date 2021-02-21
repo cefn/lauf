@@ -1,7 +1,6 @@
 import fs from "fs";
 const fsPromises = fs.promises;
-import { Action } from "../types";
-import { createActionProcedure } from "../core/util";
+import { Action, createActionScript } from "@lauf/lauf-runner";
 
 class Read implements Action<Buffer> {
   constructor(readonly filePath: string) {}
@@ -17,5 +16,5 @@ class Write implements Action<void> {
   }
 }
 
-export const read = createActionProcedure(Read);
-export const write = createActionProcedure(Write);
+export const read = createActionScript(Read);
+export const write = createActionScript(Write);

@@ -1,73 +1,76 @@
 import { promiseDelay, Expiry } from "./delay";
-import { Action, RootProcedure, Sequence } from "../types";
-import { createActionScript, executeProcedure, executeSequence } from "./util";
+import { Action, Script, Performance } from "../types";
+import { createActionScript, stageScript, stagePerformance } from "./util";
 
-export class Foreground<Outcome> implements Action<Outcome> {
-  constructor(readonly procedure: RootProcedure<Outcome>) {}
+export class ForegroundScript<Ending> implements Action<Ending> {
+  constructor(readonly script: Script<[], Ending>) {}
   async act() {
-    return await executeProcedure(this.procedure);
+    return await stageScript(this.script);
   }
 }
 
-export class ForegroundAll<Outcome> implements Action<Outcome[]> {
-  constructor(readonly procedures: RootProcedure<Outcome>[]) {}
+export class ForegroundAllScripts<Ending> implements Action<Ending[]> {
+  constructor(readonly scripts: Script<[], Ending>[]) {}
   async act() {
-    return await Promise.all(this.procedures.map(executeProcedure));
+    return await Promise.all(this.scripts.map(stageScript));
   }
 }
 
-export class BackgroundAll<Outcome> implements Action<Promise<Outcome>[]> {
-  constructor(readonly procedures: RootProcedure<Outcome>[]) {}
+export class BackgroundAllScripts<Ending> implements Action<Promise<Ending>[]> {
+  constructor(readonly scripts: Script<[], Ending>[]) {}
   act() {
-    return this.procedures.map(executeProcedure);
+    return this.scripts.map(stageScript);
   }
 }
 
-export class Race<Outcome = any>
-  implements Action<[Outcome, Sequence<Outcome>]> {
-  constructor(readonly sequences: Sequence<Outcome>[]) {}
+export class Race<Ending = any>
+  implements Action<[Ending, Performance<Ending>]> {
+  constructor(readonly performances: Performance<Ending>[]) {}
   act() {
     return Promise.race(
-      this.sequences.map(async (sequence) => {
-        const result = await executeSequence(sequence);
-        const completion: [Outcome, Sequence<Outcome>] = [result, sequence];
+      this.performances.map(async (performance) => {
+        const result = await stagePerformance(performance);
+        const completion: [Ending, Performance<Ending>] = [result, performance];
         return completion;
       })
     );
   }
 }
 
-export class Team<Outcome = any> implements Action<Outcome[]> {
-  constructor(readonly sequences: Sequence<Outcome>[]) {}
+export class Team<Ending = any> implements Action<Ending[]> {
+  constructor(readonly performances: Performance<Ending>[]) {}
   act() {
-    return Promise.all(this.sequences.map(executeSequence));
+    return Promise.all(this.performances.map(stagePerformance));
   }
 }
 
-class Timeout<Outcome = any> implements Action<Outcome | Expiry> {
-  constructor(readonly sequence: Sequence<Outcome>, readonly ms: number) {}
+class Timeout<Ending = any> implements Action<Ending | Expiry> {
+  constructor(
+    readonly performances: Performance<Ending>,
+    readonly ms: number
+  ) {}
   act() {
-    const sequencePromise = executeSequence(this.sequence);
+    const completionPromise = stagePerformance(this.performances);
     const timeoutPromise = promiseDelay(this.ms);
-    return Promise.race([sequencePromise, timeoutPromise]);
+    return Promise.race([completionPromise, timeoutPromise]);
   }
 }
 
-class Wait<Outcome = any> implements Action<Outcome> {
-  constructor(readonly promise: Promise<Outcome>) {}
+class Wait<Ending = any> implements Action<Ending> {
+  constructor(readonly promise: Promise<Ending>) {}
   act() {
     return this.promise;
   }
 }
 
-//TODO add a fork, which yields the promise of sequence completion (complement of join)
+//TODO add a fork, which yields the promise of performance completion (complement of join)
 
-/** Spawn procedures */
-export const foreground = createActionScript(Foreground);
-export const foregroundAll = createActionScript(ForegroundAll);
-export const backgroundAll = createActionScript(BackgroundAll);
+/** Spawn scripts */
+export const foregroundScript = createActionScript(ForegroundScript);
+export const foregroundAllScripts = createActionScript(ForegroundAllScripts);
+export const backgroundAllScripts = createActionScript(BackgroundAllScripts);
 
-/** Compose sequences */
+/** Compose performances */
 export const race = createActionScript(Race);
 export const team = createActionScript(Team);
 export const timeout = createActionScript(Timeout);

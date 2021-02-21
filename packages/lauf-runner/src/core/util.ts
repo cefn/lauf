@@ -1,9 +1,9 @@
-import type { Sequence, RootProcedure, ActionClass } from "../types";
+import type { Performance, Script, ActionClass } from "../types";
 
-/** Streamline sequence creation from any Action class. */
+/** Streamline script creation from any Action class. */
 export function createActionScript<Params extends any[], Reaction = any>(
   actionClass: ActionClass<Params, Reaction>
-): (...actionParams: Params) => Sequence<Reaction> {
+): Script<Params, Reaction> {
   return function* (...actionParams: Params) {
     const action = new actionClass(...actionParams);
     const result: Reaction = yield action;
@@ -11,37 +11,37 @@ export function createActionScript<Params extends any[], Reaction = any>(
   };
 }
 
-/** Gets Actions from sequence, then awaits action#act()
- * and passes the Reaction back into next() until sequence is done.
- * Errors are passed to sequence.throw then thrown here.
- * @returns Outcome of sequence. */
-export async function executeSequence<Outcome>(
-  sequence: Sequence<Outcome>
-): Promise<Outcome> {
+//TODO make generic, passing through script parameters
+export function createPerformance<Ending>(
+  script: Script<[], Ending>
+): Performance<Ending> {
+  return script();
+}
+
+/** Gets Actions from performance, then awaits action#act()
+ * and passes the Reaction back into next() until performance is done.
+ * Errors are passed to performance.throw then thrown here.
+ * @returns Ending of performance. */
+export async function stagePerformance<Ending>(
+  performance: Performance<Ending>
+): Promise<Ending> {
   try {
     //cannot accept value before first 'yield'
-    let generated = sequence.next();
+    let generated = performance.next();
     while (!generated.done) {
       const reaction = await generated.value.act();
-      generated = sequence.next(reaction);
+      generated = performance.next(reaction);
     }
     return generated.value;
   } catch (error) {
-    sequence.throw(error);
+    performance.throw(error);
     throw error;
   }
 }
 
-//TODO make generic, passing through procedure parameters
-export function beginProcedure<Outcome>(
-  procedure: RootProcedure<Outcome>
-): Sequence<Outcome> {
-  return procedure();
-}
-
-export async function executeProcedure<Outcome>(
-  procedure: RootProcedure<Outcome>
-): Promise<Outcome> {
-  const sequence = beginProcedure(procedure);
-  return await executeSequence(sequence);
+export async function stageScript<Ending>(
+  script: Script<[], Ending>
+): Promise<Ending> {
+  const performance = createPerformance(script);
+  return await stagePerformance(performance);
 }

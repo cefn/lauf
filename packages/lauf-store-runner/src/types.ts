@@ -1,4 +1,4 @@
-import { Procedure } from "@lauf/lauf-runner";
+import { Script } from "@lauf/lauf-runner";
 
 export const CONTINUE = ["continue"] as const;
 export type Continuation = typeof CONTINUE;
@@ -7,4 +7,4 @@ export function isContinuation(value: any): value is Continuation {
 }
 
 /** Follower returns false to keep following, true to stop following. */
-export type Follower<T, V> = Procedure<[T], V | Continuation>;
+export type Follower<T, V> = Script<[T], V | Continuation>;
