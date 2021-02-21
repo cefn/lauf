@@ -14,7 +14,9 @@
       "@lauf/lauf-store-react": ["lauf-store-react/src"],
       "@lauf/lauf-store-react/*": ["lauf-store-react/src/*"],
       "@lauf/lauf-store-runner": ["lauf-store-runner/src"],
-      "@lauf/lauf-store-runner/*": ["lauf-store-runner/src/*"]
+      "@lauf/lauf-store-runner/*": ["lauf-store-runner/src/*"],
+      "@lauf/lauf-queue": ["lauf-queue/src"],
+      "@lauf/lauf-queue/*": ["lauf-queue/src/*"]
     }
   },
   "files": [],
@@ -24,6 +26,12 @@
     },
     {
       "path": "packages/lauf-runner"
+    },
+    {
+      "path": "packages/lauf-queue"
+    },
+    {
+      "path": "packages/lauf-lock"
     },
     {
       "path": "packages/lauf-store-react"
