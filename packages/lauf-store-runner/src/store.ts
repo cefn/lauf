@@ -4,12 +4,9 @@ import {
   Script,
   Performance,
 } from "@lauf/lauf-runner";
-import {
-  BasicMessageQueue,
-  Selector,
-  Store,
-  MessageQueue,
-} from "@lauf/lauf-store";
+import { Selector, Store } from "@lauf/lauf-store";
+import { BasicMessageQueue, MessageQueue } from "@lauf/lauf-queue";
+
 import type { Editor, Immutable } from "@lauf/lauf-store/types/immutable";
 import { receive } from "./queue";
 import { Continuation, Follower, isContinuation } from "./types";

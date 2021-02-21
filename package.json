@@ -2,11 +2,11 @@
   "name": "root",
   "private": true,
   "scripts": {
-    "prepare": "node ./configure-references.js",
+    "check": "lerna exec 'tsc --noEmit'",
     "build": "lerna run build --stream",
     "lint": "lerna run lint --stream --parallel",
     "test": "yarn jest --coverage"
- },
+  },
   "devDependencies": {
     "eslint": "^7.20.0",
     "jest": "^26.6.3",

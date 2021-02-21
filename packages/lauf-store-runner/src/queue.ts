@@ -1,5 +1,5 @@
 import { Action, createActionScript } from "@lauf/lauf-runner";
-import { MessageQueue } from "@lauf/lauf-store/types/queue";
+import { MessageQueue } from "@lauf/lauf-queue";
 
 class Receive<T> implements Action<T> {
   constructor(readonly queue: MessageQueue<T>) {}

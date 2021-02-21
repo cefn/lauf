@@ -3,16 +3,38 @@
   "compilerOptions": {
     "baseUrl": "./packages",
     "paths": {
-      "@lauf/lauf-example-async": ["lauf-example-async/src"],
+      "@lauf/*": ["*/src"],
       "@lauf/lauf-example-async/*": ["lauf-example-async/src/*"],
-      "@lauf/lauf-runner": ["lauf-runner/src"],
+      "@lauf/lauf-lock/*": ["lauf-lock/src/*"],
       "@lauf/lauf-runner/*": ["lauf-runner/src/*"],
-      "@lauf/lauf-store": ["lauf-store/src"],
       "@lauf/lauf-store/*": ["lauf-store/src/*"],
-      "@lauf/lauf-store-react": ["lauf-store-react/src"],
       "@lauf/lauf-store-react/*": ["lauf-store-react/src/*"],
-      "@lauf/lauf-store-runner": ["lauf-store-runner/src"],
-      "@lauf/lauf-store-runner/*": ["lauf-store-runner/src/*"]
+      "@lauf/lauf-store-runner/*": ["lauf-store-runner/src/*"],
+      "@lauf/lauf-queue/*": ["lauf-queue/src/*"]
     }
-  }
+  },
+  "files": [],
+  "references": [
+    {
+      "path": "packages/lauf-example-async"
+    },
+    {
+      "path": "packages/lauf-runner"
+    },
+    {
+      "path": "packages/lauf-queue"
+    },
+    {
+      "path": "packages/lauf-lock"
+    },
+    {
+      "path": "packages/lauf-store-react"
+    },
+    {
+      "path": "packages/lauf-store-runner"
+    },
+    {
+      "path": "packages/lauf-store"
+    }
+  ]
 }
