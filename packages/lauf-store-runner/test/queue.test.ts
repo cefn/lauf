@@ -1,4 +1,4 @@
-import { BasicMessageQueue } from "@lauf/lauf-store/core/queue";
+import { BasicMessageQueue } from "@lauf/lauf-queue";
 import { send, receive } from "@lauf/lauf-store-runner/queue";
 import { executeProcedure, executeSequence } from "@lauf/lauf-runner";
 
