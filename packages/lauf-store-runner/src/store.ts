@@ -1,8 +1,8 @@
 import {
   Action,
   createActionScript,
-  Procedure,
-  Sequence,
+  Script,
+  Performance,
 } from "@lauf/lauf-runner";
 import { Selector, Store } from "@lauf/lauf-store";
 import { BasicMessageQueue, MessageQueue } from "@lauf/lauf-queue";
@@ -23,11 +23,11 @@ export class EditValue<T> implements Action<Immutable<T>> {
 
 export const editValue = createActionScript(EditValue);
 
-export function* withSelectorQueue<Value, Selected, Outcome>(
+export function* withSelectorQueue<Value, Selected, Ending>(
   store: Store<Value>,
   selector: Selector<Value, Selected>,
-  handleQueue: Procedure<[MessageQueue<Selected>], Outcome>
-): Sequence<Outcome> {
+  handleQueue: Script<[MessageQueue<Selected>], Ending>
+): Performance<Ending> {
   const queue = new BasicMessageQueue<Selected>();
   let prevSelected: Immutable<Value> | void = undefined;
   const selectedNotifier = (value: Immutable<Value>) => {
@@ -47,18 +47,18 @@ export function* withSelectorQueue<Value, Selected, Outcome>(
 }
 
 /** TODO change pattern to return a queue (receive from multiple queues within a scope) */
-/** TODO change return to use a singleton value for continuation, (alongside arbitrary outcome type). */
-export function* followStoreSelector<Value, Selected, Outcome>(
+/** TODO change return to use a singleton value for continuation, (alongside arbitrary ending type). */
+export function* followStoreSelector<Value, Selected, Ending>(
   store: Store<Value>,
   selector: Selector<Value, Selected>,
-  follower: Follower<Selected, Outcome>
-): Sequence<Outcome> {
+  follower: Follower<Selected, Ending>
+): Performance<Ending> {
   return yield* withSelectorQueue(store, selector, function* (queue) {
-    let outcome;
+    let ending;
     do {
       const selected = yield* receive<Selected>(queue);
-      outcome = yield* follower(selected);
-    } while (isContinuation(outcome));
-    return outcome;
+      ending = yield* follower(selected);
+    } while (isContinuation(ending));
+    return ending;
   });
 }

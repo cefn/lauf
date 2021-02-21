@@ -1,8 +1,8 @@
 import lodashShuffle from "lodash/shuffle";
 import {
-  foreground,
-  foregroundAll,
-  backgroundAll,
+  foregroundScript,
+  foregroundAllScripts,
+  backgroundAllScripts,
   race,
   team,
   timeout,
@@ -14,47 +14,47 @@ import {
   Expiry,
   isExpiry,
 } from "@lauf/lauf-runner/core/delay";
-import { RootProcedure } from "@lauf/lauf-runner/types";
-import { executeProcedure } from "@lauf/lauf-runner/core/util";
+import { Script } from "@lauf/lauf-runner/types";
+import { stageScript } from "@lauf/lauf-runner/core/util";
 
 describe("Foreground and Background operations", () => {
   const delayMs = 10;
-  const simpleProcedure: RootProcedure<Expiry> = function* () {
+  const simpleScript: Script<[], Expiry> = function* () {
     return yield* delay(delayMs);
   };
 
-  const procedureGroup: RootProcedure<Expiry>[] = [
-    simpleProcedure,
-    simpleProcedure,
-    simpleProcedure,
+  const scriptGroup: Script<[], Expiry>[] = [
+    simpleScript,
+    simpleScript,
+    simpleScript,
   ];
 
-  test("foreground : executes inner procedure to completion", async () => {
-    const result = await executeProcedure(function* () {
-      return yield* foreground(simpleProcedure);
+  test("foreground : executes inner script to completion", async () => {
+    const result = await stageScript(function* () {
+      return yield* foregroundScript(simpleScript);
     });
     expect(isExpiry(result)).toBeTruthy();
   });
 
-  test("foregroundAll : executes inner procedures in parallel to completion", async () => {
+  test("foregroundAll : executes inner scripts in parallel to completion", async () => {
     const before = new Date().getTime();
-    const outcomes = await executeProcedure(function* () {
-      return yield* foregroundAll(procedureGroup);
+    const endings = await stageScript<Expiry[]>(function* () {
+      return yield* foregroundAllScripts(scriptGroup);
     });
     const after = new Date().getTime();
     const duration = after - before;
     //it waited
     expect(duration).toBeGreaterThan(delayMs);
     //they were run in parallel, not series
-    expect(duration).toBeLessThan(delayMs * procedureGroup.length);
+    expect(duration).toBeLessThan(delayMs * scriptGroup.length);
     //they all completed
-    expect(outcomes.every(isExpiry)).toBeTruthy();
+    expect(endings.every(isExpiry)).toBeTruthy();
   });
 
   test("backgroundAll : yields array of completion promises", async () => {
     const before = new Date().getTime();
-    const outcomePromises = await executeProcedure(function* () {
-      return yield* backgroundAll(procedureGroup);
+    const endingPromises = await stageScript(function* () {
+      return yield* backgroundAllScripts(scriptGroup);
     });
     const after = new Date().getTime();
     const duration = after - before;
@@ -62,11 +62,11 @@ describe("Foreground and Background operations", () => {
     expect(duration).toBeLessThan(delayMs);
     //it returned promises
     expect(
-      outcomePromises.every((promise) => promise instanceof Promise)
+      endingPromises.every((promise) => promise instanceof Promise)
     ).toBeTruthy();
     //they can be resolved later
-    const outcomes = await Promise.all(outcomePromises);
-    expect(outcomes.every(isExpiry)).toBeTruthy();
+    const endings = await Promise.all(endingPromises);
+    expect(endings.every(isExpiry)).toBeTruthy();
   });
 });
 describe("Scheduling Action Sequences", () => {
@@ -75,59 +75,55 @@ describe("Scheduling Action Sequences", () => {
     const specialPromise = new Promise((resolve) =>
       setTimeout(() => resolve(special), 10)
     );
-    const result = await executeProcedure(function* () {
+    const result = await stageScript(function* () {
       return yield* wait(specialPromise);
     });
     expect(result).toStrictEqual(special);
   });
 
-  test("race : executes sequences in parallel, yields winning [result,sequence]", async () => {
-    const goldSequence = wait(promiseDelay(2).then(() => "gold"));
-    const silverSequence = wait(promiseDelay(4).then(() => "silver"));
-    const bronzeSequence = wait(promiseDelay(6).then(() => "bronze"));
-    const sequences = lodashShuffle([
-      goldSequence,
-      silverSequence,
-      bronzeSequence,
-    ]);
-    const [outcome, sequence] = await executeProcedure(function* () {
-      return yield* race(sequences);
+  test("race : executes performances in parallel, yields winning [result,performance]", async () => {
+    const gold = wait(promiseDelay(2).then(() => "gold"));
+    const silver = wait(promiseDelay(4).then(() => "silver"));
+    const bronze = wait(promiseDelay(6).then(() => "bronze"));
+    const performances = lodashShuffle([gold, silver, bronze]);
+    const [ending, performance] = await stageScript(function* () {
+      return yield* race(performances);
     });
-    expect(outcome).toStrictEqual("gold");
-    expect(sequence).toStrictEqual(goldSequence);
+    expect(ending).toStrictEqual("gold");
+    expect(performance).toStrictEqual(gold);
   });
 
-  test("timeout : handles success sequence ", async () => {
+  test("timeout : handles performance success ", async () => {
     const delayMs = 2;
     const timeoutMs = 10;
     const quickSequence = wait(promiseDelay(delayMs).then(() => "success"));
-    const quickResult = await executeProcedure(function* () {
+    const quickResult = await stageScript(function* () {
       return yield* timeout(quickSequence, timeoutMs);
     });
     expect(quickResult).toStrictEqual("success");
     expect(isExpiry(quickResult)).toBeFalsy();
   });
 
-  test("timeout : handles failure sequence ", async () => {
+  test("timeout : handles performance failure", async () => {
     const delayMs = 10;
     const timeoutMs = 2;
     const slowSequence = wait(promiseDelay(delayMs).then(() => "success"));
-    const slowResult = await executeProcedure(function* () {
+    const slowResult = await stageScript(function* () {
       return yield* timeout(slowSequence, timeoutMs);
     });
     expect(slowResult).not.toEqual("success");
     expect(isExpiry(slowResult)).toBeTruthy();
   });
 
-  test("team : waits for all sequences to complete", async () => {
-    const sequences = [
+  test("team : waits for all performances to complete", async () => {
+    const performances = [
       wait(promiseDelay(6).then(() => "silver")),
       wait(promiseDelay(3).then(() => "gold")),
       wait(promiseDelay(9).then(() => "bronze")),
     ];
     const before = new Date().getTime();
-    const result = await executeProcedure(function* () {
-      return yield* team(sequences);
+    const result = await stageScript(function* () {
+      return yield* team(performances);
     });
     const after = new Date().getTime();
     const duration = after - before;
