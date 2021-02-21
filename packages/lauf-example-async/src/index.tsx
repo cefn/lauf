@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { executeSequence } from "@lauf/lauf-runner";
-import { mainScript, createStore } from "./domain";
+import { mainScript, createStore } from "./plans";
 import { App } from "./containers/App";
 
 const store = createStore();

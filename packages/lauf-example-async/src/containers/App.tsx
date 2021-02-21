@@ -9,7 +9,7 @@ import {
   AppState,
   triggerFocus,
   triggerFetchFocused,
-} from "../domain";
+} from "../plans";
 import { Picker } from "../components/Picker";
 import { Posts } from "../components/Posts";
 

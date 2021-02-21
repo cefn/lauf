@@ -1,5 +1,5 @@
 import React from "react";
-import { Post } from "../domain";
+import { Post } from "../plans";
 import { ImmutableArray } from "@lauf/lauf-store/types/immutable";
 
 type PostsProps = {
