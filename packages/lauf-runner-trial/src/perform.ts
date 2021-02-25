@@ -3,7 +3,7 @@ import type { Performer } from "./types";
 
 export async function perform<Ending, Reaction>(
   performance: Performance<Ending, Reaction>,
-  performer: Performer<Reaction> = actor
+  performer: Performer<Reaction, any> = actor
 ): Promise<Ending> {
   const routine = performer(); //todo this should be called performance
   try {
@@ -18,6 +18,8 @@ export async function perform<Ending, Reaction>(
   } catch (error) {
     performance.throw(error);
     throw error;
+  } finally {
+    console.log("Hit finally");
   }
 }
 
