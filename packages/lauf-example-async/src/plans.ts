@@ -29,7 +29,7 @@ export const initialAppState: Immutable<AppState> = {
   caches: {},
 } as const;
 
-const initialCache: Immutable<Cache> = {
+export const initialCache: Immutable<Cache> = {
   lastUpdated: null,
   isFetching: false,
   posts: [],
@@ -50,7 +50,7 @@ export const focusedCacheSelector: Selector<
 
 /** ASYNC ACTIONS */
 
-class FetchSubreddit implements Action<Post[]> {
+export class FetchSubreddit implements Action<Post[]> {
   constructor(readonly name: SubredditName) {}
   async act() {
     const response = await fetch(`https://www.reddit.com/r/${this.name}.json`);
