@@ -41,9 +41,10 @@ export function createStore(): Store<AppState> {
 
 /** SELECTORS */
 
-export const focusSelector: Selector<AppState, SubredditName> = (state) =>
+export const selectFocus: Selector<AppState, SubredditName> = (state) =>
   state.focus;
-export const focusedCacheSelector: Selector<
+
+export const selectFocusedCache: Selector<
   AppState,
   Immutable<Cache> | undefined
 > = (state) => state.caches[state.focus];
@@ -64,11 +65,12 @@ const fetchSubreddit = createActionPlan(FetchSubreddit);
 /** PROCEDURES */
 
 export function* mainPlan(store: Store<AppState>) {
-  //Plan called on initial value and called again on every change
-  //Plan returns CONTINUE to keep looping, (other values would end the loop, returning the value)
-  return yield* followStoreSelector(store, focusSelector, function* (focus) {
+  //Plan callback is invoked on initial value and every change
+  //Plan returns a strict reference to CONTINUE to keep looping
+  //(any other value would end the loop, returning the value)
+  return yield* followStoreSelector(store, selectFocus, function* (focus) {
     if (focus) {
-      const cache = focusedCacheSelector(store.getValue());
+      const cache = selectFocusedCache(store.getValue());
       if (!cache?.posts) {
         yield* fetchPlan(store, focus);
       }
@@ -77,32 +79,32 @@ export function* mainPlan(store: Store<AppState>) {
   });
 }
 
-export function* fetchPlan(store: Store<AppState>, focus: SubredditName) {
+export function* fetchPlan(store: Store<AppState>, name: SubredditName) {
   //initialise cache and transition to 'fetching' state
   yield* editValue(store, (draft) => {
-    draft.caches[focus] = {
-      ...(draft.caches[focus] || initialCache),
+    draft.caches[name] = {
+      ...(draft.caches[name] || initialCache),
       isFetching: true,
     };
   });
   //perform the fetch
   let posts: Post[];
   try {
-    posts = yield* fetchSubreddit(focus);
+    posts = yield* fetchSubreddit(name);
   } finally {
     //update cache with results
     yield* editValue(store, (draft) => {
       if (posts) {
         //save posts and update time, reset fetching status
-        draft.caches[focus] = {
+        draft.caches[name] = {
           posts,
           lastUpdated: new Date().getTime(),
           isFetching: false,
         };
       } else {
         //just reset fetching status
-        draft.caches[focus] = {
-          ...(draft.caches[focus] || initialCache),
+        draft.caches[name] = {
+          ...(draft.caches[name] || initialCache),
           isFetching: false,
         };
       }
@@ -112,10 +114,10 @@ export function* fetchPlan(store: Store<AppState>, focus: SubredditName) {
 
 /** USER INPUTS */
 
-export function triggerFocus(store: Store<AppState>, name: SubredditName) {
+export function triggerSetFocus(store: Store<AppState>, focus: SubredditName) {
   performPlan(function* () {
     yield* editValue(store, (draft) => {
-      draft.focus = name;
+      draft.focus = focus;
     });
   });
 }

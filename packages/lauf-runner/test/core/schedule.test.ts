@@ -38,7 +38,7 @@ describe("Foreground and Background operations", () => {
 
   test("foregroundAll : executes inner plans in parallel to completion", async () => {
     const before = new Date().getTime();
-    const endings = await performPlan<Expiry[]>(function* () {
+    const endings = await performPlan<[], Expiry[], any>(function* () {
       return yield* foregroundAllPlans(planGroup);
     });
     const after = new Date().getTime();

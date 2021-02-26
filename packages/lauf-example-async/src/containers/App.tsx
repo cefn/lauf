@@ -4,10 +4,10 @@ import { useSelected } from "@lauf/lauf-store-react";
 import {
   SubredditName,
   subredditNames,
-  focusSelector,
-  focusedCacheSelector,
+  selectFocus,
+  selectFocusedCache,
   AppState,
-  triggerFocus,
+  triggerSetFocus,
   triggerFetchFocused,
 } from "../plans";
 import { Picker } from "../components/Picker";
@@ -18,10 +18,10 @@ type AppParams = {
 };
 
 export function App({ store }: AppParams) {
-  const focused = useSelected(store, focusSelector);
-  const cache = useSelected(store, focusedCacheSelector);
+  const focused = useSelected(store, selectFocus);
+  const cache = useSelected(store, selectFocusedCache);
   const onPickerSelect = (newName: SubredditName) => {
-    triggerFocus(store, newName);
+    triggerSetFocus(store, newName);
   };
   const onButtonClick = (event: MouseEvent) => {
     event.preventDefault();

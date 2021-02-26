@@ -1,4 +1,19 @@
-import type { ActionSequence, ActionPlan, ActionClass } from "../types";
+import {
+  Action,
+  ActionPlan,
+  ActionClass,
+  Performer,
+  ActionSequence,
+} from "../types";
+
+export const actor: Performer<any, never> = async function* (
+  action: Action<any>
+) {
+  while (true) {
+    const reaction = await action.act();
+    action = yield reaction;
+  }
+};
 
 /** Streamline plan creation from any Action class. */
 export function createActionPlan<Params extends any[], Reaction = any>(
@@ -11,37 +26,47 @@ export function createActionPlan<Params extends any[], Reaction = any>(
   };
 }
 
-//TODO make generic, passing through plan parameters
-export function createActionSequence<Ending>(
-  plan: ActionPlan<[], Ending>
-): ActionSequence<Ending> {
-  return plan();
+export async function performPlan<Params extends any[], Ending, Reaction>(
+  plan: ActionPlan<Params, Ending, Reaction>,
+  ...params: Params
+): Promise<Ending> {
+  return directPlan(actor, plan, ...params);
 }
 
-/** Gets Actions from sequence, then awaits action#act()
- * and passes the Reaction back into next() until sequence is done.
- * Errors are passed to sequence.throw then thrown here.
- * @returns Ending of sequence. */
-export async function performSequence<Ending>(
-  sequence: ActionSequence<Ending>
+export async function performSequence<Ending, Reaction>(
+  sequence: ActionSequence<Ending, Reaction>
 ): Promise<Ending> {
-  try {
-    //cannot accept value before first 'yield'
-    let generated = sequence.next();
-    while (!generated.done) {
-      const reaction = await generated.value.act();
-      generated = sequence.next(reaction);
-    }
-    return generated.value;
-  } catch (error) {
-    sequence.throw(error);
-    throw error;
+  return directSequence(actor, sequence);
+}
+
+/** Hands Actions and Reactions between two co-routines.
+ * * An ActionSequence (which generates the actions, consumes the reactions)
+ * * A Performer (which generates the reactions, consumes the actions)
+ * */
+export async function directPlan<Params extends any[], Ending, Reaction>(
+  performer: Performer<Reaction, any>,
+  plan: ActionPlan<Params, Ending, Reaction>,
+  ...params: Params
+): Promise<Ending> {
+  let sequence = plan(...params);
+  return directSequence(performer, sequence);
+}
+
+/** Hands Actions and Reactions between two co-routines.
+ * * An ActionSequence (which generates the actions, consumes the reactions)
+ * * A Performer (which generates the reactions, consumes the actions)
+ * */
+export async function directSequence<Ending, Reaction>(
+  performer: Performer<Reaction, any>,
+  sequence: ActionSequence<Ending, Reaction>
+): Promise<Ending> {
+  let sequenceResult = sequence.next();
+  if (!sequenceResult.done) {
+    const performance = performer(sequenceResult.value);
+    do {
+      const performanceResult = await performance.next(sequenceResult.value);
+      sequenceResult = sequence.next(performanceResult.value);
+    } while (!sequenceResult.done);
   }
-}
-
-export async function performPlan<Ending>(
-  plan: ActionPlan<[], Ending>
-): Promise<Ending> {
-  const sequence = createActionSequence(plan);
-  return await performSequence(sequence);
+  return sequenceResult.value;
 }

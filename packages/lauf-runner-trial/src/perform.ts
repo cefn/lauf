@@ -1,56 +1,57 @@
-import type { Action, ActionSequence } from "@lauf/lauf-runner";
-import type { Performer } from "./types";
+import { Action, Performer, Performance, actor } from "@lauf/lauf-runner";
 
-type GeneratorFactory<Params extends any[], T, TReturn, TNext> = (
-  ...params: Params
-) => Generator<T, TReturn, TNext>;
+type ActionExpectation<Reaction = any> = (actual: Action<Reaction>) => boolean;
 
-type AsyncGeneratorFactory<Params extends any[], T, TReturn, TNext> = (
-  ...params: Params
-) => AsyncGenerator<T, TReturn, TNext>;
-
-export function initialiseGenerator<Params extends any[], T, TReturn, TNext>(
-  generatorFactory: GeneratorFactory<Params, T, TReturn, TNext>,
-  ...params: Params
-): [Generator<T, TReturn, TNext>, T] {
-  const generator = generatorFactory(...params);
-  const generatorResult = generator.next();
-  if (generatorResult.done) {
-    throw new Error(`Generator from ${generatorFactory} returned immediately`);
-  } else {
-    return [generator, generatorResult.value];
+function actionMatches<Actual extends Action<any>, Expected extends Actual>(
+  actual: Actual,
+  expected: Expected
+): actual is Expected {
+  // todo test excess properties (in 'actual' not in 'expected') ?
+  if (actual.constructor !== expected.constructor) {
+    return false;
   }
+  const expectedNames = Object.getOwnPropertyNames(expected);
+  for (const name of expectedNames) {
+    if (!(name in actual)) {
+      return false;
+    }
+    if ((actual as any)[name] !== (expected as any)[name]) {
+      return false;
+    }
+  }
+  return true;
 }
 
-export async function initialiseAsyncGenerator<
-  Params extends any[],
-  T,
-  TReturn,
-  TNext
->(
-  asyncGeneratorFactory: AsyncGeneratorFactory<Params, T, TReturn, TNext>,
-  ...params: Params
-): Promise<[AsyncGenerator<T, TReturn, TNext>, T]> {
-  const generator = asyncGeneratorFactory(...params);
-  const generatorResult = await generator.next();
-  if (generatorResult.done) {
-    throw new Error(
-      `Generator from ${asyncGeneratorFactory} returned immediately`
-    );
-  } else {
-    return [generator, generatorResult.value];
-  }
+export function createMatchExpectation<Reaction>(
+  expected: Action<Reaction>
+): ActionExpectation<Reaction> {
+  return (actual: Action<Reaction>) => actionMatches(actual, expected);
 }
 
-export async function* actor<Reaction>(): AsyncGenerator<
-  Reaction,
-  never,
-  Action<Reaction>
-> {
-  let action;
-  let reaction!: Reaction;
+export async function* performUntil<Reaction = any>(
+  trigger: Reaction,
+  expectation: ActionExpectation<Reaction>,
+  standin: Performer<Reaction, never> = actor
+): Performance<Reaction, Action<Reaction>> {
+  let reaction = trigger;
+  let action = yield reaction;
+  const performance = standin(action);
   while (true) {
-    action = yield reaction;
-    reaction = await action.act();
+    if (expectation(action)) {
+      return action;
+    } else {
+      ({ value: reaction } = await performance.next(action));
+    }
   }
+}
+
+export async function* performUntilAfter<Reaction = any>(
+  trigger: Reaction,
+  expectation: ActionExpectation<Reaction>,
+  standin: Performer<Reaction, never> = actor
+): Performance<Reaction, Action<Reaction>> {
+  const action = yield* performUntil(trigger, expectation, standin);
+  const performance = standin(action);
+  const { value: reaction } = await performance.next(action);
+  return yield reaction;
 }
