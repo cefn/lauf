@@ -1,9 +1,9 @@
-import type { Performance, Script, ActionClass } from "../types";
+import type { ActionSequence, ActionPlan, ActionClass } from "../types";
 
-/** Streamline script creation from any Action class. */
-export function createActionScript<Params extends any[], Reaction = any>(
+/** Streamline plan creation from any Action class. */
+export function createActionPlan<Params extends any[], Reaction = any>(
   actionClass: ActionClass<Params, Reaction>
-): Script<Params, Reaction> {
+): ActionPlan<Params, Reaction> {
   return function* (...actionParams: Params) {
     const action = new actionClass(...actionParams);
     const result: Reaction = yield action;
@@ -11,37 +11,37 @@ export function createActionScript<Params extends any[], Reaction = any>(
   };
 }
 
-//TODO make generic, passing through script parameters
-export function createPerformance<Ending>(
-  script: Script<[], Ending>
-): Performance<Ending> {
-  return script();
+//TODO make generic, passing through plan parameters
+export function createActionSequence<Ending>(
+  plan: ActionPlan<[], Ending>
+): ActionSequence<Ending> {
+  return plan();
 }
 
-/** Gets Actions from performance, then awaits action#act()
- * and passes the Reaction back into next() until performance is done.
- * Errors are passed to performance.throw then thrown here.
- * @returns Ending of performance. */
-export async function stagePerformance<Ending>(
-  performance: Performance<Ending>
+/** Gets Actions from sequence, then awaits action#act()
+ * and passes the Reaction back into next() until sequence is done.
+ * Errors are passed to sequence.throw then thrown here.
+ * @returns Ending of sequence. */
+export async function performSequence<Ending>(
+  sequence: ActionSequence<Ending>
 ): Promise<Ending> {
   try {
     //cannot accept value before first 'yield'
-    let generated = performance.next();
+    let generated = sequence.next();
     while (!generated.done) {
       const reaction = await generated.value.act();
-      generated = performance.next(reaction);
+      generated = sequence.next(reaction);
     }
     return generated.value;
   } catch (error) {
-    performance.throw(error);
+    sequence.throw(error);
     throw error;
   }
 }
 
-export async function stageScript<Ending>(
-  script: Script<[], Ending>
+export async function performPlan<Ending>(
+  plan: ActionPlan<[], Ending>
 ): Promise<Ending> {
-  const performance = createPerformance(script);
-  return await stagePerformance(performance);
+  const sequence = createActionSequence(plan);
+  return await performSequence(sequence);
 }

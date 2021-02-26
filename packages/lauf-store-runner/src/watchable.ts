@@ -1,4 +1,4 @@
-import { Action, createActionScript } from "@lauf/lauf-runner";
+import { Action, createActionPlan } from "@lauf/lauf-runner";
 import { WatchableValue } from "@lauf/lauf-store/types/watchable";
 
 class GetValue<T> implements Action<T> {
@@ -15,5 +15,5 @@ class SetValue<T> implements Action<T> {
   }
 }
 
-export const getValue = createActionScript(GetValue);
-export const setValue = createActionScript(SetValue);
+export const getValue = createActionPlan(GetValue);
+export const setValue = createActionPlan(SetValue);

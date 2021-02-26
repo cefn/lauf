@@ -1,9 +1,9 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { stagePerformance } from "@lauf/lauf-runner";
-import { mainScript, createStore } from "./plans";
+import { performSequence } from "@lauf/lauf-runner";
+import { mainPlan, createStore } from "./plans";
 import { App } from "./containers/App";
 
 const store = createStore();
-stagePerformance(mainScript(store));
+performSequence(mainPlan(store)); //could better be performPlan(mainPlan, store);
 ReactDOM.render(<App store={store} />, document.getElementById("root"));

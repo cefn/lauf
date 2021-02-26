@@ -1,7 +1,7 @@
 import { Store, BasicStore, Selector } from "@lauf/lauf-store";
 import { Immutable } from "@lauf/lauf-store/types/immutable";
 import { editValue, followStoreSelector } from "@lauf/lauf-store-runner";
-import { Action, createActionScript, stageScript } from "@lauf/lauf-runner";
+import { Action, createActionPlan, performPlan } from "@lauf/lauf-runner";
 import { CONTINUE } from "@lauf/lauf-store-runner/types";
 
 /** STORE DEFINITION */
@@ -59,25 +59,25 @@ export class FetchSubreddit implements Action<Post[]> {
   }
 }
 
-const fetchSubreddit = createActionScript(FetchSubreddit);
+const fetchSubreddit = createActionPlan(FetchSubreddit);
 
 /** PROCEDURES */
 
-export function* mainScript(store: Store<AppState>) {
-  //Script called on initial value and called again on every change
-  //Script returns CONTINUE to keep looping, (other values would end the loop, returning the value)
+export function* mainPlan(store: Store<AppState>) {
+  //Plan called on initial value and called again on every change
+  //Plan returns CONTINUE to keep looping, (other values would end the loop, returning the value)
   return yield* followStoreSelector(store, focusSelector, function* (focus) {
     if (focus) {
       const cache = focusedCacheSelector(store.getValue());
       if (!cache?.posts) {
-        yield* fetchScript(store, focus);
+        yield* fetchPlan(store, focus);
       }
     }
     return CONTINUE;
   });
 }
 
-export function* fetchScript(store: Store<AppState>, focus: SubredditName) {
+export function* fetchPlan(store: Store<AppState>, focus: SubredditName) {
   //initialise cache and transition to 'fetching' state
   yield* editValue(store, (draft) => {
     draft.caches[focus] = {
@@ -113,7 +113,7 @@ export function* fetchScript(store: Store<AppState>, focus: SubredditName) {
 /** USER INPUTS */
 
 export function triggerFocus(store: Store<AppState>, name: SubredditName) {
-  stageScript(function* () {
+  performPlan(function* () {
     yield* editValue(store, (draft) => {
       draft.focus = name;
     });
@@ -121,10 +121,10 @@ export function triggerFocus(store: Store<AppState>, name: SubredditName) {
 }
 
 export function triggerFetchFocused(store: Store<AppState>) {
-  stageScript(function* () {
+  performPlan(function* () {
     const { focus } = store.getValue();
     if (focus) {
-      yield* fetchScript(store, focus);
+      yield* fetchPlan(store, focus);
     }
   });
 }

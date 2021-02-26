@@ -1,4 +1,4 @@
-import type { Action, Performance } from "@lauf/lauf-runner";
+import type { Action, ActionSequence } from "@lauf/lauf-runner";
 import type { Performer } from "./types";
 
 type GeneratorFactory<Params extends any[], T, TReturn, TNext> = (
@@ -39,29 +39,6 @@ export async function initialiseAsyncGenerator<
     );
   } else {
     return [generator, generatorResult.value];
-  }
-}
-
-export async function perform<Ending, Reaction>(
-  trigger: Reaction,
-  performance: Performance<Ending, Reaction>,
-  performer: Performer<Reaction, any> = actor
-): Promise<Ending> {
-  let [routine, reactionResult] = await initialiseAsyncGenerator(performer);
-  //todo 'routine' should be called performance
-  try {
-    //prime both generators up to first 'yield'
-    let actionResult = performance.next(trigger);
-    while (!actionResult.done) {
-      reactionResult = await routine.next(actionResult.value);
-      actionResult = performance.next(reactionResult.value);
-    }
-    return actionResult.value;
-  } catch (error) {
-    performance.throw(error);
-    throw error;
-  } finally {
-    console.log("Hit finally");
   }
 }
 

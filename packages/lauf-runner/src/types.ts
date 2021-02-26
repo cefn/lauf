@@ -2,24 +2,24 @@ export interface Action<Reaction> {
   act: () => Reaction | Promise<Reaction>;
 }
 
-/** A Performance is a Generator with a next() that yields actions and
- * accepts their resolutions in return, until an Ending
+/** Utility interface defining classes that implement Action */
+export interface ActionClass<Params extends any[], Reaction> {
+  new (...params: Params): Action<Reaction>;
+}
+
+/** An ActionSequence is a Generator with a next() that yields actions and
+ * accepts their reactions in return, until an Ending
  * is returned.
  */
-export type Performance<Ending = void, Reaction = any> = Generator<
+export type ActionSequence<Ending = void, Reaction = any> = Generator<
   Action<Reaction>,
   Ending,
   Reaction
 >;
 
-/** Script contains step-by-step instructions for a Performance. */
-export type Script<
+/** ActionPlan contains step-by-step instructions for an ActionSequence. */
+export type ActionPlan<
   Args extends any[] = any[],
   Ending = void,
   Reaction = any
-> = (...args: Args) => Performance<Ending, Reaction>;
-
-/** Utility interface for classes that implement Action */
-export interface ActionClass<Params extends any[], Reaction> {
-  new (...params: Params): Action<Reaction>;
-}
+> = (...args: Args) => ActionSequence<Ending, Reaction>;

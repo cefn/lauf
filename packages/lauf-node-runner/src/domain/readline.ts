@@ -1,5 +1,5 @@
 import readline from "readline";
-import { Action, createActionScript } from "@lauf/lauf-runner";
+import { Action, createActionPlan } from "@lauf/lauf-runner";
 
 class Print implements Action<void> {
   constructor(readonly message: string) {}
@@ -22,5 +22,5 @@ class Prompt implements Action<string> {
   }
 }
 
-export const print = createActionScript(Print);
-export const prompt = createActionScript(Prompt);
+export const print = createActionPlan(Print);
+export const prompt = createActionPlan(Prompt);
