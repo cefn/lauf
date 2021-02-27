@@ -7,6 +7,8 @@
       "@lauf/lauf-example-async/*": ["lauf-example-async/src/*"],
       "@lauf/lauf-lock/*": ["lauf-lock/src/*"],
       "@lauf/lauf-runner/*": ["lauf-runner/src/*"],
+      "@lauf/lauf-runner-trial/*": ["lauf-runner-trial/src/*"],
+      "@lauf/lauf-runner-stopwatch/*": ["lauf-runner-stopwatch/src/*"],
       "@lauf/lauf-store/*": ["lauf-store/src/*"],
       "@lauf/lauf-store-react/*": ["lauf-store-react/src/*"],
       "@lauf/lauf-store-runner/*": ["lauf-store-runner/src/*"],
@@ -20,6 +22,12 @@
     },
     {
       "path": "packages/lauf-runner"
+    },
+    {
+      "path": "packages/lauf-runner-trial"
+    },
+    {
+      "path": "packages/lauf-runner-stopwatch"
     },
     {
       "path": "packages/lauf-queue"
