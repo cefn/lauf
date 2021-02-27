@@ -9,14 +9,14 @@ import {
   isTermination,
 } from "../types";
 
-export async function* actor<Reaction = any>(
-  action: Action<Reaction>
-): Performance<never, Reaction> {
+export const actor: Performer<never, any> = async function* (
+  action: Action<any>
+): Performance<never, any> {
   while (true) {
     const reaction = await action.act();
     action = yield reaction;
   }
-}
+};
 
 /** Streamline plan creation from any Action class. */
 export function createActionPlan<Params extends any[], Reaction = any>(
