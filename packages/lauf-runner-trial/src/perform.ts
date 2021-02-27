@@ -1,23 +1,14 @@
+import { isDeepStrictEqual } from "util";
 import { Action, Performer, Performance, actor } from "@lauf/lauf-runner";
 
 function actionMatches<Actual extends Action<any>, Expected extends Actual>(
   actual: Actual,
   expected: Expected
 ): actual is Expected {
-  // todo test excess properties (in 'actual' not in 'expected') ?
-  if (actual.constructor !== expected.constructor) {
-    return false;
-  }
-  const expectedNames = Object.getOwnPropertyNames(expected);
-  for (const name of expectedNames) {
-    if (!(name in actual)) {
-      return false;
-    }
-    if ((actual as any)[name] !== (expected as any)[name]) {
-      return false;
-    }
-  }
-  return true;
+  return (
+    actual.constructor === expected.constructor &&
+    isDeepStrictEqual(actual, expected)
+  );
 }
 
 export async function* performUntilActionFulfils<Reaction>(
