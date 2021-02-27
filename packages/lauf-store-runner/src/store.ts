@@ -1,8 +1,8 @@
 import {
   Action,
-  createActionScript,
-  Script,
-  Performance,
+  createActionPlan,
+  ActionPlan,
+  ActionSequence,
 } from "@lauf/lauf-runner";
 import { Selector, Store } from "@lauf/lauf-store";
 import { BasicMessageQueue, MessageQueue } from "@lauf/lauf-queue";
@@ -21,13 +21,13 @@ export class EditValue<T> implements Action<Immutable<T>> {
   }
 }
 
-export const editValue = createActionScript(EditValue);
+export const editValue = createActionPlan(EditValue);
 
 export function* withSelectorQueue<Value, Selected, Ending>(
   store: Store<Value>,
   selector: Selector<Value, Selected>,
-  handleQueue: Script<[MessageQueue<Selected>], Ending>
-): Performance<Ending> {
+  handleQueue: ActionPlan<[MessageQueue<Selected>], Ending>
+): ActionSequence<Ending> {
   const queue = new BasicMessageQueue<Selected>();
   let prevSelected: Immutable<Value> | void = undefined;
   const selectedNotifier = (value: Immutable<Value>) => {
@@ -52,7 +52,7 @@ export function* followStoreSelector<Value, Selected, Ending>(
   store: Store<Value>,
   selector: Selector<Value, Selected>,
   follower: Follower<Selected, Ending>
-): Performance<Ending> {
+): ActionSequence<Ending> {
   return yield* withSelectorQueue(store, selector, function* (queue) {
     let ending;
     do {

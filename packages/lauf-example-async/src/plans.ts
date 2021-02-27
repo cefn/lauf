@@ -1,7 +1,7 @@
 import { Store, BasicStore, Selector } from "@lauf/lauf-store";
 import { Immutable } from "@lauf/lauf-store/types/immutable";
 import { editValue, followStoreSelector } from "@lauf/lauf-store-runner";
-import { Action, createActionScript, stageScript } from "@lauf/lauf-runner";
+import { Action, createActionPlan, performPlan } from "@lauf/lauf-runner";
 import { CONTINUE } from "@lauf/lauf-store-runner/types";
 
 /** STORE DEFINITION */
@@ -29,7 +29,7 @@ export const initialAppState: Immutable<AppState> = {
   caches: {},
 } as const;
 
-const initialCache: Immutable<Cache> = {
+export const initialCache: Immutable<Cache> = {
   lastUpdated: null,
   isFetching: false,
   posts: [],
@@ -41,16 +41,17 @@ export function createStore(): Store<AppState> {
 
 /** SELECTORS */
 
-export const focusSelector: Selector<AppState, SubredditName> = (state) =>
+export const selectFocus: Selector<AppState, SubredditName> = (state) =>
   state.focus;
-export const focusedCacheSelector: Selector<
+
+export const selectFocusedCache: Selector<
   AppState,
   Immutable<Cache> | undefined
 > = (state) => state.caches[state.focus];
 
 /** ASYNC ACTIONS */
 
-class FetchSubreddit implements Action<Post[]> {
+export class FetchSubreddit implements Action<Post[]> {
   constructor(readonly name: SubredditName) {}
   async act() {
     const response = await fetch(`https://www.reddit.com/r/${this.name}.json`);
@@ -59,50 +60,51 @@ class FetchSubreddit implements Action<Post[]> {
   }
 }
 
-const fetchSubreddit = createActionScript(FetchSubreddit);
+const fetchSubreddit = createActionPlan(FetchSubreddit);
 
 /** PROCEDURES */
 
-export function* mainScript(store: Store<AppState>) {
-  //Script called on initial value and called again on every change
-  //Script returns CONTINUE to keep looping, (other values would end the loop, returning the value)
-  return yield* followStoreSelector(store, focusSelector, function* (focus) {
+export function* mainPlan(store: Store<AppState>) {
+  //Plan callback is invoked on initial value and every change
+  //Plan returns a strict reference to CONTINUE to keep looping
+  //(any other value would end the loop, returning the value)
+  return yield* followStoreSelector(store, selectFocus, function* (focus) {
     if (focus) {
-      const cache = focusedCacheSelector(store.getValue());
+      const cache = selectFocusedCache(store.getValue());
       if (!cache?.posts) {
-        yield* fetchScript(store, focus);
+        yield* fetchPlan(store, focus);
       }
     }
     return CONTINUE;
   });
 }
 
-export function* fetchScript(store: Store<AppState>, focus: SubredditName) {
+export function* fetchPlan(store: Store<AppState>, name: SubredditName) {
   //initialise cache and transition to 'fetching' state
   yield* editValue(store, (draft) => {
-    draft.caches[focus] = {
-      ...(draft.caches[focus] || initialCache),
+    draft.caches[name] = {
+      ...(draft.caches[name] || initialCache),
       isFetching: true,
     };
   });
   //perform the fetch
   let posts: Post[];
   try {
-    posts = yield* fetchSubreddit(focus);
+    posts = yield* fetchSubreddit(name);
   } finally {
     //update cache with results
     yield* editValue(store, (draft) => {
       if (posts) {
         //save posts and update time, reset fetching status
-        draft.caches[focus] = {
+        draft.caches[name] = {
           posts,
           lastUpdated: new Date().getTime(),
           isFetching: false,
         };
       } else {
         //just reset fetching status
-        draft.caches[focus] = {
-          ...(draft.caches[focus] || initialCache),
+        draft.caches[name] = {
+          ...(draft.caches[name] || initialCache),
           isFetching: false,
         };
       }
@@ -112,19 +114,19 @@ export function* fetchScript(store: Store<AppState>, focus: SubredditName) {
 
 /** USER INPUTS */
 
-export function triggerFocus(store: Store<AppState>, name: SubredditName) {
-  stageScript(function* () {
+export function triggerSetFocus(store: Store<AppState>, focus: SubredditName) {
+  performPlan(function* () {
     yield* editValue(store, (draft) => {
-      draft.focus = name;
+      draft.focus = focus;
     });
   });
 }
 
 export function triggerFetchFocused(store: Store<AppState>) {
-  stageScript(function* () {
+  performPlan(function* () {
     const { focus } = store.getValue();
     if (focus) {
-      yield* fetchScript(store, focus);
+      yield* fetchPlan(store, focus);
     }
   });
 }

@@ -1,10 +1,10 @@
 import assert from "assert";
-import { Script } from "@lauf/lauf-runner/types";
-import { stageScript } from "@lauf/lauf-runner/core/util";
+import { ActionPlan } from "@lauf/lauf-runner/types";
+import { performPlan } from "@lauf/lauf-runner/core/util";
 import { Delay, delay } from "@lauf/lauf-runner/core/delay";
 
-describe("Define, run and regression test simple script", () => {
-  const script: Script<[], number> = function* () {
+describe("Define, run and regression test simple plan", () => {
+  const plan: ActionPlan<[], number> = function* () {
     const beforeMs = new Date().getTime();
     for (let i = 0; i < 3; i++) {
       yield* delay(i);
@@ -13,31 +13,31 @@ describe("Define, run and regression test simple script", () => {
     return afterMs - beforeMs;
   };
 
-  test("Run script", async () => {
-    const totalMs = await stageScript(script);
+  test("Run plan", async () => {
+    const totalMs = await performPlan(plan);
     expect(totalMs).toBeGreaterThan(3);
   });
 
-  test("Regression-test script", async () => {
+  test("Regression-test plan", async () => {
     let step;
-    const performance = script();
+    const sequence = plan();
 
-    step = performance.next(undefined);
+    step = sequence.next(undefined);
     assert(step.done === false);
     expect(step.value).toBeInstanceOf(Delay);
     expect((step.value as Delay).ms).toBe(0);
 
-    step = performance.next(undefined);
+    step = sequence.next(undefined);
     assert(step.done === false);
     expect(step.value).toBeInstanceOf(Delay);
     expect((step.value as Delay).ms).toBe(1);
 
-    step = performance.next(undefined);
+    step = sequence.next(undefined);
     assert(step.done === false);
     expect(step.value).toBeInstanceOf(Delay);
     expect((step.value as Delay).ms).toBe(2);
 
-    step = performance.next(undefined);
+    step = sequence.next(undefined);
     assert(step.done === true);
     expect(typeof step.value).toBe("number");
   });

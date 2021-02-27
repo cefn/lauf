@@ -1,19 +1,19 @@
-import { Action, createActionScript } from "@lauf/lauf-runner";
+import { Action, createActionPlan } from "@lauf/lauf-runner";
 import { MessageQueue } from "@lauf/lauf-queue";
 
-class Receive<T> implements Action<T> {
+export class Receive<T> implements Action<T> {
   constructor(readonly queue: MessageQueue<T>) {}
   act() {
     return this.queue.receive();
   }
 }
 
-class Send<T> implements Action<boolean> {
+export class Send<T> implements Action<boolean> {
   constructor(readonly queue: MessageQueue<T>, readonly item: T) {}
   act() {
     return this.queue.send(this.item);
   }
 }
 
-export const receive = createActionScript(Receive);
-export const send = createActionScript(Send);
+export const receive = createActionPlan(Receive);
+export const send = createActionPlan(Send);
