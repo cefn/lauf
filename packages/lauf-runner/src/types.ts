@@ -1,9 +1,8 @@
-// Singleton escape value
-// export const TERMINATE = ["terminate"] as const;
-// export type Termination = typeof TERMINATE;
-// export function isTermination(value: any): value is Termination {
-//   return value === TERMINATE;
-// }
+export const TERMINATE = ["terminate"] as const;
+export type Termination = typeof TERMINATE;
+export function isTermination(value: any): value is Termination {
+  return value === TERMINATE;
+}
 
 export interface Action<Reaction> {
   act: () => Reaction | Promise<Reaction>;
@@ -37,12 +36,12 @@ export type ActionPlan<
 > = (...args: Args) => ActionSequence<Ending, Reaction>;
 
 //TODO add Sync routine as an option for testing?
-export type Performance<Reaction, Return> = AsyncGenerator<
+export type Performance<Exit, Reaction> = AsyncGenerator<
   Reaction,
-  Return,
+  Exit,
   Action<Reaction>
 >;
 
-export type Performer<Reaction, Return> = (
+export type Performer<Exit, Reaction> = (
   action: Action<Reaction>
-) => Performance<Reaction, Return>;
+) => Performance<Exit, Reaction>;
