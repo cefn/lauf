@@ -1,5 +1,5 @@
 import { Action } from "../types";
-import { createActionPlan } from "../core/util";
+import { planOfAction } from "../core/util";
 
 export const EXPIRY = ["expiry"] as const;
 export type Expiry = typeof EXPIRY;
@@ -18,4 +18,4 @@ export class Delay implements Action<Expiry> {
   }
 }
 
-export const delay = createActionPlan(Delay);
+export const delay = planOfAction(Delay);

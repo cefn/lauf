@@ -1,4 +1,4 @@
-import { Action, createActionPlan } from "@lauf/lauf-runner";
+import { Action, planOfAction } from "@lauf/lauf-runner";
 import { MessageQueue } from "@lauf/lauf-queue";
 
 export class Receive<T> implements Action<T> {
@@ -15,5 +15,5 @@ export class Send<T> implements Action<boolean> {
   }
 }
 
-export const receive = createActionPlan(Receive);
-export const send = createActionPlan(Send);
+export const receive = planOfAction(Receive);
+export const send = planOfAction(Send);
