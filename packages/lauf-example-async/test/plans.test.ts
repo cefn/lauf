@@ -3,7 +3,6 @@ import { Action, directSequence, isTermination } from "@lauf/lauf-runner";
 import {
   performWithMocks,
   performUntilReactionFulfils,
-  createActionMatcher,
 } from "@lauf/lauf-runner-trial";
 import { BasicStore } from "@lauf/lauf-store";
 
@@ -12,14 +11,12 @@ import {
   FetchSubreddit,
   AppState,
   initialAppState,
-  fetchPlan,
   SubredditName,
 } from "../src/plans";
 import { Immutable } from "@lauf/lauf-store/types/immutable";
 
-describe.skip("Plans", () => {
+describe("Plans", () => {
   describe("mainPlan() behaviour", () => {
-    const fakePosts = [{ title: "Hey" }, { title: "Yo" }];
     function createPostsSelector(name: SubredditName) {
       return (state: Immutable<AppState>) => state.caches?.[name]?.posts;
     }
@@ -29,57 +26,50 @@ describe.skip("Plans", () => {
       const { focus: initialFocus } = initialAppState;
       const focusedPostsSelector = createPostsSelector(initialFocus);
 
-      const mockPerformer = (action: Action<any>) =>
-        performWithMocks(action, [
-          [new FetchSubreddit(initialFocus), fakePosts],
+      const mockPerformer = () =>
+        performWithMocks([
+          [new FetchSubreddit(initialFocus), [{ title: "About React" }]],
         ]);
 
-      const testPerformer = (action: Action<any>) =>
+      const testPerformer = () =>
         performUntilReactionFulfils(
-          action,
-          () => {
-            const result = isDeepStrictEqual(
-              focusedPostsSelector(store.getValue()),
-              fakePosts
-            );
-            return result;
-          },
+          () =>
+            isDeepStrictEqual(focusedPostsSelector(store.getValue()), [
+              { title: "About React" },
+            ]),
           mockPerformer
         );
 
-      const testEndingPromise = directSequence(testPerformer, mainPlan(store));
+      const testEnding = await directSequence(mainPlan(store), testPerformer);
 
       //the testPerformer should complete all its steps
-      expect(isTermination(await testEndingPromise)).toBe(true);
+      expect(isTermination(testEnding)).toBe(true);
     });
 
     test("Posts retrieved, stored when focused subreddit changes", async () => {
       const store = new BasicStore<AppState>(initialAppState);
-      const { focus: initialFocus } = initialAppState;
       const newFocus = "frontend";
       const newFocusPostsSelector = createPostsSelector(newFocus);
 
-      const mockPerformer = (action: Action<any>) =>
-        performWithMocks(action, [
-          [new FetchSubreddit(initialFocus), fakePosts],
-          [new FetchSubreddit(newFocus), fakePosts],
+      const mockPerformer = () =>
+        performWithMocks([
+          [new FetchSubreddit("reactjs"), [{ title: "About React" }]],
+          [new FetchSubreddit(newFocus), [{ title: "About Frontend" }]],
         ]);
 
-      const testPerformer = (action: Action<any>) =>
+      const testPerformer = () =>
         performUntilReactionFulfils(
-          action,
           () =>
-            isDeepStrictEqual(
-              newFocusPostsSelector(store.getValue()),
-              fakePosts
-            ),
+            isDeepStrictEqual(newFocusPostsSelector(store.getValue()), [
+              { title: "About Frontend" },
+            ]),
           mockPerformer
         );
 
-      //perform the sequence
-      const testEndingPromise = directSequence(testPerformer, mainPlan(store));
+      //launch the plan
+      const testEndingPromise = directSequence(mainPlan(store), testPerformer);
 
-      //choose a different subreddit as the focus
+      //change the focused subreddit
       store.editValue((state) => {
         state.focus = newFocus;
       });
@@ -89,18 +79,5 @@ describe.skip("Plans", () => {
     });
 
     //TODO test that a change of focus causes a fetch request.
-  });
-
-  describe("Fetch plan", () => {
-    test("", async () => {
-      const subredditName = "frontend";
-      const store = new BasicStore<AppState>(initialAppState);
-
-      async function* testPerformer(action: Action<any>) {
-        //TODO write test
-      }
-
-      await directSequence(testPerformer, fetchPlan(store, subredditName));
-    });
   });
 });

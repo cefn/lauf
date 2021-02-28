@@ -24,41 +24,42 @@ export function createActionMatcher<Reaction>(expected: Action<Reaction>) {
 }
 
 export async function* performUntilActionFulfils<Reaction>(
-  action: Action<Reaction>,
   criterion: (candidate: Action<Reaction>) => boolean,
   performer: Performer<never, Reaction> = actor
 ): Performance<Action<Reaction>, Reaction> {
-  const performance = performer(action);
-  let { value: reaction, done } = await performance.next();
-  while (!done) {
-    const action = yield reaction;
+  const performance = performer();
+  await performance.next();
+  let reaction, done;
+  let action = yield undefined as any;
+  do {
+    ({ value: reaction, done } = await performance.next(action));
+    action = yield reaction;
     if (criterion(action)) {
       return action;
     }
-    ({ value: reaction, done } = await performance.next(action));
-  }
+  } while (!done);
   throw `Performer with Exit:never should consume actions forever`;
 }
 
 export async function* performUntilReactionFulfils<Reaction>(
-  action: Action<Reaction>,
   criterion: (candidate: Reaction) => boolean,
   performer: Performer<never, Reaction> = actor
 ): Performance<Reaction, Reaction> {
-  const performance = performer(action);
-  let { value: reaction, done } = await performance.next();
-  while (!done) {
-    const action = yield reaction;
+  const performance = performer();
+  await performance.next();
+  let reaction, done;
+  let action = yield undefined as any;
+  do {
     ({ value: reaction, done } = await performance.next(action));
     if (criterion(reaction)) {
       return reaction;
     }
-  }
+    action = yield reaction;
+  } while (!done);
   throw `Performer with Exit:never should consume actions forever`;
 }
 
 export async function* performWithMocks<Reaction>(
-  action: Action<Reaction>,
   mocks: Array<[ActionCheck | Action<any>, Reaction]>,
   performer: Performer<never, Reaction> = actor
 ): Performance<never, Reaction> {
@@ -69,20 +70,20 @@ export async function* performWithMocks<Reaction>(
       mocked,
     ]
   );
-  //begin the actual performance
-  const performance = performer(action);
-  let { value: reaction, done } = await performance.next();
-  while (!done) {
-    const action = yield reaction;
+  const performance = performer();
+  await performance.next();
+  let reaction, done;
+  let action = yield undefined as any;
+  do {
     for (const [check, mocked] of normalisedMocks) {
       if (check(action)) {
         //substitute mocked data
-        reaction = mocked;
+        action = yield mocked;
         continue;
       }
     }
-    //if not mocked, generate reaction from performer
     ({ value: reaction, done } = await performance.next(action));
-  }
+    action = yield reaction;
+  } while (!done);
   throw `Performer with Exit:never should consume actions forever`;
 }

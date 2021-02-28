@@ -46,6 +46,4 @@ export type Performance<Exit, Reaction> = AsyncGenerator<
   Action<Reaction>
 >;
 
-export type Performer<Exit, Reaction> = (
-  action: Action<Reaction>
-) => Performance<Exit, Reaction>;
+export type Performer<Exit, Reaction> = () => Performance<Exit, Reaction>;
