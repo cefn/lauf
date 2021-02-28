@@ -1,4 +1,4 @@
-import { performPlan } from "@lauf/lauf-runner";
+import { launchPlan } from "@lauf/lauf-runner";
 import { Store, BasicStore } from "@lauf/lauf-store";
 import {
   getStorePath,
@@ -13,7 +13,7 @@ describe("Store operations using paths", () => {
     const plan = function* () {
       return yield* getStorePath(store, "poem[0]");
     };
-    const ending = await performPlan(plan);
+    const ending = await launchPlan(plan);
     expect(ending).toStrictEqual("Roses are red");
   });
 
@@ -23,7 +23,7 @@ describe("Store operations using paths", () => {
     const plan = function* () {
       return yield* setStorePath(store, "poem.roses", "white");
     };
-    const ending = await performPlan(plan);
+    const ending = await launchPlan(plan);
     expect(ending).toStrictEqual(store.getValue());
     expect(store.getValue()).toEqual({ poem: { roses: "white" } });
   });
@@ -34,7 +34,7 @@ describe("Store operations using paths", () => {
     const plan = function* () {
       return yield* setStorePath(store, "poem[0]", "Roses are white");
     };
-    const ending = await performPlan(plan);
+    const ending = await launchPlan(plan);
     expect(ending).toStrictEqual(store.getValue());
     expect(store.getValue()).toEqual({ poem: ["Roses are white"] });
   });
@@ -50,7 +50,7 @@ describe("Store operations using paths", () => {
         "poem.violets": "green",
       });
     };
-    const ending = await performPlan(plan);
+    const ending = await launchPlan(plan);
     expect(ending).toStrictEqual(store.getValue());
     expect(store.getValue()).toEqual({
       poem: { roses: "white", violets: "green" },

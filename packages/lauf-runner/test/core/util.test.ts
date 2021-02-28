@@ -1,6 +1,6 @@
 import assert from "assert";
 import { ActionPlan } from "@lauf/lauf-runner/types";
-import { performPlan } from "@lauf/lauf-runner/core/util";
+import { launchPlan } from "@lauf/lauf-runner/core/util";
 import { Delay, delay } from "@lauf/lauf-runner/core/delay";
 
 describe("Define, run and regression test simple plan", () => {
@@ -14,7 +14,7 @@ describe("Define, run and regression test simple plan", () => {
   };
 
   test("Run plan", async () => {
-    const totalMs = await performPlan(plan);
+    const totalMs = await launchPlan(plan);
     expect(totalMs).toBeGreaterThan(3);
   });
 

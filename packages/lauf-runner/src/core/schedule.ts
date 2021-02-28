@@ -1,25 +1,25 @@
 import { promiseDelay, Expiry } from "./delay";
 import { Action, ActionPlan, ActionSequence } from "../types";
-import { planOfAction, performPlan, performSequence } from "./util";
+import { planOfAction, launchPlan, launchSequence } from "./util";
 
 export class ForegroundPlan<Ending> implements Action<Ending> {
   constructor(readonly plan: ActionPlan<[], Ending>) {}
   async act() {
-    return await performPlan(this.plan);
+    return await launchPlan(this.plan);
   }
 }
 
 export class ForegroundAllPlans<Ending> implements Action<Ending[]> {
   constructor(readonly plans: ActionPlan<[], Ending>[]) {}
   async act() {
-    return await Promise.all(this.plans.map(performPlan));
+    return await Promise.all(this.plans.map(launchPlan));
   }
 }
 
 export class BackgroundAllPlans<Ending> implements Action<Promise<Ending>[]> {
   constructor(readonly plans: ActionPlan<[], Ending>[]) {}
   act() {
-    return this.plans.map(performPlan);
+    return this.plans.map(launchPlan);
   }
 }
 
@@ -29,7 +29,7 @@ export class Race<Ending = any>
   act() {
     return Promise.race(
       this.sequences.map(async (sequence) => {
-        const result = await performSequence(sequence);
+        const result = await launchSequence(sequence);
         const completion: [Ending, ActionSequence<Ending>] = [result, sequence];
         return completion;
       })
@@ -40,14 +40,14 @@ export class Race<Ending = any>
 export class Team<Ending = any> implements Action<Ending[]> {
   constructor(readonly sequences: ActionSequence<Ending>[]) {}
   act() {
-    return Promise.all(this.sequences.map(performSequence));
+    return Promise.all(this.sequences.map(launchSequence));
   }
 }
 
 class Timeout<Ending = any> implements Action<Ending | Expiry> {
   constructor(readonly sequence: ActionSequence<Ending>, readonly ms: number) {}
   act() {
-    const completionPromise = performSequence(this.sequence);
+    const completionPromise = launchSequence(this.sequence);
     const timeoutPromise = promiseDelay(this.ms);
     return Promise.race([completionPromise, timeoutPromise]);
   }

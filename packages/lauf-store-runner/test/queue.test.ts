@@ -1,14 +1,14 @@
 import { BasicMessageQueue } from "@lauf/lauf-queue";
 import { send, receive } from "@lauf/lauf-store-runner/queue";
-import { performPlan, performSequence } from "@lauf/lauf-runner";
+import { launchPlan, launchSequence } from "@lauf/lauf-runner";
 
 describe("send,receive behaviour", () => {
   test("Simple send and receive", async () => {
     const queue = new BasicMessageQueue();
-    const sendEnding = await performPlan(function* () {
+    const sendEnding = await launchPlan(function* () {
       return yield* send(queue, "foo");
     });
-    const receiveEnding = await performPlan(function* () {
+    const receiveEnding = await launchPlan(function* () {
       return yield* receive(queue);
     });
     expect(sendEnding).toEqual(true);
@@ -26,7 +26,7 @@ describe("send,receive behaviour", () => {
       const third = yield* receive(queue);
       return [first, second, third];
     };
-    const ending = await performPlan(plan);
+    const ending = await launchPlan(plan);
     expect(ending).toEqual(["foo", "bar", "baz"]);
   });
 
@@ -36,7 +36,7 @@ describe("send,receive behaviour", () => {
       const received = yield* receive(queue);
       return received;
     };
-    const endingPromise = performPlan(plan); //don't await
+    const endingPromise = launchPlan(plan); //don't await
     queue.send("foo");
     const ending = await endingPromise; //now await
     expect(ending).toEqual("foo");
@@ -46,9 +46,9 @@ describe("send,receive behaviour", () => {
     const maxItems = 2;
     const maxConsumers = Number.MAX_SAFE_INTEGER;
     const queue = new BasicMessageQueue<string>(maxItems, maxConsumers);
-    expect(await performSequence(send(queue, "foo"))).toEqual(true);
-    expect(await performSequence(send(queue, "bar"))).toEqual(true);
-    expect(await performSequence(send(queue, "baz"))).toEqual(false);
+    expect(await launchSequence(send(queue, "foo"))).toEqual(true);
+    expect(await launchSequence(send(queue, "bar"))).toEqual(true);
+    expect(await launchSequence(send(queue, "baz"))).toEqual(false);
   });
 
   test("receive: throws on oversubscribing queue", () => {

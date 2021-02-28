@@ -1,17 +1,16 @@
 import { isDeepStrictEqual } from "util";
-import { Action, directSequence, isTermination } from "@lauf/lauf-runner";
+import { performSequence, isTermination } from "@lauf/lauf-runner";
 import {
   performWithMocks,
   performUntilReactionFulfils,
 } from "@lauf/lauf-runner-trial";
-import { BasicStore } from "@lauf/lauf-store";
 
 import {
   mainPlan,
   FetchSubreddit,
   AppState,
-  initialAppState,
   SubredditName,
+  createStore,
 } from "../src/plans";
 import { Immutable } from "@lauf/lauf-store/types/immutable";
 
@@ -22,8 +21,8 @@ describe("Plans", () => {
     }
 
     test("Posts retrieved, stored for initially-focused subreddit: ", async () => {
-      const store = new BasicStore<AppState>(initialAppState);
-      const { focus: initialFocus } = initialAppState;
+      const store = createStore();
+      const initialFocus = store.getValue().focus;
       const focusedPostsSelector = createPostsSelector(initialFocus);
 
       const mockPerformer = () =>
@@ -40,20 +39,21 @@ describe("Plans", () => {
           mockPerformer
         );
 
-      const testEnding = await directSequence(mainPlan(store), testPerformer);
+      const testEnding = await performSequence(mainPlan(store), testPerformer);
 
       //the testPerformer should complete all its steps
       expect(isTermination(testEnding)).toBe(true);
     });
 
     test("Posts retrieved, stored when focused subreddit changes", async () => {
-      const store = new BasicStore<AppState>(initialAppState);
+      const store = createStore();
+      const initialFocus = store.getValue().focus;
       const newFocus = "frontend";
       const newFocusPostsSelector = createPostsSelector(newFocus);
 
       const mockPerformer = () =>
         performWithMocks([
-          [new FetchSubreddit("reactjs"), [{ title: "About React" }]],
+          [new FetchSubreddit(initialFocus), [{ title: "About React" }]],
           [new FetchSubreddit(newFocus), [{ title: "About Frontend" }]],
         ]);
 
@@ -67,7 +67,7 @@ describe("Plans", () => {
         );
 
       //launch the plan
-      const testEndingPromise = directSequence(mainPlan(store), testPerformer);
+      const testEndingPromise = performSequence(mainPlan(store), testPerformer);
 
       //change the focused subreddit
       store.editValue((state) => {
@@ -77,7 +77,5 @@ describe("Plans", () => {
       //the testPerformer should complete all its steps
       expect(isTermination(await testEndingPromise)).toBe(true);
     });
-
-    //TODO test that a change of focus causes a fetch request.
   });
 });
