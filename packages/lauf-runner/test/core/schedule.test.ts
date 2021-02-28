@@ -15,7 +15,7 @@ import {
   isExpiry,
 } from "@lauf/lauf-runner/core/delay";
 import { ActionPlan } from "@lauf/lauf-runner/types";
-import { performPlan } from "@lauf/lauf-runner/core/util";
+import { launchPlan } from "@lauf/lauf-runner/core/util";
 
 describe("Foreground and Background operations", () => {
   const delayMs = 10;
@@ -30,7 +30,7 @@ describe("Foreground and Background operations", () => {
   ];
 
   test("foreground : executes inner plan to completion", async () => {
-    const result = await performPlan(function* () {
+    const result = await launchPlan(function* () {
       return yield* foregroundPlan(simplePlan);
     });
     expect(isExpiry(result)).toBeTruthy();
@@ -38,7 +38,7 @@ describe("Foreground and Background operations", () => {
 
   test("foregroundAll : executes inner plans in parallel to completion", async () => {
     const before = new Date().getTime();
-    const endings = await performPlan<Expiry[], any>(function* () {
+    const endings = await launchPlan<Expiry[], any>(function* () {
       return yield* foregroundAllPlans(planGroup);
     });
     const after = new Date().getTime();
@@ -53,7 +53,7 @@ describe("Foreground and Background operations", () => {
 
   test("backgroundAll : yields array of completion promises", async () => {
     const before = new Date().getTime();
-    const endingPromises = await performPlan(function* () {
+    const endingPromises = await launchPlan(function* () {
       return yield* backgroundAllPlans(planGroup);
     });
     const after = new Date().getTime();
@@ -75,7 +75,7 @@ describe("Scheduling Action Sequences", () => {
     const specialPromise = new Promise((resolve) =>
       setTimeout(() => resolve(special), 10)
     );
-    const result = await performPlan(function* () {
+    const result = await launchPlan(function* () {
       return yield* wait(specialPromise);
     });
     expect(result).toStrictEqual(special);
@@ -86,7 +86,7 @@ describe("Scheduling Action Sequences", () => {
     const silver = wait(promiseDelay(4).then(() => "silver"));
     const bronze = wait(promiseDelay(6).then(() => "bronze"));
     const sequences = lodashShuffle([gold, silver, bronze]);
-    const [ending, sequence] = await performPlan(function* () {
+    const [ending, sequence] = await launchPlan(function* () {
       return yield* race(sequences);
     });
     expect(ending).toStrictEqual("gold");
@@ -97,7 +97,7 @@ describe("Scheduling Action Sequences", () => {
     const delayMs = 2;
     const timeoutMs = 10;
     const quickSequence = wait(promiseDelay(delayMs).then(() => "success"));
-    const quickResult = await performPlan(function* () {
+    const quickResult = await launchPlan(function* () {
       return yield* timeout(quickSequence, timeoutMs);
     });
     expect(quickResult).toStrictEqual("success");
@@ -108,7 +108,7 @@ describe("Scheduling Action Sequences", () => {
     const delayMs = 10;
     const timeoutMs = 2;
     const slowSequence = wait(promiseDelay(delayMs).then(() => "success"));
-    const slowResult = await performPlan(function* () {
+    const slowResult = await launchPlan(function* () {
       return yield* timeout(slowSequence, timeoutMs);
     });
     expect(slowResult).not.toEqual("success");
@@ -122,7 +122,7 @@ describe("Scheduling Action Sequences", () => {
       wait(promiseDelay(9).then(() => "bronze")),
     ];
     const before = new Date().getTime();
-    const result = await performPlan(function* () {
+    const result = await launchPlan(function* () {
       return yield* team(sequences);
     });
     const after = new Date().getTime();

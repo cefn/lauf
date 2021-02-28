@@ -36,20 +36,20 @@ export function planOfAction<Params extends any[], Reaction = any>(
   };
 }
 
-export async function performPlan<Ending, Reaction>(
+export async function launchPlan<Ending, Reaction>(
   plan: ActionPlan<[], Ending, Reaction>
 ): Promise<Ending> {
-  const ending = await directPlan(plan, actor);
+  const ending = await performPlan(plan, actor);
   if (isTermination(ending)) {
     throw `Performer with Exit:never shouldn't terminate`;
   }
   return ending;
 }
 
-export async function performSequence<Ending, Reaction>(
+export async function launchSequence<Ending, Reaction>(
   sequence: ActionSequence<Ending, Reaction>
 ): Promise<Ending> {
-  const ending = await directSequence(sequence, actor);
+  const ending = await performSequence(sequence, actor);
   if (isTermination(ending)) {
     throw `Performer with Exit:never shouldn't terminate`;
   }
@@ -57,12 +57,12 @@ export async function performSequence<Ending, Reaction>(
 }
 
 /** Launches a new ActionSequence from the ActionPlan, then hands over to directSequence. */
-export async function directPlan<Ending, Reaction, Exit>(
+export async function performPlan<Ending, Reaction, Exit>(
   plan: ActionPlan<[], Ending, Reaction>,
   performer: Performer<never, Reaction>
 ): Promise<Ending | Termination> {
   let sequence = plan();
-  return directSequence(sequence, performer);
+  return performSequence(sequence, performer);
 }
 
 /** Hands Actions and Reactions between two co-routines.
@@ -70,7 +70,7 @@ export async function directPlan<Ending, Reaction, Exit>(
  * * A Performer (generates Reactions, consumes Actions)
  * */
 //TODO change argument order for consistency with 'performXXX' test library methods
-export async function directSequence<Ending, Reaction, Exit>(
+export async function performSequence<Ending, Reaction, Exit>(
   sequence: ActionSequence<Ending, Reaction>,
   performer: Performer<Exit, Reaction>
 ): Promise<Ending | Termination> {

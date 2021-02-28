@@ -1,13 +1,16 @@
 import { Store, BasicStore, Selector } from "@lauf/lauf-store";
 import { Immutable } from "@lauf/lauf-store/types/immutable";
-import { editValue, followStoreSelector } from "@lauf/lauf-store-runner";
+import {
+  editValue,
+  followStoreSelector,
+  CONTINUE,
+} from "@lauf/lauf-store-runner";
 import {
   Action,
   ActionSequence,
   planOfAction,
-  performSequence,
+  launchSequence,
 } from "@lauf/lauf-runner";
-import { CONTINUE } from "@lauf/lauf-store-runner/types";
 
 /** STORE DEFINITIONS */
 
@@ -134,9 +137,9 @@ function* fetchFocusedPlan(store: Store<AppState>) {
 /** USER INPUTS */
 
 export function triggerSetFocus(store: Store<AppState>, focus: SubredditName) {
-  performSequence(setFocusPlan(store, focus));
+  launchSequence(setFocusPlan(store, focus));
 }
 
 export function triggerFetchFocused(store: Store<AppState>) {
-  performSequence(fetchFocusedPlan(store));
+  launchSequence(fetchFocusedPlan(store));
 }
