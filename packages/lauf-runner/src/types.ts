@@ -13,6 +13,10 @@ export interface ActionClass<Params extends any[], Reaction> {
   new (...params: Params): Action<Reaction>;
 }
 
+export function isAction(item: any): item is Action<any> {
+  return typeof item.act === "function" && item.act.length === 0;
+}
+
 /** An ActionSequence is a Generator with a next() that yields actions and
  * accepts their reactions in return, until an Ending
  * is returned.

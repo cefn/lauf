@@ -18,8 +18,17 @@ export const actor: Performer<never, any> = async function* (
   }
 };
 
+//TODO migrate to preferred performer signature without initial action argument like below
+// export const actor: Performer<never, any> = async function* (): Performance<never, any> {
+//   let action = yield;
+//   while (true) {
+//     const reaction = await action.act();
+//     action = yield reaction;
+//   }
+// };
+
 /** Streamline plan creation from any Action class. */
-export function createActionPlan<Params extends any[], Reaction = any>(
+export function planOfAction<Params extends any[], Reaction = any>(
   actionClass: ActionClass<Params, Reaction>
 ): ActionPlan<Params, Reaction> {
   return function* (...actionParams: Params) {
@@ -29,6 +38,8 @@ export function createActionPlan<Params extends any[], Reaction = any>(
   };
 }
 
+//TODO retire params here which is probably never used.
+//will help with directPlan signature having consistent 'performer-last' semantics
 export async function performPlan<Params extends any[], Ending, Reaction>(
   plan: ActionPlan<Params, Ending, Reaction>,
   ...params: Params
@@ -64,6 +75,7 @@ export async function directPlan<Params extends any[], Ending, Reaction, Exit>(
  * * An ActionSequence (generates Actions, consumes Reactions)
  * * A Performer (generates Reactions, consumes Actions)
  * */
+//TODO change argument order for consistency with 'performXXX' test library methods
 export async function directSequence<Ending, Reaction, Exit>(
   performer: Performer<Exit, Reaction>,
   sequence: ActionSequence<Ending, Reaction>

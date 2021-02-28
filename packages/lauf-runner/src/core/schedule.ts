@@ -1,6 +1,6 @@
 import { promiseDelay, Expiry } from "./delay";
 import { Action, ActionPlan, ActionSequence } from "../types";
-import { createActionPlan, performPlan, performSequence } from "./util";
+import { planOfAction, performPlan, performSequence } from "./util";
 
 export class ForegroundPlan<Ending> implements Action<Ending> {
   constructor(readonly plan: ActionPlan<[], Ending>) {}
@@ -63,14 +63,14 @@ class Wait<Ending = any> implements Action<Ending> {
 //TODO add a fork, which yields the promise of sequence completion (complement of join)
 
 /** Spawn ActionPlans */
-export const foregroundPlan = createActionPlan(ForegroundPlan);
-export const foregroundAllPlans = createActionPlan(ForegroundAllPlans);
-export const backgroundAllPlans = createActionPlan(BackgroundAllPlans);
+export const foregroundPlan = planOfAction(ForegroundPlan);
+export const foregroundAllPlans = planOfAction(ForegroundAllPlans);
+export const backgroundAllPlans = planOfAction(BackgroundAllPlans);
 
 /** Compose ActionSequences */
-export const race = createActionPlan(Race);
-export const team = createActionPlan(Team);
-export const timeout = createActionPlan(Timeout);
+export const race = planOfAction(Race);
+export const team = planOfAction(Team);
+export const timeout = planOfAction(Timeout);
 
 /** Block on a promise. */
-export const wait = createActionPlan(Wait);
+export const wait = planOfAction(Wait);

@@ -1,4 +1,4 @@
-import { Action, createActionPlan } from "@lauf/lauf-runner";
+import { Action, planOfAction } from "@lauf/lauf-runner";
 import { Store, getByPath, setByPath, setByPathMap } from "@lauf/lauf-store";
 import type { Immutable } from "@lauf/lauf-store/types/immutable";
 
@@ -30,6 +30,6 @@ class SetStorePathMap<T> implements Action<Immutable<T>> {
   }
 }
 
-export const getStorePath = createActionPlan(GetStorePath);
-export const setStorePath = createActionPlan(SetStorePath);
-export const setStorePathMap = createActionPlan(SetStorePathMap);
+export const getStorePath = planOfAction(GetStorePath);
+export const setStorePath = planOfAction(SetStorePath);
+export const setStorePathMap = planOfAction(SetStorePathMap);

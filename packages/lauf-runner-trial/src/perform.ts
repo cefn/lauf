@@ -1,5 +1,13 @@
 import { isDeepStrictEqual } from "util";
-import { Action, Performer, Performance, actor } from "@lauf/lauf-runner";
+import {
+  Action,
+  Performer,
+  Performance,
+  actor,
+  isAction,
+} from "@lauf/lauf-runner";
+
+type ActionCheck = (candidate: Action<any>) => boolean;
 
 function actionMatches<Actual extends Action<any>, Expected extends Actual>(
   actual: Actual,
@@ -11,10 +19,14 @@ function actionMatches<Actual extends Action<any>, Expected extends Actual>(
   );
 }
 
+export function createActionMatcher<Reaction>(expected: Action<Reaction>) {
+  return (candidate: Action<Reaction>) => actionMatches(candidate, expected);
+}
+
 export async function* performUntilActionFulfils<Reaction>(
   action: Action<Reaction>,
   criterion: (candidate: Action<Reaction>) => boolean,
-  performer: Performer<never, Reaction>
+  performer: Performer<never, Reaction> = actor
 ): Performance<Action<Reaction>, Reaction> {
   const performance = performer(action);
   let { value: reaction, done } = await performance.next();
@@ -28,26 +40,10 @@ export async function* performUntilActionFulfils<Reaction>(
   throw `Performer with Exit:never should consume actions forever`;
 }
 
-export async function* actUntilActionFulfils<Reaction>(
-  action: Action<Reaction>,
-  criterion: (candidate: Action<Reaction>) => boolean
-): Performance<Action<Reaction>, Reaction> {
-  return yield* performUntilActionFulfils(action, criterion, actor);
-}
-
-export async function* actUntilActionMatches<Reaction>(
-  action: Action<Reaction>,
-  expected: Action<Reaction>
-): Performance<Action<Reaction>, Reaction> {
-  return yield* actUntilActionFulfils(action, (candidate: Action<Reaction>) =>
-    actionMatches(candidate, expected)
-  );
-}
-
 export async function* performUntilReactionFulfils<Reaction>(
   action: Action<Reaction>,
   criterion: (candidate: Reaction) => boolean,
-  performer: Performer<never, Reaction>
+  performer: Performer<never, Reaction> = actor
 ): Performance<Reaction, Reaction> {
   const performance = performer(action);
   let { value: reaction, done } = await performance.next();
@@ -61,9 +57,32 @@ export async function* performUntilReactionFulfils<Reaction>(
   throw `Performer with Exit:never should consume actions forever`;
 }
 
-export async function* actUntilReactionFulfils<Reaction>(
+export async function* performWithMocks<Reaction>(
   action: Action<Reaction>,
-  criterion: (candidate: Reaction) => boolean
-): Performance<Reaction, Reaction> {
-  return yield* performUntilReactionFulfils(action, criterion, actor);
+  mocks: Array<[ActionCheck | Action<any>, Reaction]>,
+  performer: Performer<never, Reaction> = actor
+): Performance<never, Reaction> {
+  //substitute action 'checks' with a matcher for the action
+  const normalisedMocks = mocks.map<[ActionCheck, Reaction]>(
+    ([check, mocked]) => [
+      isAction(check) ? createActionMatcher(check) : check,
+      mocked,
+    ]
+  );
+  //begin the actual performance
+  const performance = performer(action);
+  let { value: reaction, done } = await performance.next();
+  while (!done) {
+    const action = yield reaction;
+    for (const [check, mocked] of normalisedMocks) {
+      if (check(action)) {
+        //substitute mocked data
+        reaction = mocked;
+        continue;
+      }
+    }
+    //if not mocked, generate reaction from performer
+    ({ value: reaction, done } = await performance.next(action));
+  }
+  throw `Performer with Exit:never should consume actions forever`;
 }

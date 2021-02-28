@@ -1,10 +1,15 @@
 import { Store, BasicStore, Selector } from "@lauf/lauf-store";
 import { Immutable } from "@lauf/lauf-store/types/immutable";
 import { editValue, followStoreSelector } from "@lauf/lauf-store-runner";
-import { Action, createActionPlan, performPlan } from "@lauf/lauf-runner";
+import {
+  Action,
+  ActionSequence,
+  planOfAction,
+  performSequence,
+} from "@lauf/lauf-runner";
 import { CONTINUE } from "@lauf/lauf-store-runner/types";
 
-/** STORE DEFINITION */
+/** STORE DEFINITIONS */
 
 export const subredditNames = ["reactjs", "frontend"] as const;
 export type SubredditName = typeof subredditNames[number];
@@ -49,7 +54,7 @@ export const selectFocusedCache: Selector<
   Immutable<Cache> | undefined
 > = (state) => state.caches[state.focus];
 
-/** ASYNC ACTIONS */
+/** ACTIONS */
 
 export class FetchSubreddit implements Action<Post[]> {
   constructor(readonly name: SubredditName) {}
@@ -60,26 +65,27 @@ export class FetchSubreddit implements Action<Post[]> {
   }
 }
 
-const fetchSubreddit = createActionPlan(FetchSubreddit);
+const fetchSubreddit = planOfAction(FetchSubreddit);
 
-/** PROCEDURES */
+/** PLANS */
 
-export function* mainPlan(store: Store<AppState>) {
-  //Plan callback is invoked on initial value and every change
-  //Plan returns a strict reference to CONTINUE to keep looping
-  //(any other value would end the loop, returning the value)
-  return yield* followStoreSelector(store, selectFocus, function* (focus) {
+export function* mainPlan(store: Store<AppState>): ActionSequence {
+  yield* followStoreSelector(store, selectFocus, function* (focus) {
+    // invoked on initial value and every subsequent change
     if (focus) {
       const cache = selectFocusedCache(store.getValue());
       if (!cache?.posts) {
         yield* fetchPlan(store, focus);
       }
     }
-    return CONTINUE;
+    return CONTINUE; //signal value defined by followStoreSelector
   });
 }
 
-export function* fetchPlan(store: Store<AppState>, name: SubredditName) {
+export function* fetchPlan(
+  store: Store<AppState>,
+  name: SubredditName
+): ActionSequence {
   //initialise cache and transition to 'fetching' state
   yield* editValue(store, (draft) => {
     draft.caches[name] = {
@@ -112,21 +118,25 @@ export function* fetchPlan(store: Store<AppState>, name: SubredditName) {
   }
 }
 
-/** USER INPUTS */
-
-export function triggerSetFocus(store: Store<AppState>, focus: SubredditName) {
-  performPlan(function* () {
-    yield* editValue(store, (draft) => {
-      draft.focus = focus;
-    });
+function* setFocusPlan(store: Store<AppState>, focus: SubredditName) {
+  yield* editValue(store, (draft) => {
+    draft.focus = focus;
   });
 }
 
+function* fetchFocusedPlan(store: Store<AppState>) {
+  const { focus } = store.getValue();
+  if (focus) {
+    yield* fetchPlan(store, focus);
+  }
+}
+
+/** USER INPUTS */
+
+export function triggerSetFocus(store: Store<AppState>, focus: SubredditName) {
+  performSequence(setFocusPlan(store, focus));
+}
+
 export function triggerFetchFocused(store: Store<AppState>) {
-  performPlan(function* () {
-    const { focus } = store.getValue();
-    if (focus) {
-      yield* fetchPlan(store, focus);
-    }
-  });
+  performSequence(fetchFocusedPlan(store));
 }

@@ -1,6 +1,6 @@
 import {
   Action,
-  createActionPlan,
+  planOfAction,
   ActionPlan,
   ActionSequence,
 } from "@lauf/lauf-runner";
@@ -9,7 +9,7 @@ import { BasicMessageQueue, MessageQueue } from "@lauf/lauf-queue";
 
 import type { Editor, Immutable } from "@lauf/lauf-store/types/immutable";
 import { receive } from "./queue";
-import { Continuation, Follower, isContinuation } from "./types";
+import { Follower, isContinuation } from "./types";
 
 export class EditValue<T> implements Action<Immutable<T>> {
   constructor(
@@ -21,7 +21,7 @@ export class EditValue<T> implements Action<Immutable<T>> {
   }
 }
 
-export const editValue = createActionPlan(EditValue);
+export const editValue = planOfAction(EditValue);
 
 export function* withSelectorQueue<Value, Selected, Ending>(
   store: Store<Value>,
