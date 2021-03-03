@@ -1,0 +1,14 @@
+{
+  "name": "@lauf/lauf-lock",
+  "version": "0.1.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "clean": "rm -rf ./dist && rm -rf tsconfig.build.tsbuildinfo",
+    "compile": "tsc -p tsconfig.build.json",
+    "build": "yarn clean && yarn compile",
+    "prepack": "yarn build",
+    "test": "jest",
+    "coverage": "jest --coverage"
+  }
+}

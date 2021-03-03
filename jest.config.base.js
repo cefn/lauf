@@ -10,4 +10,8 @@ module.exports = {
   verbose: true,
   projects: ["<rootDir>"],
   coverageDirectory: "<rootDir>/coverage/",
+  preset: "ts-jest",
+  moduleNameMapper: {
+    "@lauf/([^/]+)": "<rootDir>../../modules/$1/src",
+  },
 };

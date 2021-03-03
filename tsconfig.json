@@ -1,5 +1,14 @@
 {
   "compilerOptions": {
+    "baseUrl": "./",
+    // "paths": {
+    //   "@lauf/*": ["modules/*/src"],
+    //   "@lauf/lauf-lock/*": ["modules/lauf-lock/src/*"]
+    // },
+    "paths": {
+      "@lauf/*": ["modules/*/src"]
+      // "@lauf/lauf-lock/*": ["modules/lauf-lock/src/*"]
+    },
     /* Visit https://aka.ms/tsconfig.json to read more about this file */
 
     /* Basic Options */

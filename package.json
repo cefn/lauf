@@ -4,8 +4,8 @@
   "repository": "https://github.com/cefn/lauf",
   "private": true,
   "workspaces": [
-    "modules/**",
-    "apps/**"
+    "modules/*",
+    "apps/*"
   ],
   "scripts": {
     "build": "lerna run build",

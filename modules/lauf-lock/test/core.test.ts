@@ -1,4 +1,4 @@
-import { BasicLock } from "@lauf/lauf-lock/core";
+import { BasicLock } from "@lauf/lauf-lock";
 import { promiseDelay, randomInteger } from "./util";
 
 describe("Can lock using arbitrary references", () => {
