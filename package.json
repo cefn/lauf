@@ -1,0 +1,51 @@
+{
+  "name": "lauf-monorepo",
+  "version": "1.0.0",
+  "repository": "https://github.com/cefn/lauf",
+  "private": true,
+  "workspaces": [
+    "modules/**",
+    "apps/**"
+  ],
+  "scripts": {
+    "build": "lerna run build",
+    "build:changed": "lerna run --since origin/master --include-dependents build",
+    "lint": "lerna exec -- eslint . --ext .js,.jsx,.ts,.tsx",
+    "lint:changed": "lerna exec --since origin/master --include-dependents -- eslint . --ext .js,.jsx,.ts,.tsx",
+    "test": "lerna run test",
+    "test:changed": "lerna run --since origin/master --include-dependents test",
+    "typecheck": "lerna exec -- tsc --noEmit",
+    "typecheck:changed": "lerna exec --since origin/master --include-dependents -- tsc --noEmit"
+  },
+  "devDependencies": {
+    "@testing-library/react": "^11.2.5",
+    "@testing-library/react-hooks": "^5.1.0",
+    "@types/jest": "^26.0.20",
+    "@types/react": "^17.0.2",
+    "@types/react-dom": "^17.0.1",
+    "@types/react-router-dom": "^5.1.7",
+    "@typescript-eslint/eslint-plugin": "^4.16.1",
+    "@typescript-eslint/parser": "^4.16.1",
+    "eslint": "^7.21.0",
+    "eslint-config-airbnb-typescript": "^12.3.1",
+    "eslint-config-prettier": "^8.1.0",
+    "eslint-loader": "^4.0.2",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-jest": "^24.1.5",
+    "eslint-plugin-jsx-a11y": "^6.4.1",
+    "eslint-plugin-react": "^7.22.0",
+    "eslint-plugin-react-hooks": "^4.2.0",
+    "jest": "^26.6.3",
+    "lerna": "^4.0.0",
+    "prettier": "^2.2.1",
+    "ts-jest": "^26.5.2",
+    "ts-node": "^9.1.1",
+    "typescript": "^4.2.2",
+    "webpack": "^5.24.2"
+  },
+  "dependencies": {
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1",
+    "react-router-dom": "^5.2.0"
+  }
+}
