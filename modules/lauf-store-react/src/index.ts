@@ -1,5 +1,5 @@
 import { BasicStore, Selector, Store } from "@lauf/lauf-store";
-import { Immutable } from "@lauf/lauf-store/types/immutable";
+import { Immutable } from "@lauf/lauf-store";
 import { useState, useEffect, createContext } from "react";
 
 export function useStore<T>(initialTree: Immutable<T>): Store<T> {

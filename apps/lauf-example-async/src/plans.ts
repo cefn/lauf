@@ -1,13 +1,15 @@
-import { Store, BasicStore, Selector } from "@lauf/lauf-store";
-import { Immutable } from "@lauf/lauf-store/types/immutable";
-import { editValue, followStoreSelector } from "@lauf/lauf-store-runner";
+import { Store, BasicStore, Selector, Immutable } from "@lauf/lauf-store";
+import {
+  editValue,
+  followStoreSelector,
+  CONTINUE,
+} from "@lauf/lauf-store-runner";
 import {
   Action,
   ActionSequence,
   planOfAction,
   performSequence,
 } from "@lauf/lauf-runner";
-import { CONTINUE } from "@lauf/lauf-store-runner/types";
 
 /** STORE DEFINITIONS */
 

@@ -1,6 +1,6 @@
 import { Action, planOfAction } from "@lauf/lauf-runner";
 import { Store, getByPath, setByPath, setByPathMap } from "@lauf/lauf-store";
-import type { Immutable } from "@lauf/lauf-store/types/immutable";
+import type { Immutable } from "@lauf/lauf-store";
 
 class GetStorePath<T> implements Action<Immutable<any>> {
   constructor(readonly store: Store<T>, readonly path: string) {}

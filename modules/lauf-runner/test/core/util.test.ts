@@ -1,7 +1,5 @@
 import assert from "assert";
-import { ActionPlan } from "@lauf/lauf-runner/types";
-import { performPlan } from "@lauf/lauf-runner/core/util";
-import { Delay, delay } from "@lauf/lauf-runner/core/delay";
+import { ActionPlan, performPlan, Delay, delay } from "@lauf/lauf-runner";
 
 describe("Define, run and regression test simple plan", () => {
   const plan: ActionPlan<[], number> = function* () {

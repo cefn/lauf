@@ -7,15 +7,13 @@ import {
   team,
   timeout,
   wait,
-} from "@lauf/lauf-runner/core/schedule";
-import {
   promiseDelay,
   delay,
   Expiry,
   isExpiry,
-} from "@lauf/lauf-runner/core/delay";
-import { ActionPlan } from "@lauf/lauf-runner/types";
-import { performPlan } from "@lauf/lauf-runner/core/util";
+  ActionPlan,
+  performPlan,
+} from "@lauf/lauf-runner";
 
 describe("Foreground and Background operations", () => {
   const delayMs = 10;

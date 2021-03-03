@@ -1,4 +1,4 @@
-import { BasicStore } from "@lauf/lauf-store/core/store";
+import { BasicStore } from "@lauf/lauf-store";
 
 describe("BasicStore behaviour", () => {
   test("Can create BasicStore with primitive root", () => {

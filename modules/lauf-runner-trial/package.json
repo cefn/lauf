@@ -1,9 +1,9 @@
 {
-  "name": "@lauf/lauf-lock",
+  "name": "@lauf/lauf-runner-trial",
   "version": "0.1.0",
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "test": "jest"
+    "test": "jest --passWithNoTests"
   }
 }

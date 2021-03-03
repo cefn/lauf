@@ -4,7 +4,7 @@ import {
   performWithMocks,
   performUntilReactionFulfils,
 } from "@lauf/lauf-runner-trial";
-import { BasicStore } from "@lauf/lauf-store";
+import { BasicStore, Immutable } from "@lauf/lauf-store";
 
 import {
   mainPlan,
@@ -13,7 +13,6 @@ import {
   initialAppState,
   SubredditName,
 } from "../src/plans";
-import { Immutable } from "@lauf/lauf-store/types/immutable";
 
 describe("Plans", () => {
   describe("mainPlan() behaviour", () => {
