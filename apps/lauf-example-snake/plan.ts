@@ -3,18 +3,30 @@ import { performPlan } from "@lauf/lauf-runner";
 import { BasicStore } from "@lauf/lauf-store";
 import { editValue, receive } from "@lauf/lauf-store-runner";
 
-import { Rgb, AppState, ColorCommand, colorVectors } from "./domain";
+import { AppState, Rgb, ColorName, ColorChange, colorVectors } from "./domain";
 import { clamp } from "./util";
 
 export const colorStore = new BasicStore<AppState>({
   color: [0, 0, 0],
 });
 
-export const colorCommandQueue = new BasicMessageQueue<ColorCommand>();
+const changeQueue = new BasicMessageQueue<ColorChange>();
 
-performPlan(function* () {
+function changeColor(...args: ColorChange) {
+  changeQueue.send(args);
+}
+
+export function increaseColor(colorName: ColorName) {
+  changeColor(colorName, +16);
+}
+
+export function decreaseColor(colorName: ColorName) {
+  changeColor(colorName, -16);
+}
+
+performPlan(function* colorChangePlan() {
   while (true) {
-    const [name, magnitude] = yield* receive(colorCommandQueue);
+    const [name, magnitude] = yield* receive(changeQueue);
     const colorVector = colorVectors[name] as Rgb;
     yield* editValue(colorStore, (state) => {
       state.color = state.color.map<number>((brightness, index) =>
