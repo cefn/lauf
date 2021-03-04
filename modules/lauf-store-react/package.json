@@ -1,0 +1,15 @@
+{
+  "name": "@lauf/lauf-store-react",
+  "version": "0.1.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "test": "jest"
+  },
+  "peerDependencies": {
+    "react": "^17.0.1"
+  },
+  "devDependencies": {
+    "@testing-library/react": "^11.2.5"
+  }
+}

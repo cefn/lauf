@@ -1,16 +1,9 @@
 {
+  "exclude": ["node_modules", "dist"],
   "compilerOptions": {
-    "target": "es5",
-    "module": "commonjs",
-    "sourceMap": true,
-    "noEmitOnError": true,
-    "downlevelIteration": true,
-    "strict": true,
-    "noImplicitAny": true,
-    "alwaysStrict": true,
-    "noUncheckedIndexedAccess": true,
-    "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true
-  },
-  "exclude": ["node_modules", "dist"]
+    "baseUrl": ".",
+    "paths": {
+      "@lauf/*": ["modules/*/src"]
+    }
+  }
 }
