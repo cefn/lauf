@@ -1,8 +1,8 @@
 import { BasicMessageQueue } from "@lauf/lauf-queue";
 import { performPlan } from "@lauf/lauf-runner";
-import { BasicStore, Selector } from "@lauf/lauf-store";
+import { BasicStore } from "@lauf/lauf-store";
 import { editValue, receive } from "@lauf/lauf-store-runner";
-import { Immutable } from "@lauf/lauf-store/types/immutable";
+import { Immutable } from "@lauf/lauf-store";
 
 export type Rgb = [number, number, number];
 
