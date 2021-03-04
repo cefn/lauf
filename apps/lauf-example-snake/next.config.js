@@ -3,19 +3,19 @@ const path = require("path");
 const aliasPathsToResolve = [
   {
     name: "@lauf/lauf-runner",
-    path: path.resolve(__dirname, "../packages/lauf-runner/src"),
+    path: path.resolve(__dirname, "../../modules/lauf-runner/src"),
   },
   {
     name: "@lauf/lauf-queue",
-    path: path.resolve(__dirname, "../packages/lauf-queue/src"),
+    path: path.resolve(__dirname, "../../modules/lauf-queue/src"),
   },
   {
     name: "@lauf/lauf-store",
-    path: path.resolve(__dirname, "../packages/lauf-store/src"),
+    path: path.resolve(__dirname, "../../modules/lauf-store/src"),
   },
   {
     name: "@lauf/lauf-store-runner",
-    path: path.resolve(__dirname, "../packages/lauf-store-runner/src"),
+    path: path.resolve(__dirname, "../../modules/lauf-store-runner/src"),
   },
 ];
 module.exports = () => {
@@ -30,11 +30,6 @@ module.exports = () => {
       aliasPathsToResolve.forEach((module) => {
         config.resolve.alias[module.name] = module.path;
       });
-      // config.resolve.alias.react = path.resolve(
-      //   __dirname,
-      //   "node_modules/react"
-      // );
-      config.resolve.alias.react = require.resolve("react");
 
       config.resolve.symlinks = false;
 
