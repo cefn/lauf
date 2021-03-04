@@ -4,7 +4,8 @@ import Head from "next/head";
 import { Immutable } from "@lauf/lauf-store";
 import { useSelected } from "@lauf/lauf-store-react";
 
-import { Rgb, colorStore, selectColor, keyCodeQueue } from "../plan";
+import { Rgb, selectColor } from "../domain";
+import { colorStore, colorCommandQueue } from "../plan";
 
 const Pane = () => {
   const color: Immutable<Rgb> = useSelected(colorStore, selectColor);
@@ -22,12 +23,14 @@ const Pane = () => {
   );
 };
 
-export default function () {
+export default function index() {
   return (
-    <div className="container" onKeyDown={(e) => keyCodeQueue.send(e.code)}>
+    <div className="container">
       <Head>
         <title>Snake</title>
       </Head>
+
+      <button onClick={() => colorCommandQueue.send(["red", 1])}>Red</button>
 
       <main>
         <Pane />
