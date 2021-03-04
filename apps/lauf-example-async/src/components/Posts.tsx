@@ -1,6 +1,6 @@
 import React from "react";
 import { Post } from "../plans";
-import { ImmutableArray } from "@lauf/lauf-store/types/immutable";
+import { ImmutableArray } from "@lauf/lauf-store";
 
 type PostsProps = {
   posts: ImmutableArray<Post>;
