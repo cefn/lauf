@@ -18,6 +18,8 @@
     "typecheck:changed": "lerna exec --since origin/master --include-dependents -- tsc --noEmit"
   },
   "devDependencies": {
+    "@babel/core": "^7.13.8",
+    "@babel/preset-typescript": "^7.13.0",
     "@testing-library/react": "^11.2.5",
     "@testing-library/react-hooks": "^5.1.0",
     "@types/jest": "^26.0.20",
@@ -43,7 +45,9 @@
     "prettier": "^2.2.1",
     "ts-jest": "^26.5.2",
     "ts-node": "^9.1.1",
-    "typescript": "^4.2.2"
+    "ts-loader": "^8.0.17",
+    "typescript": "^4.2.2",
+    "webpack": "^5.24.2"
   },
   "dependencies": {
     "react": "^17.0.1",
