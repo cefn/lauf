@@ -37,23 +37,34 @@ export default function index() {
         html,
         body,
         div#__next {
-          height: 100%;
-          width: 100%;
         }
       `}</style>
-      {gridDigits.map((y) =>
-        gridDigits.map((x) => {
-          let line = "";
-          for (const segment of segments) {
-            const [segX, segY] = segment.pos;
-            if (segX === x && segY === y) {
-              line += "O";
-            }
-          }
-          line += "&nbsp;";
-          return <p>{line}</p>;
-        })
-      )}
+      <div style={{ display: "inline-block" }}>
+        {gridDigits.map((y) => (
+          <pre
+            style={{
+              border: "0px",
+              padding: "0px",
+              margin: "0px",
+              fontSize: "3em",
+              backgroundColor: "red",
+            }}
+          >
+            {gridDigits
+              .map((x) => {
+                let line = "";
+                for (const segment of segments) {
+                  const [segX, segY] = segment.pos;
+                  if (segX === x && segY === y) {
+                    return "O";
+                  }
+                }
+                return " ";
+              })
+              .join("")}
+          </pre>
+        ))}
+      </div>
     </>
   );
 }

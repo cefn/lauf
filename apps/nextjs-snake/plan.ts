@@ -22,23 +22,24 @@ export type DirectionName = keyof typeof directionVectors;
 // grid is central (zero) square and squares in each direction
 // up to and not including edge
 export const gridMax = 4;
+export const gridSpan = 1 + 2 * gridMax;
 
 // export const gridArea = gridSpan * gridSpan;
 export const gridDigits = Array.from(
-  { length: 1 + 2 * gridMax },
+  { length: gridSpan },
   (_, i) => i - gridMax
 ) as ReadonlyArray<number>;
 
 const directionVectors = {
   left: [-1, 0],
-  up: [0, 1],
+  up: [0, -1],
   right: [1, 0],
-  down: [0, -1],
+  down: [0, 1],
 } as const;
 
 const initialState = {
   direction: "down",
-  length: 1,
+  length: 4,
   segments: [{ pos: [0, 0] }],
 } as const;
 
@@ -62,7 +63,7 @@ performPlan(function* mainPlan() {
     if (head) {
       const nextHead = { pos: wrap(sum(head.pos, directionVector)) };
       yield* editValue(gameStore, (draftState) => {
-        let { segments } = gameStore.getValue();
+        let { segments } = gameStore.getValue() as GameState;
         segments = [nextHead, ...segments];
         if (draftState.length < segments.length) {
           segments = segments.slice(0, draftState.length);
