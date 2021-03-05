@@ -29,9 +29,9 @@ performPlan(function* colorChangePlan() {
     const [name, magnitude] = yield* receive(changeQueue);
     const colorVector = colorVectors[name] as Rgb;
     yield* editValue(colorStore, (state) => {
-      state.color = state.color.map<number>((brightness, index) =>
+      state.color = state.color.map((brightness, index) =>
         clamp(brightness + (colorVector[index] || 0) * magnitude, 0, 255)
-      );
+      ) as Rgb;
     });
   }
 });
