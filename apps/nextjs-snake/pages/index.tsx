@@ -49,6 +49,7 @@ export default function index() {
               fontSize: "3em",
               backgroundColor: "red",
             }}
+            key={y}
           >
             {gridDigits
               .map((x) => {
