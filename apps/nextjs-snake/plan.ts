@@ -1,6 +1,6 @@
 import { performPlan } from "@lauf/lauf-runner";
 import { BasicMessageQueue } from "@lauf/lauf-queue";
-import { BasicStore } from "@lauf/lauf-store";
+import { BasicStore, Selector } from "@lauf/lauf-store";
 import { editValue, receive } from "@lauf/lauf-store-runner";
 
 import {sum, wrap} from "./util"
@@ -38,13 +38,16 @@ const initialState = {
   segments: [{ pos: [0, 0] }],
 } as const;
 
-export const gameStore = new BasicStore<GameState>(initialState);
 
-export const steerQueue = new BasicMessageQueue<DirectionName>();
+const steerQueue = new BasicMessageQueue<DirectionName>();
 
 export function steer(name: DirectionName) {
   steerQueue.send(name);
 }
+
+export const gameStore = new BasicStore<GameState>(initialState);
+
+export const selectSegments:Selector<GameState> = (state) => state.segments
 
 performPlan(function* mainPlan(){
   while(true){
@@ -54,7 +57,10 @@ performPlan(function* mainPlan(){
     if(head){
       const nextHead = {pos:wrap(sum(head.pos, directionVector))};
       yield* editValue(gameStore, (state) => {
-        state.segments = 
+        state.segments = [nextHead, ...state.segments];
+        if(state.length < state.segments.length){
+          state.segments = state.segments.slice(0,state.length);
+        }
       })
     }
   }
