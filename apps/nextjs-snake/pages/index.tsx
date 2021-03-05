@@ -1,7 +1,14 @@
 import React from "react";
 import Head from "next/head";
 
-import { DirectionName, gameStore, steer } from "../plan";
+import { useSelected } from "@lauf/lauf-store-react";
+import {
+  gridDigits,
+  gameStore,
+  selectSegments,
+  DirectionName,
+  steer,
+} from "../plan";
 
 const directionMap: Record<string, DirectionName> = {
   ArrowLeft: "left",
@@ -20,6 +27,7 @@ if (process.browser) {
 }
 
 export default function index() {
+  const segments = useSelected(gameStore, selectSegments);
   return (
     <>
       <Head>
@@ -33,6 +41,19 @@ export default function index() {
           width: 100%;
         }
       `}</style>
+      {gridDigits.map((y) =>
+        gridDigits.map((x) => {
+          let line = "";
+          for (const segment of segments) {
+            const [segX, segY] = segment.pos;
+            if (segX === x && segY === y) {
+              line += "O";
+            }
+          }
+          line += "&nbsp;";
+          return <p>{line}</p>;
+        })
+      )}
     </>
   );
 }

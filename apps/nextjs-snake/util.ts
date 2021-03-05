@@ -8,12 +8,12 @@ export function sum(vecA: Immutable<Vector>, vecB: Immutable<Vector>): Vector {
 export function wrap(vec: Vector): Vector {
   return vec.map((dim) => {
     const absDim = Math.abs(dim);
-    if (absDim < gridEdge) {
+    if (absDim <= gridEdge) {
       //doesn't need wrapping
       return dim;
     } else {
       //wrap the position
-      return (Math.sign(dim) * absDim) % gridEdge;
+      return (Math.sign(dim) * absDim) % (gridEdge + 1);
     }
   }) as Vector;
 }
