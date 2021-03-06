@@ -13,7 +13,7 @@ const directionMap: Record<string, DirectionName> = {
 } as const;
 
 export function SnakeGame() {
-  const [{ gameStore, steerQueue }] = useState(launchGame());
+  const [{ gameStore, steerQueue }] = useState(() => launchGame());
 
   const segments = useSelected(gameStore, selectSegments);
 
@@ -29,7 +29,7 @@ export function SnakeGame() {
       document.addEventListener("keydown", keyListener);
       return () => document.removeEventListener("keydown", keyListener);
     }
-  });
+  }, []);
 
   return (
     <>

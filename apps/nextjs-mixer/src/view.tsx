@@ -6,7 +6,9 @@ import { selectColor } from "./domain";
 import { launchMixer } from "./plan";
 
 export function ColorMixer() {
-  const [{ colorStore, increaseColor, decreaseColor }] = useState(launchMixer);
+  const [{ colorStore, increaseColor, decreaseColor }] = useState(() =>
+    launchMixer()
+  );
 
   const [red, green, blue] = useSelected(colorStore, selectColor);
 
