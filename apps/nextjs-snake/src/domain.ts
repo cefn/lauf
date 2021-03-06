@@ -9,7 +9,6 @@ import { MessageQueue } from "@lauf/lauf-queue/src";
 import { Immutable, Selector, Store } from "@lauf/lauf-store/src";
 
 export interface GameState {
-  direction: DirectionName;
   length: number;
   segments: Segment[];
 }
@@ -21,7 +20,6 @@ export interface Segment {
 export const selectSegments: Selector<GameState> = (state) => state.segments;
 
 export const INITIAL_STATE: Immutable<GameState> = {
-  direction: "DOWN",
   length: 4,
   segments: [{ pos: [0, 0] }],
 } as const;
@@ -56,3 +54,9 @@ export const DIRECTION_VECTORS = {
 } as const;
 
 export type DirectionName = keyof typeof DIRECTION_VECTORS;
+export type Direction = typeof DIRECTION_VECTORS[DirectionName];
+
+/** SPRITES */
+
+const tileWidth = 64; //px
+const arenaSide = GRID_SPAN * tileWidth;
