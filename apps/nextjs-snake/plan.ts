@@ -3,7 +3,7 @@ import { BasicMessageQueue } from "@lauf/lauf-queue";
 import { BasicStore, Selector } from "@lauf/lauf-store";
 import { editValue, receive } from "@lauf/lauf-store-runner";
 
-import { sum, wrap } from "./util";
+import { plus, wrap } from "./util";
 
 export type Vector = [number, number];
 
@@ -61,7 +61,7 @@ performPlan(function* mainPlan() {
       segments: [head],
     } = gameStore.getValue();
     if (head) {
-      const nextHead = { pos: wrap(sum(head.pos, directionVector)) };
+      const nextHead = { pos: wrap(plus(head.pos, directionVector)) };
       yield* editValue(gameStore, (draftState) => {
         let { segments } = gameStore.getValue() as GameState;
         segments = [nextHead, ...segments];
