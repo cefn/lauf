@@ -7,7 +7,6 @@ import {
   Direction,
   DirectionName,
   Segment,
-  DIRECTION_OPPOSITES,
 } from "./domain";
 
 export function plus(a: Immutable<Vector>, b: Immutable<Vector>): Vector {

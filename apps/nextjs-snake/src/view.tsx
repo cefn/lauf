@@ -14,10 +14,13 @@ const directionMap: Record<string, DirectionName> = {
 } as const;
 
 export function SnakeGame() {
+  //launch game logic
   const [{ gameStore, steerQueue }] = useState(() => launchGame());
 
+  //get segments from game state
   const segments = useSelected(gameStore, selectSegments);
 
+  //subscribe to key events
   useEffect(() => {
     if (process.browser) {
       const keyListener = (e: KeyboardEvent) => {
@@ -32,6 +35,7 @@ export function SnakeGame() {
     }
   }, []);
 
+  //render the snake
   return (
     <div
       style={{
@@ -44,13 +48,7 @@ export function SnakeGame() {
         <title>Snake</title>
       </Head>
       {segments.map((_: any, index: number) => (
-        <SegmentSprite
-          key={index}
-          {...{
-            segments,
-            index,
-          }}
-        />
+        <SegmentSprite segments={segments} index={index} key={index} />
       ))}
     </div>
   );

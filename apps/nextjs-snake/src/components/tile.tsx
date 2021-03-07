@@ -1,6 +1,5 @@
 import { Immutable } from "@lauf/lauf-store/src";
 import { GRID_MAX, GRID_SPAN } from "../domain";
-import { TILE_SIDE } from "./sprite";
 
 export type SpriteSheet<TileName extends string> = Immutable<{
   url: string;
@@ -39,7 +38,6 @@ export function Sprite<SpriteName extends string>({
 
   return (
     <div
-      className={`${spriteName} X${x} Y${y}`}
       style={{
         display,
         position,
