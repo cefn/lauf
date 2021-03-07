@@ -1,5 +1,6 @@
 import { Immutable } from "@lauf/lauf-store/src";
-import { GRID_MAX } from "../domain";
+import { GRID_MAX, GRID_SPAN } from "../domain";
+import { TILE_SIDE } from "./sprite";
 
 export type SpriteSheet<TileName extends string> = Immutable<{
   url: string;
@@ -19,24 +20,36 @@ type SpriteProps<SpriteName extends string> = {
 
 export function Sprite<SpriteName extends string>({
   spriteSheet,
-  spriteName: name,
+  spriteName,
   gridX: x,
   gridY: y,
 }: SpriteProps<SpriteName>) {
-  const backgroundImage = `url(${spriteSheet.url})`;
-  const [offsetX, offsetY] = spriteSheet.offsets[name];
-  const backgroundPosition = `${offsetX}px ${offsetY}px`;
+  const width = spriteSheet.spriteWidth;
+  const height = spriteSheet.spriteHeight;
 
-  const left = (x + GRID_MAX) * spriteSheet.spriteWidth;
-  const top = (y + GRID_MAX) * spriteSheet.spriteHeight;
+  const backgroundImage = `url(${spriteSheet.url})`;
+  const [offsetX, offsetY] = spriteSheet.offsets[spriteName];
+  const backgroundPosition = `${-offsetX * width}px ${-offsetY * height}px`;
+
+  const left = (x + GRID_MAX) * width;
+  const top = (GRID_SPAN - (y + GRID_MAX)) * height; //vertical axis is inverted in browser
+
+  const display = "block";
+  const position = "absolute";
 
   return (
     <div
+      className={`${spriteName} X${x} Y${y}`}
       style={{
+        display,
+        position,
+        width,
+        height,
         left,
         top,
         backgroundImage,
         backgroundPosition,
+        backgroundColor: "blue",
       }}
     />
   );

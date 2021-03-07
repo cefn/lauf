@@ -11,6 +11,7 @@ import {
   INITIAL_STATE,
   DIRECTION_VECTORS,
   Segment,
+  DIRECTION_OPPOSITES,
 } from "./domain";
 
 export function launchGame() {
@@ -26,14 +27,19 @@ export function launchGame() {
 
 function* gamePlan(appModel: AppModel) {
   const { gameStore, steerQueue } = appModel;
+  let lastDirectionName;
   while (true) {
     const directionName = yield* receive(steerQueue);
-    const {
-      segments: [head],
-    } = gameStore.getValue();
-    if (head) {
-      const pos = wrap(plus(head.pos, DIRECTION_VECTORS[directionName]));
-      yield* moveHead(appModel, { pos });
+    if (lastDirectionName !== DIRECTION_OPPOSITES[directionName]) {
+      //prevent reversal
+      const {
+        segments: [head],
+      } = gameStore.getValue();
+      if (head) {
+        const pos = wrap(plus(head.pos, DIRECTION_VECTORS[directionName]));
+        yield* moveHead(appModel, { pos });
+      }
+      lastDirectionName = directionName;
     }
   }
 }
