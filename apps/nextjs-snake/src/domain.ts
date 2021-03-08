@@ -9,7 +9,6 @@ import { MessageQueue } from "@lauf/lauf-queue/src";
 import { Immutable, Selector, Store } from "@lauf/lauf-store/src";
 
 export interface GameState {
-  direction: DirectionName;
   length: number;
   segments: Segment[];
 }
@@ -21,9 +20,8 @@ export interface Segment {
 export const selectSegments: Selector<GameState> = (state) => state.segments;
 
 export const INITIAL_STATE: Immutable<GameState> = {
-  direction: "DOWN",
-  length: 4,
-  segments: [{ pos: [0, 0] }],
+  length: 3,
+  segments: [{ pos: [0, 0] }, { pos: [0, -1] }, { pos: [0, -2] }],
 } as const;
 
 /** GAME GRID */
@@ -44,9 +42,9 @@ export const GRID_DIGITS = Array.from(
 export type Vector = [number, number];
 
 export const LEFT = [-1, 0] as const;
-export const UP = [0, -1] as const;
+export const UP = [0, 1] as const;
 export const RIGHT = [1, 0] as const;
-export const DOWN = [0, 1] as const;
+export const DOWN = [0, -1] as const;
 
 export const DIRECTION_VECTORS = {
   LEFT,
@@ -55,4 +53,12 @@ export const DIRECTION_VECTORS = {
   DOWN,
 } as const;
 
+export const DIRECTION_OPPOSITES: Record<DirectionName, DirectionName> = {
+  LEFT: "RIGHT",
+  RIGHT: "LEFT",
+  UP: "DOWN",
+  DOWN: "UP",
+};
+
 export type DirectionName = keyof typeof DIRECTION_VECTORS;
+export type Direction = typeof DIRECTION_VECTORS[DirectionName];
