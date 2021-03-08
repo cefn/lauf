@@ -50,6 +50,7 @@ const snakeSpriteOffsets = {
 export type SnakeSpriteName = keyof typeof snakeSpriteOffsets;
 
 export const spriteSheet: SpriteSheet<SnakeSpriteName> = {
+  //Graphics thanks to https://rembound.com/articles/creating-a-snake-game-tutorial-with-html5
   url: "/sprites.png",
   spriteWidth: TILE_SIDE,
   spriteHeight: TILE_SIDE,
