@@ -1,5 +1,5 @@
 import { isDeepStrictEqual } from "util";
-import { Action, directSequence, isTermination } from "@lauf/lauf-runner";
+import { directSequence, isTermination } from "@lauf/lauf-runner";
 import {
   performWithMocks,
   performUntilReactionFulfils,
@@ -25,21 +25,18 @@ describe("Plans", () => {
       const { focus: initialFocus } = initialAppState;
       const focusedPostsSelector = createPostsSelector(initialFocus);
 
-      const mockPerformer = () =>
-        performWithMocks([
-          [new FetchSubreddit(initialFocus), [{ title: "About React" }]],
-        ]);
-
-      const testPerformer = () =>
+      const testEnding = await directSequence(
+        mainPlan(store),
         performUntilReactionFulfils(
           () =>
             isDeepStrictEqual(focusedPostsSelector(store.getValue()), [
               { title: "About React" },
             ]),
-          mockPerformer
-        );
-
-      const testEnding = await directSequence(mainPlan(store), testPerformer);
+          performWithMocks([
+            [new FetchSubreddit(initialFocus), [{ title: "About React" }]],
+          ])
+        )
+      );
 
       //the testPerformer should complete all its steps
       expect(isTermination(testEnding)).toBe(true);
@@ -50,23 +47,20 @@ describe("Plans", () => {
       const newFocus = "frontend";
       const newFocusPostsSelector = createPostsSelector(newFocus);
 
-      const mockPerformer = () =>
-        performWithMocks([
-          [new FetchSubreddit("reactjs"), [{ title: "About React" }]],
-          [new FetchSubreddit(newFocus), [{ title: "About Frontend" }]],
-        ]);
-
-      const testPerformer = () =>
+      //launch the plan
+      const testEndingPromise = directSequence(
+        mainPlan(store),
         performUntilReactionFulfils(
           () =>
             isDeepStrictEqual(newFocusPostsSelector(store.getValue()), [
               { title: "About Frontend" },
             ]),
-          mockPerformer
-        );
-
-      //launch the plan
-      const testEndingPromise = directSequence(mainPlan(store), testPerformer);
+          performWithMocks([
+            [new FetchSubreddit("reactjs"), [{ title: "About React" }]],
+            [new FetchSubreddit(newFocus), [{ title: "About Frontend" }]],
+          ])
+        )
+      );
 
       //change the focused subreddit
       store.editValue((state) => {
