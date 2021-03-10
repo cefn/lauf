@@ -39,14 +39,26 @@ export function SnakeGame() {
   return (
     <div
       style={{
-        display: "inline-block",
+        display: "block",
         width: GRID_SPAN * TILE_SIDE,
         height: GRID_SPAN * TILE_SIDE,
+        backgroundColor: "yellow",
       }}
     >
       <Head>
         <title>Snake</title>
       </Head>
+      <style global jsx>{`
+        html,
+        body,
+        div#__next {
+          height: 100%;
+          width: 100%;
+          border: 0;
+          padding: 0;
+          margin: 0;
+        }
+      `}</style>
       {segments.map((_: any, index: number) => (
         <SegmentSprite segments={segments} index={index} key={index} />
       ))}
