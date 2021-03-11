@@ -1,8 +1,6 @@
 # Lauf is code;
 
-Lauf does async state-management, keeping clean separation of business logic from the UI in common with Redux, Redux-Saga, Overmind, Mobx-State-Tree.
-
-However, by contrast to competing frameworks, it introduces the minimum of concepts and structures.
+Lauf does async state-management, keeping clean separation of business logic from the UI in common with Redux, Redux-Saga, Overmind, MobX, Mobx-State-Tree, RxJS. Unlike competing frameworks, it introduces the minimum of concepts and structures.
 
 ## Action
 
@@ -26,7 +24,7 @@ Coding with actions (instead of calling functions directly) means steps and thei
 
 This minor change in coding style, combined with careful use of Typescript language structures, is enough to make logic explicit, predictable, inspectable, testable and replayable, just like a Redux application.
 
-However, to achieve this, a reducer framework uses an action type, a structured payload definition, probably an Action creator, possibly a thunk creator, with the result sent via a dispatcher to (hopefully) line up with corresponding behaviour in a reducer and probably some middleware.
+To achieve this, reducer-based frameworks will use an action type, a structured payload definition, probably an Action creator, possibly a thunk creator, with the result sent via a dispatcher to (hopefully) line up with corresponding behaviour in a reducer and probably some middleware.
 
 Lauf aims to avoid all this.
 

@@ -1,12 +1,13 @@
+<div style="display:block;float:left">
+<img src="https://github.com/cefn/lauf/raw/main/vector/logo.png" alt="Logo - Image of Runner"><br>
+<sub><sup>Logo - Diego Naive, Noun Project.</sup></sub>
+</div>
+
 # Lauf
 
-![alt text](./vector/logo.png)
+Lauf is an approach to define your application state and business logic separately from your UI code. It provides utilities to accelerate common patterns, but it could be seen as more of a strategy than a library.
 
-<sub><sup>Logo - Diego Naive, Noun Project.</sup></sub>
-
-Lauf is a distinctive approach for your typescript application to define its application business logic separately from its UI code. It provides utilities to accelerate common patterns, but it could be seen as more of a strategy than a library.
-
-Lauf promotes the adoption of built-in language constructs like classes and generator functions to define state and logic without unnecessary boilerplate. It addresses the same concerns of explicit state management, asynchrony, time-travel debugging and testability as Flux approaches. However, it avoids action constants, creators, payloads, dispatchers, middleware, reducers, connectors.
+<hr style="display:block;clear:both" >
 
 ## Approach
 
@@ -18,7 +19,7 @@ doThat();
 doTheOther();
 ```
 
-...we define an action with those steps like this...
+...we define an action containing those steps...
 
 ```typescript
 {
@@ -29,6 +30,8 @@ doTheOther();
   };
 }
 ```
+
+Lauf promotes the adoption of built-in language constructs like classes and generator functions to define actioms and sequence them without unnecessary boilerplate. Like Redux, it addresses concerns of state management, asynchrony, time-travel debugging and testability. However there are no action constants, creators, payloads, dispatchers, middleware, reducers or connectors.
 
 ## Getting started
 
