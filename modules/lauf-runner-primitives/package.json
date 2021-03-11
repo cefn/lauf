@@ -1,5 +1,5 @@
 {
-  "name": "@lauf/lauf-store-runner",
+  "name": "@lauf/lauf-runner-primitives",
   "version": "0.1.0",
   "main": "index.js",
   "license": "MIT",

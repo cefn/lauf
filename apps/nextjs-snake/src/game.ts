@@ -1,7 +1,7 @@
 import { performSequence } from "@lauf/lauf-runner";
 import { BasicMessageQueue } from "@lauf/lauf-queue";
 import { BasicStore } from "@lauf/lauf-store";
-import { editValue, receive } from "@lauf/lauf-store-runner";
+import { editValue, receive } from "@lauf/lauf-runner-primitives";
 
 import { plus, wrap } from "./util";
 import {

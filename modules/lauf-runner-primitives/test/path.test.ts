@@ -4,7 +4,7 @@ import {
   getStorePath,
   setStorePath,
   setStorePathMap,
-} from "@lauf/lauf-store-runner";
+} from "@lauf/lauf-runner-primitives";
 
 describe("Store operations using paths", () => {
   test("getStorePath retrieves an array index path", async () => {
