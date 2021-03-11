@@ -91,7 +91,7 @@ export function* fetchPlan(
   //initialise cache and transition to 'fetching' state
   yield* editValue(store, (draft) => {
     draft.caches[name] = {
-      ...(draft.caches[name] || initialCache),
+      ...(draft.caches[name] || (initialCache as Cache)),
       isFetching: true,
     };
   });
@@ -112,7 +112,7 @@ export function* fetchPlan(
       } else {
         //just reset fetching status
         draft.caches[name] = {
-          ...(draft.caches[name] || initialCache),
+          ...(draft.caches[name] as Cache),
           isFetching: false,
         };
       }
