@@ -18,23 +18,27 @@ export interface Action<Reaction> {
 }
 ```
 
-Coding with actions (instead of calling functions directly) means steps and their parameters are inspectable, and the context can decide how to perform it. This minor change in coding style, combined with careful use of Typescript language structures, is enough to make logic explicit, predictable, inspectable, testable and replayable as you will see in the worked examples below.
+Coding with actions (instead of calling functions directly) means steps and their parameters are inspectable, and the context can decide how to perform it.
+
+This minor change in coding style, combined with careful use of Typescript language structures, is enough to make logic explicit, predictable, inspectable, testable and replayable (just like a Redux application).
+
+The rest of this document uses working tutorial examples to explain the approach. After reading the explanations, you can browse the source code and tests of each example [here](./docs/tutorialcode).
 
 ### Creating an Action
 
 The simplest possible Action would look like this...
 
+<!-- prettier-ignore-start -->
 ```typescript
-{
-  act: () => prompt("What is your name?");
-}
+{ act: () => prompt("What is your name?"); }
 ```
+<!-- prettier-ignore-end -->
 
 By contrast, a reducer framework would use an action type, a structured payload definition, probably an Action creator, possibly a thunk creator, with the result sent via a dispatcher to (hopefully) line up with corresponding behaviour in a reducer and probably some middleware. Lauf aims to avoid all this.
 
 ---
 
-## Concept: ActionPlan, ActionSequence
+## ActionPlans, ActionSequences
 
 For an async action or user interaction to be carried out, you
 `yield` an **_Action_** from an **_ActionPlan_**.
