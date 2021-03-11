@@ -1,13 +1,12 @@
-<div style="display:block;float:left">
-<img src="https://github.com/cefn/lauf/raw/main/vector/logo.png" alt="Logo - Image of Runner"><br>
-<sub><sup>Logo - Diego Naive, Noun Project.</sup></sub>
-</div>
+<img src="https://github.com/cefn/lauf/raw/main/vector/logo.png" alt="Logo - Image of Runner" align="left">
 
 # Lauf
 
 Lauf is an approach to define your application state and business logic separately from your UI code. It provides utilities to accelerate common patterns, but it could be seen as more of a strategy than a library.
 
-<hr style="display:block;clear:both" >
+<br>
+<hr>
+<sub><sup>Logo - Diego Naive, Noun Project.</sup></sub>
 
 ## Approach
 
