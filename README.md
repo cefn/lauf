@@ -2,9 +2,11 @@
 
 ![alt text](./vector/logo.png)
 
-Lauf offers a distinctive approach for managing application state and logic for applications written in typescript. 
+Lauf is a distinctive approach for your typescript application to define its application business logic separately from its UI code.
 
-Lauf addresses the same concerns of explicit state management, asynchrony, time-travel debugging and testability as Flux approaches. However it avoids the boilerplate of action constants, creators, payloads, middleware, reducers. Instead it promotes the adoption of minimal built-in language structures such as class definitions and generators.
+It promotes the adoption of built-in language structures such as classes and generators to define state and logic.
+
+Lauf addresses the same concerns of explicit state management, asynchrony, time-travel debugging and testability as Flux approaches. However it avoids the boilerplate of action constants, creators, payloads, dispatchers, middleware, reducers, connectors.
 
 To get started with the approach, read the [introductory tutorial](./docs/index.md)
 
