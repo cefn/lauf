@@ -53,6 +53,11 @@ export function ColorMixer() {
           height: 100%;
           width: 100%;
           background-color: rgb(${red}, ${green}, ${blue});
+          display: block;
+          margin: 0px;
+          padding: 0px;
+          border: 0px;
+          border-image-width: 0px;
         }
       `}</style>
       <div
