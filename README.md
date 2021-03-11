@@ -4,11 +4,8 @@
 
 <br>
 
-Lauf is an approach to define your application state and business logic separately from your UI code.
+Lauf is an approach to define your application state and business logic separately from your UI code. It provides utilities to accelerate common patterns and steps out of your way.
 
-It provides utilities to accelerate common patterns and steps out of your way.
-
-<br>
 <hr>
 <sub><sup>Logo - Diego Naive, Noun Project.</sup></sub>
 
