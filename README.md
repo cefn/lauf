@@ -53,4 +53,4 @@ For a worked example and comparison with redux, redux-saga and redux-saga-test-p
 
 ## Primitives
 
-Lauf offers primitives to coordinate shared resources and state between concurrent Action sequences. These include a [Store](./modules/lauf-store), a [Message Queue](./modules/lauf-queue) and a [Mutex or Lock](./modules/lauf-lock). These pure Async implementations have no direct dependencies on Lauf. Lauf Action definitions for primitive features are published via [lauf-runner-primitives](./modules/lauf-runner-primitives).
+Lauf offers primitives to coordinate shared resources and state between concurrent Action sequences. These include a [Store](./modules/lauf-store), a [Message Queue](./modules/lauf-queue) and a [Mutex or Lock](./modules/lauf-lock). These pure Async implementations have no direct dependencies on Lauf. The Lauf Action definitions to use these primitive features with [lauf-runner](./modules/lauf-runner) are published via [lauf-runner-primitives](./modules/lauf-runner-primitives).
