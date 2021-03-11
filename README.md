@@ -2,7 +2,11 @@
 
 # Lauf
 
-Lauf is an approach to define your application state and business logic separately from your UI code. It provides utilities to accelerate common patterns, but it could be seen as more of a strategy than a library.
+<br>
+
+Lauf is an approach to define your application state and business logic separately from your UI code.
+
+It provides utilities to accelerate common patterns and steps out of your way.
 
 <br>
 <hr>
