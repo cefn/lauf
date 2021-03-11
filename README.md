@@ -5,13 +5,15 @@
 <sub><sup>Logo - Diego Naive, Noun Project.</sup></sub>
 <br></br>
 
-Lauf helps you define your application state and business logic separately from your UI code. It offers Typescript utilities and patterns to control and monitor sequences of actions, and to bind your UI to shared state and application events. Then it steps out of your way.
+Lauf helps you define your application state and business logic separately from your UI code. It can be used in the place of Redux and Redux-Saga to provide state-management and coordinate async procedures.
+
+Lauf offers Typescript utilities and patterns to control and monitor sequences of actions, and to bind your UI to shared state and application events. Then it steps out of your way.
 
 <hr>
 
 ## Approach
 
-Lauf applications are procedural code, but instead of directly triggering steps like...
+Lauf applications are written like ordinary procedural code, but instead of directly triggering steps like...
 
 ```typescript
 doThis();
