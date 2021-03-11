@@ -2,31 +2,11 @@
 
 Lauf does async state-management, keeping clean separation of business logic from the UI in common with Redux, Redux-Saga, Overmind, Mobx-State-Tree.
 
-However, by contrast to competing frameworks, it introduces the minimum of concepts and structures. Instead Lauf uses fundamental language structures of Typescript to achieve the same ends. Lauf provides utilities to accelerate common patterns, but it could be seen as more of a strategy than a library.
+However, by contrast to competing frameworks, it introduces the minimum of concepts and structures.
 
-Lauf is code;
+## Action
 
----
-
-## Concept: Action
-
-The central concept in Lauf is the `Action`. An action defines what should happen, and what you should get back. This is its type definition...
-
-```typescript
-export interface Action<Reaction> {
-  act: () => Reaction | Promise<Reaction>;
-}
-```
-
-Coding with actions (instead of calling functions directly) means steps and their parameters are inspectable, and the context can decide how to perform it.
-
-This minor change in coding style, combined with careful use of Typescript language structures, is enough to make logic explicit, predictable, inspectable, testable and replayable (just like a Redux application).
-
-The rest of this document uses working tutorial examples to explain the approach. After reading the explanations, you can browse the source code and tests of each example [here](./docs/tutorialcode).
-
-### Creating an Action
-
-The simplest possible Action would look like this...
+The central concept in Lauf is the `Action`. An action defines what should happen, and what you should get back...
 
 <!-- prettier-ignore-start -->
 ```typescript
@@ -34,16 +14,30 @@ The simplest possible Action would look like this...
 ```
 <!-- prettier-ignore-end -->
 
-By contrast, a reducer framework would use an action type, a structured payload definition, probably an Action creator, possibly a thunk creator, with the result sent via a dispatcher to (hopefully) line up with corresponding behaviour in a reducer and probably some middleware. Lauf aims to avoid all this.
+Here is Lauf's type definition...
 
----
+```typescript
+export interface Action<Reaction> {
+  act: () => Reaction | Promise<Reaction>;
+}
+```
+
+Coding with actions (instead of calling functions directly) means steps and their parameters are inspectable and the context and timing of execution can be decided separately.
+
+This minor change in coding style, combined with careful use of Typescript language structures, is enough to make logic explicit, predictable, inspectable, testable and replayable, just like a Redux application.
+
+However, to achieve this, a reducer framework uses an action type, a structured payload definition, probably an Action creator, possibly a thunk creator, with the result sent via a dispatcher to (hopefully) line up with corresponding behaviour in a reducer and probably some middleware.
+
+Lauf aims to avoid all this.
+
+The rest of this document uses working tutorial examples to explain the approach. After reading the explanations, you can browse the source code and tests of each example [here](./docs/tutorialcode).
 
 ## ActionPlans, ActionSequences
 
 For an async action or user interaction to be carried out, you
 `yield` an **_Action_** from an **_ActionPlan_**.
 
-**_ActionPlans_** are just [Typescript generator functions](https://basarat.gitbook.io/typescript/future-javascript/generators). Idiomatic Lauf plans exploit Lauf utilities to make plans readable and testable and to ensure proper typings for the results of Actions. They look like this...
+**_ActionPlans_** are just [Typescript generator functions](https://basarat.gitbook.io/typescript/future-javascript/generators). Idiomatic Lauf plans are readable and testable and they ensure proper typings for the results of Actions. They look like this...
 
 ```typescript
 function* idiomaticPlan(): ActionSequence {
