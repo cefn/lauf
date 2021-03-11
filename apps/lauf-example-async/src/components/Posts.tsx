@@ -1,9 +1,9 @@
 import React from "react";
 import { Post } from "../plans";
-import { ImmutableArray } from "@lauf/lauf-store";
+import { Immutable } from "@lauf/lauf-store";
 
 type PostsProps = {
-  posts: ImmutableArray<Post>;
+  posts: Immutable<Post[]>;
 };
 
 export const Posts = ({ posts }: PostsProps) => (

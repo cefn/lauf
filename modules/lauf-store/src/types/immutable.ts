@@ -1,19 +1,13 @@
 import type { Draft } from "immer";
 
-// export interface ImmutableArray<T> extends ReadonlyArray<Immutable<T>> {}
-
-type ImmutableTuple<T extends any[]> = Readonly<
+export type ImmutableObject<T> = Readonly<
   {
-    [Index in keyof T]: Immutable<T[Index]>;
+    [P in keyof T]: Immutable<T[P]>;
   }
 >;
 
-export type ImmutableObject<T> = {
-  readonly [P in keyof T]: Immutable<T[P]>;
-};
-
 export type Immutable<T> = T extends any[]
-  ? ImmutableTuple<T>
+  ? ImmutableObject<T>
   : T extends object
   ? ImmutableObject<T>
   : T extends string | number | boolean | null

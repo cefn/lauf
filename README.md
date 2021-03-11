@@ -1,16 +1,17 @@
+<img src="https://github.com/cefn/lauf/raw/main/vector/logo.png" alt="Logo - Image of Runner" align="left"><br></br>
+
 # Lauf
 
-![alt text](./vector/logo.png)
+<sub><sup>Logo - Diego Naive, Noun Project.</sup></sub>
+<br></br>
 
-Lauf is a distinctive approach for your typescript application to define its application business logic separately from its UI code.
+Lauf helps you define your application state and business logic separately from your UI code. It offers Typescript utilities and patterns to control and monitor sequences of actions, and to bind your UI to shared state and application events. Then it steps out of your way.
 
-It promotes the adoption of built-in language constructs like classes and generator functions to define state and logic without unnecessary boilerplate.
+<hr>
 
-Lauf addresses the same concerns of explicit state management, asynchrony, time-travel debugging and testability as Flux approaches. However, it avoides action constants, creators, payloads, dispatchers, middleware, reducers, connectors.
+## Approach
 
-## Actions
-
-Lauf is structured around a single change in programming pattern compared to synchronous code. Instead of directly triggering steps like this...
+Lauf applications are procedural code, but instead of directly triggering steps like...
 
 ```typescript
 doThis();
@@ -18,7 +19,7 @@ doThat();
 doTheOther();
 ```
 
-...we define actions that include those steps like this...
+...we yield an action containing those steps which looks like...
 
 ```typescript
 {
@@ -30,15 +31,26 @@ doTheOther();
 }
 ```
 
-<!-- prettier-ignore-start -->
-<!-- prettier-ignore-end -->
+That's it.
+
+Once you have a procedure which yields your actions, it can be passed to a Lauf performer like....
+
+```typescript
+performSequence(myProcedure());
+```
 
 ## Getting started
 
-To get started with the approach, read the [introductory tutorial](./docs/index.md)
+To get started understanding and using the approach, read the [introductory tutorial](./docs/index.md)
 
-## Discussion
+## Design
 
-For a worked example and discussion of comparison with redux, redux-saga and redux-saga-test-plan, see the [Example App Readme](./apps/lauf-example-async/README.md)
+Lauf utilities guide you to use core Typescript language features like classes and generator functions to define actions and sequence them without unnecessary entities and boilerplate.
 
-<sub><sup>Logo - Diego Naive, Noun Project.</sup></sub>
+Our examples demonstrate how adopting the yield-Action pattern can unlock state management, asynchrony, time-travel debugging and testability benefits associated with Redux. Lauf does this without action constants, creators, payloads, dispatchers, middleware, reducers or connectors.
+
+For a worked example and comparison with redux, redux-saga and redux-saga-test-plan, see the [Async App](./apps/lauf-example-async/README.md)
+
+## Primitives
+
+Lauf offers primitives to coordinate shared resources and state between concurrent Action sequences. These include a [Store](./modules/lauf-store), a [Message Queue](./modules/lauf-queue) and a [Mutex or Lock](./modules/lauf-lock). These pure Async implementations have no direct dependencies on Lauf. The Lauf Action definitions to use these primitive features with [lauf-runner](./modules/lauf-runner) are published via [lauf-runner-primitives](./modules/lauf-runner-primitives).

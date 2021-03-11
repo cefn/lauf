@@ -3,7 +3,7 @@ import {
   editValue,
   followStoreSelector,
   CONTINUE,
-} from "@lauf/lauf-store-runner";
+} from "@lauf/lauf-runner-primitives";
 import {
   Action,
   ActionSequence,

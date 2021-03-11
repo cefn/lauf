@@ -1,6 +1,6 @@
 import { BasicMessageQueue } from "@lauf/lauf-queue";
 import { performPlan, performSequence } from "@lauf/lauf-runner";
-import { send, receive } from "@lauf/lauf-store-runner";
+import { send, receive } from "@lauf/lauf-runner-primitives";
 
 describe("send,receive behaviour", () => {
   test("Simple send and receive", async () => {
