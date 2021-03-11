@@ -5,7 +5,7 @@
 <sub><sup>Logo - Diego Naive, Noun Project.</sup></sub>
 <br></br>
 
-Lauf can define your application state and business logic separately from your UI code, like Redux.
+Lauf defines your application state and business logic separately from your UI code, like Redux and Redux-Saga.
 
 It offers Typescript utilities and patterns to control and monitor event sequences and immutable state.
 
