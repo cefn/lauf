@@ -5,17 +5,13 @@
 <sub><sup>Logo - Diego Naive, Noun Project.</sup></sub>
 <br></br>
 
-Lauf defines your application state and business logic separately from your UI code, like Redux and Redux-Saga.
-
-It offers Typescript utilities and patterns to control and monitor event sequences and immutable state.
-
-Then it steps out of your way.
+Lauf helps you define your application state and business logic separately from your UI code. It offers Typescript utilities and patterns to control and monitor sequences of actions, and to bind your UI to shared state and application events. Then it steps out of your way.
 
 <hr>
 
 ## Approach
 
-Lauf is structured around a single change in programming convention compared to everyday procedural code. Instead of directly triggering steps like this...
+Lauf applications are procedural code, but instead of directly triggering steps like...
 
 ```typescript
 doThis();
@@ -23,7 +19,7 @@ doThat();
 doTheOther();
 ```
 
-...we define an action containing those steps...
+...we yield an action containing those steps which looks like...
 
 ```typescript
 {
@@ -35,14 +31,26 @@ doTheOther();
 }
 ```
 
-Lauf promotes the adoption of built-in language constructs like classes and generator functions to define actions and sequence them without unnecessary boilerplate.
+That's it.
 
-The project demonstrates how this single change can achieve equivalent benefits of state management, asynchrony, time-travel debugging and testability that comes with Redux. However, Lauf does this without action constants, creators, payloads, dispatchers, middleware, reducers or connectors.
+Once you have a procedure which yields your actions, it can be passed to a Lauf performer like....
+
+```typescript
+performSequence(myProcedure());
+```
 
 ## Getting started
 
-To get started with the approach, read the [introductory tutorial](./docs/index.md)
+To get started understanding and using the approach, read the [introductory tutorial](./docs/index.md)
 
-## Demonstration
+## Design
 
-For a worked example and comparison with redux, redux-saga and redux-saga-test-plan, see the [Example App](./apps/lauf-example-async/README.md)
+Lauf utilities guide you to use core Typescript language features like classes and generator functions to define actions and sequence them without unnecessary entities and boilerplate.
+
+Our examples demonstrate how adopting the Action pattern can unlock state management, asynchrony, time-travel debugging and testability benefits associated with Redux. Lauf does this without action constants, creators, payloads, dispatchers, middleware, reducers or connectors.
+
+For a worked example and comparison with redux, redux-saga and redux-saga-test-plan, see the [Async App](./apps/lauf-example-async/README.md)
+
+## Primitives
+
+Lauf offers primitives to coordinate shared resources and state between concurrent Action sequences. These include a [Store](./modules/lauf-store), a [Message Queue](./modules/lauf-queue) and a [Mutex or Lock](./modules/lauf-lock). These pure Async implementations have no direct dependencies on Lauf. Their features are shimmed as Actions to use them in ActionSequences via [lauf-runner-primitives](./modules/lauf-runner-primitives).
