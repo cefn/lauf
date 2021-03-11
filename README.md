@@ -1,4 +1,4 @@
-<img src="https://github.com/cefn/lauf/raw/main/vector/logo.png" alt="Logo - Image of Runner" align="left">
+<img src="https://github.com/cefn/lauf/raw/main/vector/logo.png" alt="Logo - Image of Runner" align="left"><br></br>
 
 # Lauf
 
@@ -6,7 +6,7 @@
 <sub><sup>Logo - Diego Naive, Noun Project.</sup></sub>
 <br>
 
-Lauf is an approach to define your application state and business logic separately from your UI code. It provides utilities to accelerate common patterns and steps out of your way.
+Lauf is an approach to define your application state and business logic separately from your UI code. It offers utilities for patterns in Typescript to define and monitor event sequences and immutable state. Then it steps out of your way.
 
 <hr>
 
