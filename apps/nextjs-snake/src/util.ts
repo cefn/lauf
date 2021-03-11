@@ -41,9 +41,8 @@ export function getDirection(
   a: Immutable<Vector>,
   b: Immutable<Vector>
 ): Direction | null {
-  //if points are on opposite sides, they are one step away
-
   const difference = minus(b, a);
+  //if points are on opposite sides, they are one step away
   const wrapDifference = difference.map((dim) =>
     Math.abs(dim) === GRID_MAX * 2 ? -Math.sign(dim) : dim
   ) as Vector;

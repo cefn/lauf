@@ -25,9 +25,8 @@ export function createActionMatcher<Reaction>(expected: Action<Reaction>) {
 
 export async function* performUntilActionFulfils<Reaction>(
   criterion: (candidate: Action<Reaction>) => boolean,
-  performer: Performer<never, Reaction> = actor
+  performance: Performance<any, Reaction> = actor()
 ): Performance<Action<Reaction>, Reaction> {
-  const performance = performer();
   await performance.next();
   let reaction, done;
   let action = yield undefined as any;
@@ -43,9 +42,8 @@ export async function* performUntilActionFulfils<Reaction>(
 
 export async function* performUntilReactionFulfils<Reaction>(
   criterion: (candidate: Reaction) => boolean,
-  performer: Performer<never, Reaction> = actor
+  performance: Performance<any, Reaction> = actor()
 ): Performance<Reaction, Reaction> {
-  const performance = performer();
   await performance.next();
   let reaction, done;
   let action = yield undefined as any;
@@ -61,7 +59,7 @@ export async function* performUntilReactionFulfils<Reaction>(
 
 export async function* performWithMocks<Reaction>(
   mocks: Array<[ActionCheck | Action<any>, Reaction]>,
-  performer: Performer<never, Reaction> = actor
+  performance: Performance<any, Reaction> = actor()
 ): Performance<never, Reaction> {
   //substitute action 'checks' with a matcher for the action
   const normalisedMocks = mocks.map<[ActionCheck, Reaction]>(
@@ -70,7 +68,6 @@ export async function* performWithMocks<Reaction>(
       mocked,
     ]
   );
-  const performance = performer();
   await performance.next();
   let reaction, done;
   let action = yield undefined as any;

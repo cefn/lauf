@@ -31,7 +31,7 @@ export function Sprite<SpriteName extends string>({
   const backgroundPosition = `${-offsetX * width}px ${-offsetY * height}px`;
 
   const left = (x + GRID_MAX) * width;
-  const top = (GRID_SPAN - (y + GRID_MAX)) * height; //vertical axis is inverted in browser
+  const top = (GRID_SPAN - (y + GRID_MAX + 1)) * height; //vertical axis is inverted in browser
 
   const display = "block";
   const position = "absolute";
@@ -47,7 +47,6 @@ export function Sprite<SpriteName extends string>({
         top,
         backgroundImage,
         backgroundPosition,
-        backgroundColor: "blue",
       }}
     />
   );

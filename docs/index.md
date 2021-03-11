@@ -41,33 +41,32 @@ For an async action or user interaction to be carried out, you
 
 ```typescript
 function* idiomaticPlan(): ActionSequence {
-  const name = yield* promptUser("What is your name?");
+  const name = yield* promptUser("What is your full name?");
   yield* alertUser(`Pleased to meet you, ${name}!`);
 }
 ```
 
-Lauf will run each **_Action_** in the **_ActionSequence_** for you and get its **_Reaction_**. It will halt your plan until the **_Reaction_** is available. When it is available, the `yield*` expression will be set to the value of the **_Reaction_** and the plan resumes.
+Lauf will run each **_Action_** in the **_ActionSequence_** for you and get its **_Reaction_**. It will halt your plan until the **_Reaction_** is available. At that point, the `yield*` expression will be set to the value of the **_Reaction_** and the plan resumes.
 
 ## Minimal Examples
 
-Lets begin by exploring minimal Lauf **_ActionSequences_** which use **_inline actions_** instead of utility functions. We don't normally use inline actions for reasons explained later, but they show how simple the approach really is.
+Lets begin by exploring some minimal Lauf **_ActionSequences_** using **_inline actions_**. We don't normally use inline actions for reasons explained later, but they show how simple the approach really is.
 
 This example uses [Window.prompt](https://developer.mozilla.org/en-US/docs/Web/API/Window/prompt). The plan is halted until a name is entered in the prompt. When it resumes the user's response is stored as `name` and used to sequence another action.
 
 ```typescript
 function* simplePlan(): ActionSequence {
-  const name = yield { act: () => prompt("What is your name?") };
+  const name = yield { act: () => prompt("What is your full name?") };
   yield { act: () => alert(`Pleased to meet you, ${name as string}!`) };
 }
 ```
 
-Here is a more complex plan and its inline Actions. It shows how a complex sequence
-can be understood as a single traceable and synchronous flow rather than broken up across Actions, Thunks, Reducers and Middleware...
+Here is a more complex plan with inline Actions. It shows how a complex sequence can be understood as a single traceable and synchronous flow rather than broken up across Action Constants, Creators, Thunks, Reducers, Combined Reducers and Middleware...
 
 ```typescript
 function* dialogPlan(): ActionSequence {
   let name = null;
-  let message = "What is your name?";
+  let message = "What is your full name?";
   while (name === null) {
     name = yield { act: () => prompt(message) };
     const nameCount = name.split(" ").length;
@@ -89,8 +88,7 @@ function* dialogPlan(): ActionSequence {
 
 ## Concepts: Action Classes
 
-In the examples above, Actions were created inline in the code to illustrate
-the principles. However, in regular Lauf code this is unusual because huge benefits can be gained by adding just a bit more structure.
+In the examples above, Actions were created inline in the code to illustrate the principles. However, in regular Lauf code this is unusual because huge benefits can be gained by adding just a bit more structure.
 
 In idiomatic Lauf, the _Window.prompt_ capability would be embedded in an ActionPlan by creating an Action class, and transforming the class constructor into a plan using `planOfAction()` as shown below.
 
@@ -104,24 +102,24 @@ class PromptUser implements Action<string> {
 export const promptUser = planOfAction(PromptUser);
 ```
 
-Our action has been turned into a `promptUser(message)` plan which when called will yield a single action `new PromptUser(message)` action. The plan inherits all the arguments of the PromptUser constructor and on completion will return a properly typed `string` from the `act()` method.
-
 We can use a [delegating yield](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/yield*), which looks like `yield*`, to hand off to our new `promptUser` plan from any other plan.
 
-The delegating yield matches the return type of the `act()` method. We no longer have to cast the **_Reaction_** with `as string` as per the earlier `simplePlan()` and `dialogPlan()` examples. This makes our code type-safe.
-
-Here is the earlier example again with its delegating yield to `promptUser(message)`...
+Here is the earlier example again. You can see its delegating yield to `promptUser(message)`...
 
 ```typescript
 function* idiomaticPlan(): ActionSequence {
-  const name = yield* promptUser("What is your name?");
+  const name = yield* promptUser("What is your full name?");
   yield* alertUser(`Pleased to meet you, ${name}!`);
 }
 ```
 
+The `promptUser(message)` plan has inherited all the arguments of the PromptUser constructor. When running, it will yield a single action to Lauf (`new PromptUser(message)`) and wait for the Reaction to come back.
+
+On completion `promptUser` will return the properly typed `string` that Lauf received from the instance's `act()` method. We no longer have to cast the **_Reaction_** with `as string` as per the earlier `simplePlan()` and `dialogPlan()` examples. This makes our code type-safe.
+
 ## 'Advanced' Lauf Programming : Performers and Testing
 
-There is another huge benefit of creating a class and wrapping it in `planOfAction()`. The **_Action_** configuration is now made through named properties, and passed by readonly value, not by closure reference. In this way we can inspect a `PromptUser` instance and get hold of its `message` as part of a test.
+There is another huge benefit of creating a class and wrapping it in `planOfAction()`. The **_Action_** configuration is now stored as named properties, and passed by readonly value, not by closure reference. In this way we can inspect a `PromptUser` instance at any time. We can use this to inspect the `message` as part of a test.
 
 To understand how Lauf testing can be used to inspect **_Actions_** and their **_Reactions_**, we will peek under the hood of Lauf.
 
@@ -139,27 +137,28 @@ export const actor: Performer<never, any> = async function* () {
 };
 ```
 
-Having pluggable **_Performers_** makes tests trivial to write. We simply replace `actor` with a test **_Performer_**. This **_Performer_** can intercept **_Actions_**, inserting mock **_Reactions_** if instructed, and make assertions about both **_Actions_** and **_Reactions_**.
+Having pluggable **_Performers_** makes tests trivial to write. We simply replace `actor` with a test **_Performer_**. This **_Performer_** can intercept **_Actions_** and **_Reactions_** to test them, and insert mocks if instructed.
 
 You don't have to implement test performers directly. They are trivial to create using utilities from [lauf-runner-trial](https://github.com/cefn/lauf/blob/main/modules/lauf-runner-trial/src/perform.ts).
 
-With the earlier `dialogPlan()` example rewritten to use `promptUser` (which creates instances of `PromptUser`) we can write this test to look out for the matching action...
+Once our earlier `dialogPlan()` example is rewritten to use `promptUser` (which creates instances of `PromptUser`) we can write the test below to look out for the matching action...
 
 ```typescript
 test("dialogPlan() prompts for name", async () => {
   await performSequence(dialogPlan(), () =>
     performUntilActionFulfils(
-      createActionMatcher(new PromptUser("What is your name?"))
+      createActionMatcher(new PromptUser("What is your full name?"))
     )
   );
 });
 ```
 
-In the test below a mock performer (to fake a reaction from the user) is combined with a matcher performer (to check the resulting action).
+We can go further, introducing a mock performer (to fake a reaction from the user) combined with a matcher performer (to check the resulting action)...
 
 ```typescript
 test("dialogPlan() challenges single names", async () => {
-  await performSequence(dialogPlan(), () =>
+  const dialogSequence = dialogPlan();
+  await performSequence(dialogSequence, () =>
     performWithMocks([[new PromptUser("What is your name?"), "Sting"]], () =>
       performUntilActionFulfils(
         createActionMatcher(
