@@ -2,9 +2,8 @@
 
 # Lauf
 
-<br>
 <sub><sup>Logo - Diego Naive, Noun Project.</sup></sub>
-<br>
+<br></br>
 
 Lauf is an approach to define your application state and business logic separately from your UI code. It offers utilities for patterns in Typescript to define and monitor event sequences and immutable state. Then it steps out of your way.
 
