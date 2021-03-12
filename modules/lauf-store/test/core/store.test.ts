@@ -19,7 +19,7 @@ describe("BasicStore behaviour", () => {
     const store = new BasicStore<Record<string, string[]>>({
       ancient: ["Roses are red", "Violets are blue"],
     });
-    const value = store.editValue((draft) => {
+    const value = store.edit((draft) => {
       draft.modern = ["Sugar is sweet", "So are you"];
     });
     expect(value).toEqual({
@@ -34,7 +34,7 @@ describe("BasicStore behaviour", () => {
       modern: ["Sugar is sweet", "So are you"],
     });
     const valueBefore = store.getValue();
-    store.editValue((draft) => {
+    store.edit((draft) => {
       draft.ancient = draft.ancient || [];
       draft.ancient[0] = "Roses are white";
     });

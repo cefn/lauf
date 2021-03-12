@@ -14,7 +14,7 @@ export function setByPath<T>(
   path: string,
   value: any
 ): Immutable<T> {
-  return store.editValue((draft) => {
+  return store.edit((draft) => {
     lodashSet(draft, path, value);
   });
 }
@@ -23,7 +23,7 @@ export function setByPathMap<T, V = any>(
   store: Store<T>,
   pathMap: PathMap<V>
 ): Immutable<T> {
-  return store.editValue((draft) => {
+  return store.edit((draft) => {
     for (const [path, value] of Object.entries(pathMap)) {
       lodashSet(draft, path, value);
     }

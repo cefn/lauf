@@ -5,7 +5,7 @@
 import React from "react";
 import { useSelected, useStore } from "../src";
 import { render, fireEvent, waitFor, screen } from "@testing-library/react";
-import { Selector, Store } from "@lauf/lauf-store";
+import { BasicStore, Selector, Store } from "@lauf/lauf-store";
 import { act } from "react-dom/test-utils";
 
 const planets = ["earth", "mars"] as const;
@@ -21,7 +21,7 @@ type StoreProps = {
 const planetSelector: Selector<State, Planet> = (state) => state.planet;
 
 function chooseNextPlanet(store: Store<State>) {
-  store.editValue((draft) => {
+  store.edit((draft) => {
     let planetIndex = planets.indexOf(draft.planet);
     planetIndex += 1;
     planetIndex %= planets.length;
@@ -30,11 +30,11 @@ function chooseNextPlanet(store: Store<State>) {
 }
 
 function secureAmulet(store: Store<State>) {
-  store.editValue((draft) => (draft.haveAmulet = true));
+  store.edit((draft) => (draft.haveAmulet = true));
 }
 
 function loseAmulet(store: Store<State>) {
-  store.editValue((draft) => (draft.haveAmulet = false));
+  store.edit((draft) => (draft.haveAmulet = false));
 }
 
 const PlanetLabel = ({ planet }: { planet: string }) => (
@@ -95,5 +95,33 @@ describe("useSelected : (re)render using subset of store", () => {
       rootSpy.mockClear();
       branchSpy.mockClear();
     });
+  });
+});
+
+describe("Component state follows selector", () => {
+  /** DEFINE STATE, STORE, UI */
+  interface TestState {
+    readonly coord: [number, number];
+  }
+
+  const selectCoord: Selector<TestState> = (state) => state.coord;
+
+  const Component = ({ store }: { store: Store<TestState> }) => {
+    const coord = useSelected(store, selectCoord);
+    return <div data-testid="component">{JSON.stringify(coord)}</div>;
+  };
+
+  test("Rendered Store tracks selector after replacement of state", async () => {
+    const store = new BasicStore<TestState>({
+      coord: [0, 0],
+    } as const);
+    render(<Component store={store} />);
+    expect((await screen.findByTestId("component")).textContent).toBe("[0,0]");
+    await act(async () => {
+      store.setValue({
+        coord: [1, 1],
+      } as const);
+    });
+    expect((await screen.findByTestId("component")).textContent).toBe("[1,1]");
   });
 });

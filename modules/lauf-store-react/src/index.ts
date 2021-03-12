@@ -19,7 +19,7 @@ export function useSelected<State, Selected = any>(
   store: Store<State>,
   selector: Selector<State, Selected>
 ) {
-  const [selected, setSelected] = useState(() => {
+  let [selected, setSelected] = useState(() => {
     return selector(store.getValue());
   });
   useEffect(() => {
@@ -28,7 +28,8 @@ export function useSelected<State, Selected = any>(
       if (Object.is(selected, nextSelected)) {
         return;
       }
-      setSelected(nextSelected);
+      selected = nextSelected; //sync version in closure
+      setSelected(nextSelected); //set version in state
     });
     return () => {
       unwatch();

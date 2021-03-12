@@ -1,6 +1,6 @@
 import { Store, BasicStore, Selector, Immutable } from "@lauf/lauf-store";
 import {
-  editValue,
+  edit,
   followStoreSelector,
   CONTINUE,
 } from "@lauf/lauf-runner-primitives";
@@ -89,7 +89,7 @@ export function* fetchPlan(
   name: SubredditName
 ): ActionSequence {
   //initialise cache and transition to 'fetching' state
-  yield* editValue(store, (draft) => {
+  yield* edit(store, (draft) => {
     draft.caches[name] = {
       ...(draft.caches[name] || (initialCache as Cache)),
       isFetching: true,
@@ -101,7 +101,7 @@ export function* fetchPlan(
     posts = yield* fetchSubreddit(name);
   } finally {
     //update cache with results
-    yield* editValue(store, (draft) => {
+    yield* edit(store, (draft) => {
       if (posts) {
         //save posts and update time, reset fetching status
         draft.caches[name] = {
@@ -121,7 +121,7 @@ export function* fetchPlan(
 }
 
 function* setFocusPlan(store: Store<AppState>, focus: SubredditName) {
-  yield* editValue(store, (draft) => {
+  yield* edit(store, (draft) => {
     draft.focus = focus;
   });
 }
