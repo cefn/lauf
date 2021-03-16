@@ -19,7 +19,7 @@ describe.skip("Passing test case  - incompatible jsx config", () => {
 
     //define routine to validate style-rendered position
     const validateFruitPos = () => {
-      const [gridX, gridY] = gameStore.getValue().fruitPos;
+      const [gridX, gridY] = gameStore.read().fruitPos;
       const fruitSprite = container.querySelector(`[data-testclass="FRUIT"]`);
       assert(fruitSprite !== null);
       const actualStyle = (fruitSprite as HTMLElement).style;

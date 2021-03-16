@@ -6,7 +6,7 @@ import type { Immutable } from "../types/immutable";
 type PathMap<V = any> = Record<string, V>;
 
 export function getByPath<T>(store: Store<T>, path: string): Immutable<any> {
-  return lodashGet(store.getValue(), path);
+  return lodashGet(store.read(), path);
 }
 
 export function setByPath<T>(

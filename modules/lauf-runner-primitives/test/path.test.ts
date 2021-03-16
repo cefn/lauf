@@ -24,8 +24,8 @@ describe("Store operations using paths", () => {
       return yield* setStorePath(store, "poem.roses", "white");
     };
     const ending = await performPlan(plan);
-    expect(ending).toStrictEqual(store.getValue());
-    expect(store.getValue()).toEqual({ poem: { roses: "white" } });
+    expect(ending).toStrictEqual(store.read());
+    expect(store.read()).toEqual({ poem: { roses: "white" } });
   });
 
   test("setStorePath can set an array index path", async () => {
@@ -35,8 +35,8 @@ describe("Store operations using paths", () => {
       return yield* setStorePath(store, "poem[0]", "Roses are white");
     };
     const ending = await performPlan(plan);
-    expect(ending).toStrictEqual(store.getValue());
-    expect(store.getValue()).toEqual({ poem: ["Roses are white"] });
+    expect(ending).toStrictEqual(store.read());
+    expect(store.read()).toEqual({ poem: ["Roses are white"] });
   });
 
   test("setStorePathMap can set multiple paths", async () => {
@@ -51,8 +51,8 @@ describe("Store operations using paths", () => {
       });
     };
     const ending = await performPlan(plan);
-    expect(ending).toStrictEqual(store.getValue());
-    expect(store.getValue()).toEqual({
+    expect(ending).toStrictEqual(store.read());
+    expect(store.read()).toEqual({
       poem: { roses: "white", violets: "green" },
     });
   });

@@ -46,7 +46,7 @@ describe("BasicWatchableValue behaviour", () => {
     const watchableValue = new BasicWatchableValue<string>("foo");
     const watcher = jest.fn();
     watchableValue.watch(watcher);
-    watchableValue.setValue("bar");
+    watchableValue.write("bar");
     expect(watcher).toHaveBeenCalledWith("bar");
   });
 
@@ -56,12 +56,12 @@ describe("BasicWatchableValue behaviour", () => {
     const watchableValue = new BasicWatchableValue<string>("foo", watchers);
     expect(watcher).toHaveBeenCalledWith("foo");
     watcher.mockClear();
-    watchableValue.setValue("bar");
+    watchableValue.write("bar");
     expect(watcher).toHaveBeenCalledWith("bar");
   });
 
   test("Can construct BasicWatchableValue with value", () => {
     const watchableValue = new BasicWatchableValue<string>("foo");
-    expect(watchableValue.getValue()).toBe("foo");
+    expect(watchableValue.read()).toBe("foo");
   });
 });

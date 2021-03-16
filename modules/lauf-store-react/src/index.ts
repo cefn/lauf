@@ -6,7 +6,7 @@ export function useStore<T>(initialTree: Immutable<T>): Store<T> {
   const [store, setStore] = useState(() => {
     return new BasicStore<T>(initialTree);
   });
-  const [tree, setTree] = useState(store.getValue());
+  const [tree, setTree] = useState(store.read());
   useEffect(() => {
     return store.watch((state) => {
       return setTree(state);
@@ -20,7 +20,7 @@ export function useSelected<State, Selected = any>(
   selector: Selector<State, Selected>
 ) {
   let [selected, setSelected] = useState(() => {
-    return selector(store.getValue());
+    return selector(store.read());
   });
   useEffect(() => {
     const unwatch = store.watch((value: Immutable<State>) => {

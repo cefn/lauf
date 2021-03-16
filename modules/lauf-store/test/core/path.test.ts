@@ -17,14 +17,14 @@ describe("Store operations using paths", () => {
     type X = { poem: Record<string, string> };
     const store: Store<X> = new BasicStore<X>({ poem: { roses: "red" } });
     setByPath(store, "poem.roses", "white");
-    expect(store.getValue()).toEqual({ poem: { roses: "white" } });
+    expect(store.read()).toEqual({ poem: { roses: "white" } });
   });
 
   test("setStorePath can set an array index path", () => {
     type X = { poem: Array<string> };
     const store: Store<X> = new BasicStore<X>({ poem: ["Roses are red"] });
     setByPath(store, "poem[0]", "Roses are white");
-    expect(store.getValue()).toEqual({ poem: ["Roses are white"] });
+    expect(store.read()).toEqual({ poem: ["Roses are white"] });
   });
 
   test("setStorePaths can set multiple paths", () => {
@@ -36,7 +36,7 @@ describe("Store operations using paths", () => {
       "poem.roses": "white",
       "poem.violets": "green",
     });
-    expect(store.getValue()).toEqual({
+    expect(store.read()).toEqual({
       poem: { roses: "white", violets: "green" },
     });
   });

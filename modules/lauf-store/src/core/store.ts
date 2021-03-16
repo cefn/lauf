@@ -8,12 +8,12 @@ export class BasicStore<T>
   implements Store<T> {
   edit(editor: Editor<Immutable<T>>) {
     const nextValue = (produce<Immutable<T>>(
-      this.getValue(),
+      this.read(),
       editor
     ) as unknown) as Immutable<T>;
-    return this.setValue(nextValue);
+    return this.write(nextValue);
   }
   select<Selected>(selector: Selector<T, Selected>) {
-    return selector(this.getValue());
+    return selector(this.read());
   }
 }

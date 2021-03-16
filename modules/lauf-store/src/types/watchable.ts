@@ -7,6 +7,6 @@ export interface Watchable<T> {
 }
 
 export interface WatchableValue<T> extends Watchable<T> {
-  setValue: (value: T) => T;
-  getValue: () => T;
+  write: (value: T) => T;
+  read: () => T;
 }

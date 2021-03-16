@@ -33,12 +33,12 @@ describe("BasicStore behaviour", () => {
       ancient: ["Roses are red", "Violets are blue"],
       modern: ["Sugar is sweet", "So are you"],
     });
-    const valueBefore = store.getValue();
+    const valueBefore = store.read();
     store.edit((draft) => {
       draft.ancient = draft.ancient || [];
       draft.ancient[0] = "Roses are white";
     });
-    const valueAfter = store.getValue();
+    const valueAfter = store.read();
     expect(Object.is(valueBefore, valueAfter)).toBe(false);
     expect(
       [
