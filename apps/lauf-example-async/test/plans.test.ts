@@ -40,7 +40,7 @@ describe("Plans", () => {
 
       //the testPerformer should complete all its steps
       expect(isTermination(testEnding)).toBe(true);
-    });
+    }, 30000);
 
     test("Posts retrieved, stored when focused subreddit changes", async () => {
       const store = new BasicStore<AppState>(initialAppState);
@@ -63,7 +63,7 @@ describe("Plans", () => {
       );
 
       //change the focused subreddit
-      store.editValue((state) => {
+      store.edit((state) => {
         state.focus = newFocus;
       });
 

@@ -1,55 +1,25 @@
-import { promiseDelay, Expiry } from "./delay";
-import { Action, ActionPlan, ActionSequence } from "../types";
-import { planOfAction, performPlan, performSequence } from "./util";
+import { promiseDelay, Expiry, EXPIRY } from "./delay";
+import { Action, ActionSequence } from "../types";
+import { planOfAction, performSequence } from "./util";
 
-export class ForegroundPlan<Ending> implements Action<Ending> {
-  constructor(readonly plan: ActionPlan<[], Ending>) {}
-  async act() {
-    return await performPlan(this.plan);
-  }
-}
+// type Mapped<Ending, T extends ActionSequence<Ending>[]> = {
+//   [K in keyof T]: Promise<Ending>;
+// } & { length: T["length"] };
 
-export class ForegroundAllPlans<Ending> implements Action<Ending[]> {
-  constructor(readonly plans: ActionPlan<[], Ending>[]) {}
-  async act() {
-    return await Promise.all(this.plans.map(performPlan));
-  }
-}
-
-export class BackgroundAllPlans<Ending> implements Action<Promise<Ending>[]> {
-  constructor(readonly plans: ActionPlan<[], Ending>[]) {}
+export class Background<Ending> implements Action<readonly [Promise<Ending>]> {
+  constructor(readonly sequence: ActionSequence<Ending>) {}
   act() {
-    return this.plans.map(performPlan);
+    return [performSequence(this.sequence)] as const;
   }
 }
 
-export class Race<Ending = any>
-  implements Action<[Ending, ActionSequence<Ending>]> {
-  constructor(readonly sequences: ActionSequence<Ending>[]) {}
-  act() {
-    return Promise.race(
-      this.sequences.map(async (sequence) => {
-        const result = await performSequence(sequence);
-        const completion: [Ending, ActionSequence<Ending>] = [result, sequence];
-        return completion;
-      })
-    );
-  }
-}
-
-export class Team<Ending = any> implements Action<Ending[]> {
-  constructor(readonly sequences: ActionSequence<Ending>[]) {}
-  act() {
-    return Promise.all(this.sequences.map(performSequence));
-  }
-}
-
-class Timeout<Ending = any> implements Action<Ending | Expiry> {
-  constructor(readonly sequence: ActionSequence<Ending>, readonly ms: number) {}
-  act() {
-    const completionPromise = performSequence(this.sequence);
-    const timeoutPromise = promiseDelay(this.ms);
-    return Promise.race([completionPromise, timeoutPromise]);
+export class BackgroundAll<
+  Ending,
+  SequenceList extends ActionSequence<Ending>[]
+> implements Action<Promise<Ending>[]> {
+  constructor(readonly sequences: SequenceList) {}
+  act(): Promise<Ending>[] {
+    return this.sequences.map(performSequence);
   }
 }
 
@@ -60,17 +30,47 @@ class Wait<Ending = any> implements Action<Ending> {
   }
 }
 
-//TODO add a fork, which yields the promise of sequence completion (complement of join)
+export class RaceWait<Ending = any>
+  implements Action<[Ending, Promise<Ending>]> {
+  constructor(readonly promises: Promise<Ending>[]) {}
+  act() {
+    return Promise.race(
+      this.promises.map(async (promise) => {
+        const result = await promise;
+        const completion: [Ending, Promise<Ending>] = [result, promise];
+        return completion;
+      })
+    );
+  }
+}
 
-/** Spawn ActionPlans */
-export const foregroundPlan = planOfAction(ForegroundPlan);
-export const foregroundAllPlans = planOfAction(ForegroundAllPlans);
-export const backgroundAllPlans = planOfAction(BackgroundAllPlans);
+export class TeamWait<Ending> implements Action<Ending[]> {
+  constructor(readonly promises: Promise<Ending>[]) {}
+  act() {
+    return Promise.all(this.promises);
+  }
+}
 
-/** Compose ActionSequences */
-export const race = planOfAction(Race);
-export const team = planOfAction(Team);
-export const timeout = planOfAction(Timeout);
+class TimeoutWait<Ending> extends RaceWait implements Action<Ending | Expiry> {
+  constructor(readonly promise: Promise<Ending>, readonly ms: number) {
+    super([promise, promiseDelay(ms)]);
+  }
+  async act() {
+    const [ending, winner] = await super.act();
+    if (winner === this.promise) {
+      return ending;
+    } else {
+      return EXPIRY;
+    }
+  }
+}
 
-/** Block on a promise. */
+/** Background sequences returning promises */
+export const background = planOfAction(Background);
+export const backgroundAll = planOfAction(BackgroundAll);
+
+/** Block on promises. */
 export const wait = planOfAction(Wait);
+export const raceWait = planOfAction(RaceWait);
+export const teamWait = planOfAction(TeamWait);
+export const timeoutWait = planOfAction(TimeoutWait);
