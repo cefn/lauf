@@ -26,14 +26,14 @@ export class BasicWatchableValue<T>
   protected value!: T;
   constructor(value: T, watchers?: ReadonlyArray<Watcher<T>>) {
     super(watchers);
-    this.setValue(value);
+    this.write(value);
   }
-  setValue(value: T) {
+  write(value: T) {
     this.value = value;
     this.notify(value);
     return value;
   }
-  getValue() {
+  read() {
     return this.value;
   }
 }

@@ -154,7 +154,7 @@ function* eatFruit(gameStore: Store<GameState>) {
 function* snakeCollisionRoutine(appModel: AppModel) {
   const { gameStore } = appModel;
   yield* followStoreSelector(gameStore, selectHead, function* (head) {
-    const { segments } = gameStore.getValue();
+    const { segments } = gameStore.read();
     for (const segment of segments) {
       if (segment !== head && isVectorEqual(head.pos, segment.pos)) {
         yield* resetGame(appModel);
@@ -165,7 +165,7 @@ function* snakeCollisionRoutine(appModel: AppModel) {
 }
 
 function* moveSnake(gameStore: Store<GameState>, direction: Direction) {
-  const head = selectHead(gameStore.getValue());
+  const head = selectHead(gameStore.read());
   if (head) {
     const pos = wrap(plus(head.pos, DIRECTION_VECTORS[direction]));
     yield* addHead(gameStore, { pos, direction });

@@ -28,7 +28,7 @@ export function* withChangeQueue<Value, Selected, Ending>(
   handleQueue: ActionPlan<[MessageQueue<Selected>, Selected], Ending>
 ): ActionSequence<Ending> {
   const queue = new BasicMessageQueue<Selected>();
-  let prevSelected: Selected = selector(store.getValue());
+  let prevSelected: Selected = selector(store.read());
   const selectedNotifier = (value: Immutable<Value>) => {
     const nextSelected = selector(value);
     if (!Object.is(nextSelected, prevSelected)) {
@@ -37,7 +37,7 @@ export function* withChangeQueue<Value, Selected, Ending>(
     }
   };
   const unwatch = store.watch(selectedNotifier); //subscribe future states
-  selectedNotifier(store.getValue()); //notify the initial state
+  selectedNotifier(store.read()); //notify the initial state
   try {
     return yield* handleQueue(queue, prevSelected);
   } finally {

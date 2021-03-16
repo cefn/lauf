@@ -45,7 +45,7 @@ describe("useStore : initialises, resolves a store", () => {
   test("Store data can be used", async () => {
     const StoreRoot = () => {
       const store = useStore<State>({ planet: "mars" });
-      const planet = planetSelector(store.getValue());
+      const planet = planetSelector(store.read());
       return <PlanetLabel planet={planet} />;
     };
     render(<StoreRoot />);
@@ -118,7 +118,7 @@ describe("Component state follows selector", () => {
     render(<Component store={store} />);
     expect((await screen.findByTestId("component")).textContent).toBe("[0,0]");
     await act(async () => {
-      store.setValue({
+      store.write({
         coord: [1, 1],
       } as const);
     });

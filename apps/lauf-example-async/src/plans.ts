@@ -75,7 +75,7 @@ export function* mainPlan(store: Store<AppState>): ActionSequence {
   yield* followStoreSelector(store, selectFocus, function* (focus) {
     // invoked on initial value and every subsequent change
     if (focus) {
-      const cache = selectFocusedCache(store.getValue());
+      const cache = selectFocusedCache(store.read());
       if (!cache?.posts) {
         yield* fetchPlan(store, focus);
       }
@@ -127,7 +127,7 @@ function* setFocusPlan(store: Store<AppState>, focus: SubredditName) {
 }
 
 function* fetchFocusedPlan(store: Store<AppState>) {
-  const { focus } = store.getValue();
+  const { focus } = store.read();
   if (focus) {
     yield* fetchPlan(store, focus);
   }
