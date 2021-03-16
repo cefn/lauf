@@ -40,8 +40,8 @@ describe.skip("Passing test case  - incompatible jsx config", () => {
           inputQueue.send([direction, false]);
         }
       }
-      await performSequence(eatFruit(gameStore));
-      await performSequence(eatFruit(gameStore));
+      await performSequence(eatFruit(appModel));
+      await performSequence(eatFruit(appModel));
     });
     validateFruitPos();
     await act(async () => {
