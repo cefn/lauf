@@ -37,15 +37,12 @@ export function* mainPlan() {
   return appModel;
 }
 
-function* resetGame({ storePlans: { edit } }: AppModel) {
+function* resetGame({ edit }: AppModel) {
   yield* edit((state) => INITIAL_STATE);
 }
 
 function* snakeMotionRoutine(appModel: AppModel) {
-  const {
-    storePlans: { withQueue },
-  } = appModel;
-
+  const { withQueue } = appModel;
   yield* withQueue(selectMotion, function* (motionQueue, initialMotion) {
     let motion = initialMotion;
     while (true) {
@@ -85,10 +82,7 @@ function* moveUntilMotionChange(
 }
 
 function* fruitRoutine(appModel: AppModel) {
-  const {
-    storePlans: { followSelect, select },
-  } = appModel;
-
+  const { followSelect, select } = appModel;
   yield* followSelect(selectHead, function* (head) {
     const fruitPos = yield* select(selectFruitPos);
     if (isVectorEqual(fruitPos, head.pos)) {
@@ -98,10 +92,7 @@ function* fruitRoutine(appModel: AppModel) {
 }
 
 /** Handle directions being activated and released (driven by keypresses or touchscreen drags) */
-function* inputDirectionRoutine({
-  storePlans: { edit, select },
-  inputQueue,
-}: AppModel) {
+function* inputDirectionRoutine({ edit, select, inputQueue }: AppModel) {
   while (true) {
     //block for next instruction
     const [inputDirection, active] = yield* receive(inputQueue);
@@ -131,7 +122,7 @@ function* inputDirectionRoutine({
   }
 }
 
-function* eatFruit({ storePlans: { edit } }: AppModel) {
+function* eatFruit({ edit }: AppModel) {
   yield* edit((state) => {
     state.score += 1;
     state.length += 1;
@@ -151,10 +142,7 @@ function* eatFruit({ storePlans: { edit } }: AppModel) {
 }
 
 function* snakeCollisionRoutine(appModel: AppModel) {
-  const {
-    storePlans: { followSelect, select },
-  } = appModel;
-
+  const { followSelect, select } = appModel;
   yield* followSelect(selectHead, function* (head) {
     const segments = yield* select(selectSegments);
     for (const segment of segments) {
@@ -166,10 +154,7 @@ function* snakeCollisionRoutine(appModel: AppModel) {
 }
 
 function* moveSnake(appModel: AppModel, direction: Direction) {
-  const {
-    storePlans: { select },
-  } = appModel;
-
+  const { select } = appModel;
   const head = yield* select(selectHead);
   if (head) {
     const pos = wrap(plus(head.pos, DIRECTION_VECTORS[direction]));
@@ -177,7 +162,7 @@ function* moveSnake(appModel: AppModel, direction: Direction) {
   }
 }
 
-function* addHead({ storePlans: { edit } }: AppModel, head: Segment) {
+function* addHead({ edit }: AppModel, head: Segment) {
   yield* edit((draftState) => {
     const { segments } = draftState;
     //add head
