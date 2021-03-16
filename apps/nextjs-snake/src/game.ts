@@ -8,7 +8,7 @@ import {
 } from "@lauf/lauf-runner";
 import { Draft } from "@lauf/lauf-store";
 import { MessageQueue } from "@lauf/lauf-queue";
-import { receive, CONTINUE } from "@lauf/lauf-runner-primitives";
+import { receive } from "@lauf/lauf-runner-primitives";
 import {
   createAppModel,
   AppModel,
@@ -45,6 +45,7 @@ function* snakeMotionRoutine(appModel: AppModel) {
   const {
     storePlans: { withQueue },
   } = appModel;
+
   yield* withQueue(selectMotion, function* (motionQueue, initialMotion) {
     let motion = initialMotion;
     while (true) {
@@ -87,12 +88,12 @@ function* fruitRoutine(appModel: AppModel) {
   const {
     storePlans: { followSelect, select },
   } = appModel;
+
   yield* followSelect(selectHead, function* (head) {
     const fruitPos = yield* select(selectFruitPos);
     if (isVectorEqual(fruitPos, head.pos)) {
       yield* eatFruit(appModel);
     }
-    return CONTINUE;
   });
 }
 
@@ -161,7 +162,6 @@ function* snakeCollisionRoutine(appModel: AppModel) {
         yield* resetGame(appModel);
       }
     }
-    return CONTINUE;
   });
 }
 

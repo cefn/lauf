@@ -24,12 +24,15 @@ export interface Segment {
 }
 
 export function createAppModel(): AppModel {
+  const inputQueue = new BasicMessageQueue<[Direction, boolean]>();
   const gameStore = new BasicStore<GameState>(INITIAL_STATE);
+
   const storePlans = new StorePlans(gameStore);
+
   return {
+    inputQueue,
     gameStore,
     storePlans,
-    inputQueue: new BasicMessageQueue<[Direction, boolean]>(),
   };
 }
 
