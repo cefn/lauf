@@ -88,7 +88,7 @@ function* dialogPlan(): ActionSequence {
 
 In the examples above, Actions were created inline in the code to illustrate the principles. However, in regular Lauf code this is unusual because huge benefits can be gained by adding just a bit more structure.
 
-In idiomatic Lauf, the _Window.prompt_ capability would be embedded in an ActionPlan by creating an Action class, and transforming the class constructor into a plan using `planOfAction()` as shown below.
+In idiomatic Lauf, the _Window.prompt_ capability would be embedded in an ActionPlan by creating a simple Action class, then easily transforming the class into a plan using `planOfAction()` as shown below.
 
 ```typescript
 class PromptUser implements Action<string> {
@@ -111,7 +111,7 @@ function* idiomaticPlan(): ActionSequence {
 }
 ```
 
-The `promptUser(message)` plan has inherited all the arguments of the PromptUser constructor. When running, it will yield a single action to Lauf (`new PromptUser(message)`) and wait for the Reaction to come back.
+The `promptUser(message)` plan has inherited all the arguments and typings of the PromptUser class. It accepts arguments matching with the class's constructor arguments. When running, it will yield a single action to Lauf (`new PromptUser(message)`) and wait for the Reaction to come back, which will also be strictly typed.
 
 On completion `promptUser` will return the properly typed `string` that Lauf received from the instance's `act()` method. We no longer have to cast the **_Reaction_** with `as string` as per the earlier `simplePlan()` and `dialogPlan()` examples. This makes our code type-safe.
 
@@ -143,9 +143,10 @@ Once our earlier `dialogPlan()` example is rewritten to use `promptUser` (which 
 
 ```typescript
 test("dialogPlan() prompts for name", async () => {
-  await performSequence(dialogPlan(), () =>
+  await directSequence(
+    dialogPlan(),
     performUntilActionFulfils(
-      createActionMatcher(new PromptUser("What is your full name?"))
+      createActionMatcher(new Prompt("What is your full name?: "))
     )
   );
 });
@@ -155,16 +156,15 @@ We can go further, introducing a mock performer (to fake a reaction from the use
 
 ```typescript
 test("dialogPlan() challenges single names", async () => {
-  const dialogSequence = dialogPlan();
-  await performSequence(dialogSequence, () =>
-    performWithMocks([[new PromptUser("What is your name?"), "Sting"]], () =>
-      performUntilActionFulfils(
-        createActionMatcher(
-          new PromptUser(
-            "What are you, a celebrity? Enter a first and last name"
-          )
+  await directSequence(
+    dialogPlan(),
+    performUntilActionFulfils(
+      createActionMatcher(
+        new Prompt(
+          "What?! Are you a celebrity or something, Sting? Enter a first and last name: "
         )
-      )
+      ),
+      performWithMocks([[new Prompt("What is your full name?: "), "Sting"]])
     )
   );
 });

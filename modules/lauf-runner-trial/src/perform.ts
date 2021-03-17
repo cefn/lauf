@@ -1,11 +1,5 @@
 import { isDeepStrictEqual } from "util";
-import {
-  Action,
-  Performer,
-  Performance,
-  actor,
-  isAction,
-} from "@lauf/lauf-runner";
+import { Action, Performance, actor, isAction } from "@lauf/lauf-runner";
 
 type ActionCheck = (candidate: Action<any>) => boolean;
 
@@ -15,27 +9,28 @@ function actionMatches<Actual extends Action<any>, Expected extends Actual>(
 ): actual is Expected {
   return (
     actual.constructor === expected.constructor &&
-    isDeepStrictEqual(actual, expected)
+    JSON.stringify(actual) === JSON.stringify(expected)
   );
 }
 
 export function createActionMatcher<Reaction>(expected: Action<Reaction>) {
-  return (candidate: Action<Reaction>) => actionMatches(candidate, expected);
+  return (candidate: Action<Reaction>) => {
+    return actionMatches(candidate, expected);
+  };
 }
 
 export async function* performUntilActionFulfils<Reaction>(
   criterion: (candidate: Action<Reaction>) => boolean,
   performance: Performance<any, Reaction> = actor()
 ): Performance<Action<Reaction>, Reaction> {
-  await performance.next();
-  let reaction, done;
+  let { value: reaction, done } = await performance.next();
   let action = yield undefined as any;
   do {
-    ({ value: reaction, done } = await performance.next(action));
-    action = yield reaction;
     if (criterion(action)) {
       return action;
     }
+    ({ value: reaction, done } = await performance.next(action));
+    action = yield reaction;
   } while (!done);
   throw `Performer with Exit:never should consume actions forever`;
 }

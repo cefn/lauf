@@ -29,7 +29,7 @@ describe("Plans", () => {
         mainPlan(store),
         performUntilReactionFulfils(
           () =>
-            isDeepStrictEqual(focusedPostsSelector(store.read()), [
+            isDeepStrictEqual(store.select(focusedPostsSelector), [
               { title: "About React" },
             ]),
           performWithMocks([
@@ -52,7 +52,7 @@ describe("Plans", () => {
         mainPlan(store),
         performUntilReactionFulfils(
           () =>
-            isDeepStrictEqual(newFocusPostsSelector(store.read()), [
+            isDeepStrictEqual(store.select(newFocusPostsSelector), [
               { title: "About Frontend" },
             ]),
           performWithMocks([

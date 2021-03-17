@@ -1,12 +1,14 @@
-import { BasicMessageQueue, MessageQueue } from "@lauf/lauf-queue/src";
-import { BasicStore, Immutable, Selector, Store } from "@lauf/lauf-store/src";
+import { BasicMessageQueue, MessageQueue } from "@lauf/lauf-queue";
+import { StorePlans, QueuePlans } from "@lauf/lauf-runner-primitives";
+import { BasicStore, Immutable, Selector, Store } from "@lauf/lauf-store";
 
 /** GAME STATE */
 
-export interface AppModel {
+export type AppModel = {
   gameStore: Store<GameState>;
   inputQueue: MessageQueue<DirectionInput>;
-}
+} & StorePlans<GameState> &
+  QueuePlans<DirectionInput>;
 
 export interface GameState {
   length: number;
@@ -22,9 +24,17 @@ export interface Segment {
 }
 
 export function createAppModel(): AppModel {
+  const inputQueue = new BasicMessageQueue<[Direction, boolean]>();
+  const gameStore = new BasicStore<GameState>(INITIAL_STATE);
+
+  const storePlans = new StorePlans(gameStore);
+  const queuePlans = new QueuePlans(inputQueue);
+
   return {
-    gameStore: new BasicStore<GameState>(INITIAL_STATE),
-    inputQueue: new BasicMessageQueue<[Direction, boolean]>(),
+    inputQueue,
+    gameStore,
+    ...storePlans,
+    ...queuePlans,
   };
 }
 

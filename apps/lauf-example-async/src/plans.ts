@@ -1,9 +1,5 @@
 import { Store, BasicStore, Selector, Immutable } from "@lauf/lauf-store";
-import {
-  edit,
-  followStoreSelector,
-  CONTINUE,
-} from "@lauf/lauf-runner-primitives";
+import { edit, followSelect } from "@lauf/lauf-runner-primitives";
 import {
   Action,
   ActionSequence,
@@ -72,7 +68,7 @@ const fetchSubreddit = planOfAction(FetchSubreddit);
 /** PLANS */
 
 export function* mainPlan(store: Store<AppState>): ActionSequence {
-  yield* followStoreSelector(store, selectFocus, function* (focus) {
+  yield* followSelect(store, selectFocus, function* (focus) {
     // invoked on initial value and every subsequent change
     if (focus) {
       const cache = selectFocusedCache(store.read());
@@ -80,7 +76,6 @@ export function* mainPlan(store: Store<AppState>): ActionSequence {
         yield* fetchPlan(store, focus);
       }
     }
-    return CONTINUE; //signal value defined by followStoreSelector
   });
 }
 

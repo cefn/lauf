@@ -31,4 +31,6 @@ async function run() {
   console.log(`Sequence ended with ${names}`);
 }
 
-run();
+if (require.main === module) {
+  run();
+}
