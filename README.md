@@ -43,7 +43,7 @@ performSequence(myProcedure());
 
 ## Getting started
 
-To get started understanding and using the approach, read the [introductory tutorial](./docs/index.md)
+To get started understanding and using the approach, read the [introductory tutorial](./docs/index.md). A worked example with eventing and state is the [Snake Game](https://github.com/cefn/lauf/blob/main/apps/nextjs-snake/src/game.ts). The [clone of Redux's async example app](https://github.com/cefn/lauf/tree/main/apps/lauf-example-async) illustrates how Lauf differs from Redux, Redux-Saga, Redux-Saga-Test-Plan.
 
 ## Design
 
