@@ -1,7 +1,7 @@
 import { BasicMessageQueue } from "@lauf/lauf-queue";
 import { performSequence } from "@lauf/lauf-runner";
 import { BasicStore } from "@lauf/lauf-store";
-import { editValue, receive } from "@lauf/lauf-runner-primitives";
+import { edit, receive } from "@lauf/lauf-runner-primitives";
 
 import {
   AppState,
@@ -38,7 +38,7 @@ function* colorChangePlan(appModel: AppModel) {
 }
 
 function* addColor({ colorStore }: AppModel, rgb: Rgb, amount: number) {
-  yield* editValue(colorStore, (state) => {
+  yield* edit(colorStore, (state) => {
     state.color = state.color.map((brightness, index) =>
       clamp(brightness + (rgb[index] || 0) * amount, 0, 255)
     ) as Rgb;
