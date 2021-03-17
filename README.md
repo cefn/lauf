@@ -51,8 +51,8 @@ Lauf utilities guide you to use core Typescript language features like classes a
 
 Our examples demonstrate how adopting the yield-Action pattern can unlock state management, asynchrony, time-travel debugging and testability benefits associated with Redux. Lauf does this without action constants, creators, payloads, dispatchers, middleware, reducers or connectors.
 
-For a worked example and comparison with redux, redux-saga and redux-saga-test-plan, see the [Async App](./apps/lauf-example-async/README.md)
-
 ## Primitives
 
-Lauf offers primitives to coordinate shared resources and state between concurrent Action sequences. These include a [Store](./modules/lauf-store), a [Message Queue](./modules/lauf-queue) and a [Mutex or Lock](./modules/lauf-lock). These pure Async implementations have no direct dependencies on Lauf. The Lauf Action definitions to use these primitive features with [lauf-runner](./modules/lauf-runner) are published via [lauf-runner-primitives](./modules/lauf-runner-primitives).
+Lauf includes primitives to coordinate shared resources and state between concurrent Action sequences. Currently a [Store](./modules/lauf-store) for state, a [Message Queue](./modules/lauf-queue) for events and a [Mutex or Lock](./modules/lauf-lock) to control resource-sharing. 
+
+These are minimal Promise-based implementations, independent of the yield-action pattern. Lauf Action definitions wrapping these primitive features for [lauf-runner](./modules/lauf-runner) are at [lauf-runner-primitives](./modules/lauf-runner-primitives).
