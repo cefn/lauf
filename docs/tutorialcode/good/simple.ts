@@ -8,4 +8,10 @@ function* simplePlan(): ActionSequence {
   yield* alert(`Pleased to meet you, ${name as string}!`);
 }
 
-performPlan(simplePlan);
+async function run() {
+  performPlan(simplePlan);
+}
+
+if (require.main === module) {
+  run();
+}
