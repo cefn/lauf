@@ -8,7 +8,7 @@ import { Editor, Immutable, Selector, Store } from "@lauf/lauf-store";
 import { BasicMessageQueue, MessageQueue } from "@lauf/lauf-queue";
 
 import { receive } from "./queue";
-import { Follower, isContinuation } from "./types";
+import { ExitStatus, Follower, Notifiers } from "./types";
 
 type QueueHandler<Selected, Ending> = ActionPlan<
   [MessageQueue<Selected>, Selected],
@@ -49,11 +49,18 @@ export function* followSelect<Value, Selected, Ending>(
   follower: Follower<Selected, Ending>
 ): ActionSequence<Ending> {
   return yield* withQueue(store, selector, function* (queue, selected) {
-    let ending;
+    let result;
+    const exit: ExitStatus = ["exit"];
+    const notifiers: Notifiers<Ending> = {
+      exit(ending: Ending) {
+        result = ending;
+        return exit;
+      },
+    };
     while (true) {
-      ending = yield* follower(selected);
-      if (!isContinuation(ending)) {
-        return ending;
+      const ending = yield* follower(selected, notifiers);
+      if (ending === exit) {
+        return (result as unknown) as Ending;
       }
       selected = yield* receive<Selected>(queue);
     }

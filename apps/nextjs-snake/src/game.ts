@@ -50,7 +50,7 @@ function* snakeMotionRoutine(appModel: AppModel) {
         //snake still: await motion change
         motion = yield* receive(motionQueue);
       } else {
-        //snake moving: run step procedure AND await motion change
+        //snake moving: await both step timeout AND motion change
         motion = yield* moveUntilMotionChange(appModel, motion, motionQueue);
       }
     }
@@ -126,7 +126,7 @@ function* eatFruit({ edit }: AppModel) {
   yield* edit((state) => {
     state.score += 1;
     state.length += 1;
-    //ensure fruit is outside snake
+    //place new fruit outside snake
     let nextPos = null;
     while (nextPos === null) {
       nextPos = randomSquare() as Draft<Vector>;
