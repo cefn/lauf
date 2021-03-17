@@ -28,7 +28,7 @@ To achieve this, reducer-based frameworks will use an action type, a structured 
 
 Lauf aims to avoid all this.
 
-The rest of this document uses working tutorial examples to explain the approach. After reading the explanations, you can browse the source code and tests of each example [here](./docs/tutorialcode).
+The rest of this document uses working tutorial examples to explain the approach. After reading the explanations, you can browse the source code and tests of each example [here](./tutorialcode).
 
 ## ActionPlans, ActionSequences
 
