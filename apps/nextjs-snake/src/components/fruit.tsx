@@ -1,4 +1,4 @@
-import { useSelected } from "@lauf/lauf-store-react/src";
+import { useSelected } from "@lauf/lauf-store-react";
 import { StoreProps, selectFruitPos } from "../domain";
 import { SPRITE_SHEET } from "./graphics";
 import { Sprite } from "./sprite";

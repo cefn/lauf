@@ -1,10 +1,12 @@
-# Lauf is code;
+# `Actions`, `ActionSequences` and `planOfAction`
 
-Lauf does async state-management, keeping clean separation of business logic from the UI in common with Redux, Redux-Saga, Overmind, MobX, Mobx-State-Tree, RxJS. Unlike competing frameworks, it introduces the minimum of concepts and structures.
+Lauf facilitates clean separation from the UI for sync and async business logic, and facilitates debugging and testing for apps with complex eventing and state-change propagation.
+
+It introduces the minimum of concepts and structures to achieve this, allowing the regular `async`/`await` coding style to be used for Lauf applications with minor modifications.
 
 ## Action
 
-The central concept in Lauf is the `Action`. An action defines what should happen, and what you should get back...
+The central concept in Lauf is the `Action`. An action defines what should happen, and what you should get back, much like a function.
 
 <!-- prettier-ignore-start -->
 ```typescript
@@ -12,7 +14,7 @@ The central concept in Lauf is the `Action`. An action defines what should happe
 ```
 <!-- prettier-ignore-end -->
 
-Here is Lauf's type definition...
+Here is Lauf's type definition for `Action`...
 
 ```typescript
 export interface Action<Reaction> {
@@ -20,15 +22,11 @@ export interface Action<Reaction> {
 }
 ```
 
-Coding with actions (instead of calling functions directly) means steps and their parameters are inspectable and the context and timing of execution can be decided separately.
+In the examples below we will see how the `planOfAction` adapter in Lauf enables an `Action` to be used **_as_** a function. Your code can then continue to be written in the style of normal `async`/`await` code.
 
-This minor change in coding style, combined with careful use of Typescript language structures, is enough to make logic explicit, predictable, inspectable, testable and replayable, just like a Redux application.
+Coding with `Actions` (instead of calling functions directly) means key steps and their parameters are inspectable and the context and timing of execution can be decided separately. In this way, testing and debugging middleware can intervene in your control flow without changing your coding style.
 
-To achieve this, reducer-based frameworks will use an action type, a structured payload definition, probably an Action creator, possibly a thunk creator, with the result sent via a dispatcher to (hopefully) line up with corresponding behaviour in a reducer and probably some middleware.
-
-Lauf aims to avoid all this.
-
-The rest of this document uses working tutorial examples to explain the approach. After reading the explanations, you can browse the source code and tests of each example [here](./tutorialcode).
+The rest of this document uses working tutorial examples to explain the approach. After reading the explanations, you can browse the source code and tests of each example [here](./examples/index).
 
 ## ActionPlans, ActionSequences
 
@@ -48,7 +46,7 @@ Lauf will run each **_Action_** in the **_ActionSequence_** for you and get its 
 
 ## Minimal Examples
 
-Lets begin by exploring some minimal Lauf **_ActionSequences_** using **_inline actions_**. We don't normally use inline actions for reasons explained later, but they show how simple the approach really is.
+Lets begin by exploring some minimal Lauf **_ActionSequences_** with **_inline actions_**. We don't normally use inline actions as they are verbose and not type-safe. However, this code does work and shows how simple the approach really is.
 
 This example uses [Window.prompt](https://developer.mozilla.org/en-US/docs/Web/API/Window/prompt). The plan is halted until a name is entered in the prompt. When it resumes the user's response is stored as `name` and used to sequence another action.
 
@@ -86,9 +84,9 @@ function* dialogPlan(): ActionSequence {
 
 ## Concepts: Action Classes
 
-In the examples above, Actions were created inline in the code to illustrate the principles. However, in regular Lauf code this is unusual because huge benefits can be gained by adding just a bit more structure.
+In the examples above, Actions were created inline in the code to illustrate the principles. However, in regular Lauf code this is unusual because code is easier to read and type-safe by adding just a bit more structure.
 
-In idiomatic Lauf, the _Window.prompt_ capability would be embedded in an ActionPlan by creating a simple Action class, then easily transforming the class into a plan using `planOfAction()` as shown below.
+In idiomatic Lauf, the _Window.prompt_ capability would be embedded in an ActionPlan by creating an Action class, then transforming the class into a plan using `planOfAction()` as shown below.
 
 ```typescript
 class PromptUser implements Action<string> {
@@ -102,7 +100,7 @@ export const promptUser = planOfAction(PromptUser);
 
 We can use a [delegating yield](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/yield*), which looks like `yield*`, to hand off to our new `promptUser` plan from any other plan.
 
-Here is the earlier example again. You can see its delegating yield to `promptUser(message)`...
+Here is the earlier example again. You can see the delegating yield from `idiomaticPlan` to `promptUser(message)`...
 
 ```typescript
 function* idiomaticPlan(): ActionSequence {
@@ -111,9 +109,11 @@ function* idiomaticPlan(): ActionSequence {
 }
 ```
 
-The `promptUser(message)` plan has inherited all the arguments and typings of the PromptUser class. It accepts arguments matching with the class's constructor arguments. When running, it will yield a single action to Lauf (`new PromptUser(message)`) and wait for the Reaction to come back, which will also be strictly typed.
+The `promptUser(message)` plan has inherited all the arguments and typings of the PromptUser class. It accepts arguments matching with the class's constructor arguments. When running, it will yield a single action to Lauf (`new PromptUser(message)`) and wait for the Reaction to come back.
 
-On completion `promptUser` will return the properly typed `string` that Lauf received from the instance's `act()` method. We no longer have to cast the **_Reaction_** with `as string` as per the earlier `simplePlan()` and `dialogPlan()` examples. This makes our code type-safe.
+On completion `promptUser` will return the properly typed `string` that Lauf received from the instance's `act()` method. We no longer have to cast the **_Reaction_** with `as string` before assigning it to `name` as per the earlier `simplePlan()` and `dialogPlan()` examples.
+
+Using `planOfAction` instead of inline actions has made our code easier to read and type-safe.
 
 ## 'Advanced' Lauf Programming : Performers and Testing
 

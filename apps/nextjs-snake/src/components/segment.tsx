@@ -1,4 +1,4 @@
-import { Immutable } from "@lauf/lauf-store/src";
+import { Immutable } from "@lauf/lauf-store";
 import { Segment, SegmentPosition } from "../domain";
 import { getSegmentSpriteName, SPRITE_SHEET } from "./graphics";
 import { Sprite } from "./sprite";

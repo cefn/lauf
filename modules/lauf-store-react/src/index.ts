@@ -23,17 +23,16 @@ export function useSelected<State, Selected = any>(
     return selector(store.read());
   });
   useEffect(() => {
+    let lastSelected = selected;
     const unwatch = store.watch((value: Immutable<State>) => {
       const nextSelected = selector(value);
-      if (Object.is(selected, nextSelected)) {
+      if (Object.is(lastSelected, nextSelected)) {
         return;
       }
-      selected = nextSelected; //sync version in closure
+      lastSelected = nextSelected; //sync version in closure
       setSelected(nextSelected); //set version in state
     });
-    return () => {
-      unwatch();
-    };
+    return unwatch;
   }, [store, selector]);
   return selected;
 }

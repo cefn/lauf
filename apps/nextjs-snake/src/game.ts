@@ -82,7 +82,7 @@ function* moveUntilMotionChange(
 }
 
 function* fruitRoutine(appModel: AppModel) {
-  const { followSelect, select } = appModel;
+  const { followSelected: followSelect, select } = appModel;
   yield* followSelect(selectHead, function* (head) {
     const fruitPos = yield* select(selectFruitPos);
     if (isVectorEqual(fruitPos, head.pos)) {
@@ -142,8 +142,8 @@ function* eatFruit({ edit }: AppModel) {
 }
 
 function* snakeCollisionRoutine(appModel: AppModel) {
-  const { followSelect, select } = appModel;
-  yield* followSelect(selectHead, function* (head) {
+  const { followSelected, select } = appModel;
+  yield* followSelected(selectHead, function* (head) {
     const segments = yield* select(selectSegments);
     for (const segment of segments) {
       if (segment !== head && isVectorEqual(head.pos, segment.pos)) {

@@ -8,7 +8,7 @@ import { Editor, Immutable, Selector, Store } from "@lauf/lauf-store";
 import { BasicMessageQueue, MessageQueue } from "@lauf/lauf-queue";
 
 import { receive } from "./queue";
-import { ExitStatus, Follower, Notifiers } from "./types";
+import { ExitStatus, Follower, Controls } from "./types";
 
 type QueueHandler<Selected, Ending> = ActionPlan<
   [MessageQueue<Selected>, Selected],
@@ -38,30 +38,30 @@ export function* withQueue<Value, Selected, Ending>(
   }
 }
 
-/** TODO change pattern to return a queue (receive from multiple queues within a scope) */
-/** TODO change return to use a singleton value for continuation, (allowing escape of loop). */
-/** TODO eliminate CONTINUATION return. Introduce command singleton factory after selected
- * argument of callback - e.g. function* (selected, {exit} { return exit(4); }
- * Would only allow commands as Follower return value. Only terminate loop when singleton returned. */
-export function* followSelect<Value, Selected, Ending>(
+export function* followSelected<Value, Selected, Ending>(
   store: Store<Value>,
   selector: Selector<Value, Selected>,
   follower: Follower<Selected, Ending>
 ): ActionSequence<Ending> {
   return yield* withQueue(store, selector, function* (queue, selected) {
     let result;
+    let lastSelected: Selected | undefined;
     const exit: ExitStatus = ["exit"];
-    const notifiers: Notifiers<Ending> = {
+    const controls: Controls<Selected, Ending> = {
       exit(ending: Ending) {
         result = ending;
         return exit;
       },
+      lastSelected() {
+        return lastSelected;
+      },
     };
     while (true) {
-      const ending = yield* follower(selected, notifiers);
+      const ending = yield* follower(selected, controls);
       if (ending === exit) {
         return (result as unknown) as Ending;
       }
+      lastSelected = selected;
       selected = yield* receive<Selected>(queue);
     }
   });
@@ -93,8 +93,8 @@ export class StorePlans<T> {
 
   select = <V>(selector: Selector<T, V>) => select(this.store, selector);
 
-  followSelect = <V, E>(selector: Selector<T, V>, follower: Follower<V, E>) =>
-    followSelect(this.store, selector, follower);
+  followSelected = <V, E>(selector: Selector<T, V>, follower: Follower<V, E>) =>
+    followSelected(this.store, selector, follower);
 
   withQueue = <V, E>(
     selector: Selector<T, V>,

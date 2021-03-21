@@ -1,4 +1,4 @@
-import { Action, planOfAction } from "@lauf/lauf-runner/src";
+import { Action, planOfAction } from "@lauf/lauf-runner";
 import promptSync from "prompt-sync";
 
 const doPrompt = promptSync();

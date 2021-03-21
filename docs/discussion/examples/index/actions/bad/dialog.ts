@@ -1,5 +1,5 @@
 #!/usr/bin/env -S npx ts-node
-import { ActionSequence, performPlan } from "@lauf/lauf-runner/src";
+import { ActionSequence, performPlan } from "@lauf/lauf-runner";
 
 import { prompt, alert } from "./prompt";
 
