@@ -2,14 +2,30 @@ import React, { useEffect, useState } from "react";
 import Head from "next/head";
 import { useSelected } from "@lauf/lauf-store-react/src";
 
-import { selectColor } from "./domain";
-import { launchMixer } from "./plan";
+import { AppModel, selectColor } from "./domain";
+import { performSequence } from "@lauf/lauf-runner/src";
+import { mainPlan } from "./plan";
 
-export function ColorMixer() {
-  const [{ colorStore, increaseColor, decreaseColor }] = useState(() =>
-    launchMixer()
-  );
+export function ColorApp() {
+  const [appModel, setAppModel] = useState<AppModel>();
+  useEffect(() => {
+    //only launch when client-side
+    if (process.browser) {
+      (async () => {
+        //launch then bind model
+        const appModel = await performSequence(mainPlan());
+        setAppModel(appModel);
+      })();
+    }
+  }, []);
+  return appModel ? <ColorMixer {...appModel} /> : <p>Loading...</p>;
+}
 
+export function ColorMixer({
+  colorStore,
+  increaseColor,
+  decreaseColor,
+}: AppModel) {
   const [red, green, blue] = useSelected(colorStore, selectColor);
 
   useEffect(() => {
