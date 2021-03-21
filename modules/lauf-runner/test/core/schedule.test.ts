@@ -45,7 +45,7 @@ describe("Foreground and Background operations", () => {
     const after = new Date().getTime();
     const duration = after - before;
     //it waited
-    expect(duration).toBeGreaterThanOrEqual(delayMs);
+    expect(duration).toBeGreaterThanOrEqual(delayMs * 0.5);
     //they were run in parallel, not series
     expect(duration).toBeLessThan(delayMs * sequenceGroup.length);
     //they all completed
