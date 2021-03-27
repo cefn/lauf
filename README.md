@@ -5,9 +5,9 @@
 <sub><sup>Logo - Diego Naive, Noun Project.</sup></sub>
 <br></br>
 
-Lauf is a proof-of-concept framework showing how the careful use of built-in Typescript language structures can make application logic isolated, explicit, predictable, inspectable, testable and replayable like a Redux app.
+Lauf is a proof-of-concept framework to make sequences of business logic isolated, explicit, predictable, inspectable, testable and replayable - like a Redux app, but without the boilerplate.
 
-A small change in coding style allows Lauf to silently intercept and track significant actions within the control flow of your code, (such as those that await events, or change app state).
+A small change in coding style allows Lauf to silently intercept and track significant actions happening in the control flow of your code, (such as awaited Promises, edits to app state or forked processes).
 
 This traceability and debuggability are benefits normally associated with frameworks such as Redux, Redux-Saga, Overmind, MobX, Mobx-State-Tree or RxJS.
 
@@ -37,7 +37,7 @@ yield* doTheOther();
 ```
 <!-- prettier-ignore-end -->
 
-A procedure containing delegating yields is executed by Lauf by calling `performSequence()`....
+A procedure containing delegating yields is executed by Lauf by passing it to `performSequence`....
 
 ```typescript
 performSequence(myProcedure());
