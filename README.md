@@ -5,13 +5,15 @@
 <sub><sup>Logo - Diego Naive, Noun Project.</sup></sub>
 <br></br>
 
-In common with Redux, Redux-Saga, Overmind, MobX, Mobx-State-Tree, RxJS Lauf can intercept and track significant actions (such as those that change app state) from the control flow of your code.
+Lauf is a proof-of-concept framework showing how the careful use of built-in Typescript language structures can make application logic isolated, explicit, predictable, inspectable, testable and replayable like a Redux app.
 
-A minor change in coding style, combined with careful use of Typescript language structures, is enough to make logic explicit, predictable, inspectable, testable and replayable, just like a Redux application.
+A small change in coding style allows Lauf to silently intercept and track significant actions within the control flow of your code, (such as those that await events, or change app state).
 
-To achieve this, reducer-based frameworks will use an action type, a structured payload definition, probably an Action creator, possibly a thunk creator, with the result sent via a dispatcher to (hopefully) line up with corresponding behaviour in a reducer and probably some middleware.
+This traceability and debuggability are benefits normally associated with frameworks such as Redux, Redux-Saga, Overmind, MobX, Mobx-State-Tree or RxJS.
 
-Lauf aims to avoid all this.
+To achieve this, reducer-based frameworks like `Redux` or `React.useReducer` will guide you to use an action type, a structured payload definition, probably an Action creator, possibly a thunk creator, with the result sent via a dispatcher to (hopefully) line up with corresponding behaviour in a reducer and probably some middleware.
+
+Lauf aims to avoid all this. Your coding style with Lauf can remain as simple, procedural, explicit and debuggable as `async`/`await`.
 
 <hr>
 
@@ -20,22 +22,22 @@ Lauf aims to avoid all this.
 Lauf applications are written like ordinary procedural code, but instead of directly triggering steps like...
 
 ```typescript
-const foo = getThat();
+const foo = getSomething();
 const bar = await doThat(foo);
 await doTheOther();
 ```
 
-...we use a delegating `yield*`. This passes `Actions` to Lauf to inspect and perform the sync or async steps for us...
+...we use a delegating `yield*`. This implicitly passes `Actions` to Lauf which inspects and performs the sync or async steps for us...
 
 <!-- prettier-ignore-start -->
 ```typescript
-const foo = yield* doThis();
+const foo = yield* getSomething();
 const bar = yield* doThat(foo);
-yield * doTheOther();
+yield* doTheOther();
 ```
 <!-- prettier-ignore-end -->
 
-Once you have a procedure which yields your actions, it can be passed to a Lauf performer like....
+A procedure containing delegating yields is executed by Lauf by calling `performSequence()`....
 
 ```typescript
 performSequence(myProcedure());
@@ -45,10 +47,10 @@ That's it.
 
 ## Getting started
 
-To get started understanding and using the approach, read the [introductory tutorial](./docs/tutorial/index.md). Worked examples with eventing and state are the [Snake Game](./apps/nextjs-snake/src/game.ts) or the [Mornington Crescent](./apps/nextjs-mornington/src/tutorial/event/plan.ts) tutorial game. The [clone of Redux's async example app](https://github.com/cefn/lauf/tree/main/apps/lauf-example-async) discusses how Lauf differs from Redux, Redux-Saga, Redux-Saga-Test-Plan.
+To get started understanding and using the approach, read the [introductory tutorial](./docs/tutorial/index.md). Worked examples with eventing and state are the [Snake Game](./apps/nextjs-snake/src/game.ts) or the [Mornington Crescent](./apps/nextjs-mornington/src/tutorial/event/plan.ts) tutorial game. A [clone of Redux's async example app](https://github.com/cefn/lauf/tree/main/apps/lauf-example-async) clarifies how Lauf differs from Redux, Redux-Saga and Redux-Saga-Test-Plan.
 
 ## Primitives
 
 Lauf includes primitives to coordinate shared resources and state between concurrent `ActionSequences`. Currently a [Store](./modules/lauf-store) for state, a [Message Queue](./modules/lauf-queue) for events and a [Mutex or Lock](./modules/lauf-lock) to control resource-sharing.
 
-These are minimal Promise-based implementations, independent of [lauf-runner](./modules/lauf-runner) `ActionSequences`. Definitions that wrap these primitive features for `ActionSequences` are at [lauf-runner-primitives](./modules/lauf-runner-primitives).
+These are minimal Promise-based implementations, independent of [lauf-runner](./modules/lauf-runner) `ActionSequences`. Definitions that wrap these primitive features for `ActionSequences` are distributed in the [lauf-runner-primitives](./modules/lauf-runner-primitives) module.

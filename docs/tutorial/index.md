@@ -1,28 +1,26 @@
 To get started straight away, skip to Lesson 1 [Adding a Store to your App](./storeIntroduction.md) or find out more about the lesson structure below.
 
-Note: The worked examples use React as the reference UI library. However, Lauf has no direct dependencies on React and could be used with other frameworks.
-
 ## Lessons
 
-Each lesson in this series walks through a single development task, taking us closer to a fully-working version of the well-known game [Mornington Crescent](https://www.amazon.co.uk/Little-Book-Mornington-Crescent/dp/0752844229) implemented using the [React](https://reactjs.org/) framework.
+Each lesson in this series walks through a single development task, taking us closer to a fully-working version of the well-known game [Mornington Crescent](https://www.amazon.co.uk/Little-Book-Mornington-Crescent/dp/0752844229). These examples are implemented using the [React](https://reactjs.org/) framework, although Lauf runs independently of React.
 
-Each of the three sections has two lessons. Each visits progressively more advanced subjects and revolves around a slightly more advanced version of the app.
+Each of the three sections has two lessons. Each visits progressively more advanced subjects and revolves around a slightly more complex version of the app.
 
-Very simple apps could be built like `store_tutorial` using a `Store` for state only, assuming they need no async side-effects or state transition logic.
+The first lessons help us understand simple apps. The `store_tutorial` app only uses `Store` from the Lauf API. Apps like this have no need for async side-effects or state transition logic.
 
 - Stores
   - Lesson 1 [Adding a Store to your App](./storeIntroduction.md)
   - Lesson 2 [Binding React to your Store](./bindingReact.md)
   - Example Code: [store_tutorial app](../../apps/nextjs-mornington/src/tutorial/store)
 
-More complex apps could be built like `action_tutorial` just with a `Store` for state and `ActionSequences` to define rich business logic in isolation from the UI.
+More complex apps need to take an approach like `action_tutorial`. This app adds `ActionSequences` to define rich business logic in isolation from the UI.
 
 - Actions
   - Lesson 3 [Defining ActionSequences](./actionPlans.md)
   - Lesson 4 [Defining Actions](./actionClasses.md)
   - Example Code: [action_tutorial app](../../apps/nextjs-mornington/src/tutorial/action)
 
-Most apps will evolve towards `event_tutorial`, with a `Store` for state, `ActionSequences` for business logic and a `MessageQueue` plus async `Actions` to handle external events from users or services.
+Finally, most apps will evolve towards the richness of the `event_tutorial` app which adds a `MessageQueue` and async `Actions` to allow external events from users and services to be processed by business logic.
 
 - Events
   - Lesson 5 [Message Queues](./messageQueues.md)
