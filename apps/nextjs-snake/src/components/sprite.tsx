@@ -1,5 +1,5 @@
 import React from "react";
-import { Immutable } from "@lauf/lauf-store/src";
+import { Immutable } from "@lauf/lauf-store";
 import { GRID_MAX, GRID_SPAN } from "../domain";
 
 export type SpriteSheet<TileName extends string> = Immutable<{

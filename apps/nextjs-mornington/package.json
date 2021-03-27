@@ -1,0 +1,23 @@
+{
+  "name": "nextjs-mornington",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "NODE_OPTIONS='--inspect' next dev",
+    "build": "next build",
+    "start": "next start"
+  },
+  "dependencies": {
+    "axios": "^0.21.1",
+    "next": "^10.0.0",
+    "react": "17.0.1",
+    "react-dom": "17.0.1",
+    "react-is": "^17.0.1",
+    "reselect": "^4.0.0",
+    "styled-components": "^5.2.1"
+  },
+  "devDependencies": {
+    "@types/styled-components": "^5.1.7",
+    "add": "^2.0.6"
+  }
+}

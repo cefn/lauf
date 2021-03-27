@@ -1,0 +1,1 @@
+This app provides reference code for the Lauf [tutorial](../../docs/tutorial/index.md), in which we create a web-based interactive game following the IMCS rules of [Mornington Crescent](https://www.youtube.com/watch?v=OjOsOB4erZI).

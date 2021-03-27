@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { performSequence } from "@lauf/lauf-runner/src";
+import { performSequence } from "@lauf/lauf-runner
+";
 import { mainPlan } from "../src/game";
 import { AppModel } from "../src/domain";
 import { Game } from "../src/view";

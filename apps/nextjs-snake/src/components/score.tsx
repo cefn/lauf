@@ -1,4 +1,4 @@
-import { useSelected } from "@lauf/lauf-store-react/src";
+import { useSelected } from "@lauf/lauf-store-react";
 import { selectScore, StoreProps } from "../domain";
 
 export function Score({ gameStore }: StoreProps) {

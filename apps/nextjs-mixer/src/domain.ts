@@ -1,4 +1,4 @@
-import { MessageQueue } from "@lauf/lauf-queue/src";
+import { MessageQueue } from "@lauf/lauf-queue";
 import { Selector, Store } from "@lauf/lauf-store";
 
 /** COLOR */

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Head from "next/head";
-import { useSelected } from "@lauf/lauf-store-react/src";
+import { useSelected } from "@lauf/lauf-store-react";
 
 import { selectColor } from "./domain";
 import { launchMixer } from "./plan";
