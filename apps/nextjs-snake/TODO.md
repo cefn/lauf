@@ -1,4 +1,4 @@
-Sort out names of tile.tsx and sprite.tsx
+Remove use of storePlans etc.
 
 Get 100% coverage of snake app src/ folder
 

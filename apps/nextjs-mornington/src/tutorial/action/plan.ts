@@ -1,5 +1,5 @@
 import { Game, GameState, Player, Station } from "./types";
-import { followSelected, edit } from "@lauf/lauf-runner-primitives";
+import { follow, edit } from "@lauf/lauf-runner-primitives";
 import { background } from "@lauf/lauf-runner";
 import { BasicStore } from "@lauf/lauf-store";
 import { prompt } from "./action";
@@ -53,7 +53,7 @@ export function* populatePlayers({ store }: Game) {
 }
 
 function* detectWinner({ store }: Game) {
-  yield* followSelected(
+  yield* follow(
     store,
     (state) => state.moves,
     function* () {
@@ -75,7 +75,7 @@ function* detectWinner({ store }: Game) {
 function* advanceTurns({ store }: Game) {
   let launching = true;
 
-  yield* followSelected(
+  yield* follow(
     store,
     (state) => state.moves,
     function* () {

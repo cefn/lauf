@@ -38,7 +38,7 @@ export function* withQueue<Value, Selected, Ending>(
   }
 }
 
-export function* followSelected<Value, Selected, Ending>(
+export function* follow<Value, Selected, Ending>(
   store: Store<Value>,
   selector: Selector<Value, Selected>,
   follower: Follower<Selected, Ending>
@@ -93,8 +93,8 @@ export class StorePlans<T> {
 
   select = <V>(selector: Selector<T, V>) => select(this.store, selector);
 
-  followSelected = <V, E>(selector: Selector<T, V>, follower: Follower<V, E>) =>
-    followSelected(this.store, selector, follower);
+  follow = <V, E>(selector: Selector<T, V>, follower: Follower<V, E>) =>
+    follow(this.store, selector, follower);
 
   withQueue = <V, E>(
     selector: Selector<T, V>,

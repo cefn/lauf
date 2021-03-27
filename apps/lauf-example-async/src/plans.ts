@@ -1,5 +1,5 @@
 import { Store, BasicStore, Selector, Immutable } from "@lauf/lauf-store";
-import { edit, followSelected } from "@lauf/lauf-runner-primitives";
+import { edit, follow } from "@lauf/lauf-runner-primitives";
 import {
   Action,
   ActionSequence,
@@ -68,7 +68,7 @@ const fetchSubreddit = planOfAction(FetchSubreddit);
 /** PLANS */
 
 export function* mainPlan(store: Store<AppState>): ActionSequence {
-  yield* followSelected(store, selectFocus, function* (focus) {
+  yield* follow(store, selectFocus, function* (focus) {
     // invoked on initial value and every subsequent change
     if (focus) {
       const cache = selectFocusedCache(store.read());
