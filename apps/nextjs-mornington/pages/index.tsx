@@ -12,5 +12,8 @@ export default () => (
     <p>
       <a href="./event_tutorial">Event Example</a>
     </p>
+    <p>
+      <a href="./timetravel_tutorial">Time Travel Debugging Example</a>
+    </p>
   </>
 );
