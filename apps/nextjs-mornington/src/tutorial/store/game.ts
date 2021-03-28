@@ -1,4 +1,4 @@
-import { BasicStore, Store } from "@lauf/lauf-store";
+import { BasicStore, Immutable, Store } from "@lauf/lauf-store";
 
 export type Player = string;
 export type Station = string;
@@ -10,7 +10,7 @@ interface Move {
 
 export interface GameState {
   players: Player[];
-  turn: Player;
+  turn: number;
   moves: Move[];
   winner?: Player;
 }
@@ -23,14 +23,15 @@ export type Game = {
 export function createGame(): Game {
   const store = new BasicStore<GameState>({
     players: ["Mrs Trellis", "Tim", "Barry", "Judi"],
-    turn: "Mrs Trellis",
+    turn: 0,
     moves: [],
   });
 
   const addMove = (station: Station) =>
     store.edit((state) => {
-      const player = state.turn;
-      state.moves = [...state.moves, { station, player }];
+      const { players, turn } = state;
+      const player = players[turn] as Player;
+      state.moves = [...state.moves, { player, station }];
     });
 
   return {

@@ -27,6 +27,7 @@ Let's add a form control to type in the moves. It tracks whose turn it is, and s
 ```typescript
 function Form({ store, addMove }: Game) {
   const turn = useSelected(store, (state) => state.turn);
+  const { players } = store.read();
 
   const [text, setText] = useState("");
 
@@ -46,7 +47,8 @@ function Form({ store, addMove }: Game) {
       <input
         value={text}
         onChange={onTextChange}
-        placeholder={`${turn} to move`}
+        placeholder={`${players[turn]} to move`}
+        autoFocus
       />
     </form>
   );
@@ -57,7 +59,7 @@ This shows how the Form's `onSubmit` handler intercepts form submissions, callin
 
 > This Form follows [React guidance](https://reactjs.org/docs/forms.html) and makes the `<input>` a _controlled component_ - handling each `onChange` by setting the Form's `text` state to whatever the user has typed so far.
 
-Wrapping this up, we create a game component which launches the game, stores the game as state, and binds the two UI controls.
+Wrapping this up, we create a game component which launches the game using `createGame()` from the last lesson, stores the game as state, and binds the two UI controls.
 
 ```typescript
 export function SimpleGame() {
@@ -72,7 +74,7 @@ export function SimpleGame() {
 }
 ```
 
-The final reference source code for this section is shared in [this folder](../../apps/nextjs-mornington/src/tutorial/bind).
+The final reference source code for this section is shared in [this folder](../../apps/nextjs-mornington/src/tutorial/store).
 
 It presents a Form allowing us to enter our next move, and shows a Summary of moves so far.
 

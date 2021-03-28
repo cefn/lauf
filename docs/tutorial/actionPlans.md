@@ -4,7 +4,7 @@ UI code gathers user input and **_renders_** state. However there are clear adva
 
 Implementing 'pure' business logic avoids operations on state taking place within a render. UI lifecycle stages which should **_detect_** state changes won't also sometimes **_trigger_** state changes leading to loops.
 
-With fully isolated business logic, multiple UI frameworks can be supported in the same codebase, and binding to a new framework is a matter of dispatching state information from the logic to the UI, and user events from the UI to the logic.
+With fully isolated business logic, multiple UI frameworks can be supported in the same codebase, and binding to a new framework is just a matter of dispatching state information from the logic to the UI, and user input events from the UI to the logic.
 
 Finally business logic without UI dependencies is easier to test, as it can be mocked outside a browser context for unit and component tests.
 

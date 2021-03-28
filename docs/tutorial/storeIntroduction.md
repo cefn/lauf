@@ -6,16 +6,16 @@ Let's define the structure of our game state using Typescript types.
 
 ```typescript
 export type Player = string;
-export type Location = string;
+export type Station = string;
 
 interface Move {
-  location: Location;
+  station: Station;
   player: Player;
 }
 
 export interface GameState {
   players: Player[];
-  turn: Player;
+  turn: number;
   moves: Move[];
   winner?: Player;
 }
@@ -26,7 +26,7 @@ We can create a Store for our new game using lauf's BasicStore:
 ```typescript
 const store = new BasicStore<GameState>({
   players: ["Mrs Trellis", "Tim", "Barry", "Judi"],
-  turn: "Mrs Trellis",
+  turn: 0,
   moves: [],
 });
 ```
@@ -51,7 +51,8 @@ We use `edit` to implement the `addMove` function as an operation on the Store.
 ```typescript
 const addMove = (station: Station) =>
   store.edit((state) => {
-    const player = state.turn;
+    const { players, turn } = state;
+    const player = players[turn] as Player;
     state.moves = [...state.moves, { player, station }];
   });
 ```

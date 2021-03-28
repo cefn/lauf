@@ -18,6 +18,7 @@ function Summary({ store }: Game) {
 
 function Form({ store, addMove }: Game) {
   const turn = useSelected(store, (state) => state.turn);
+  const { players } = store.read();
 
   const [text, setText] = useState("");
 
@@ -37,7 +38,7 @@ function Form({ store, addMove }: Game) {
       <input
         value={text}
         onChange={onTextChange}
-        placeholder={`${turn} to move`}
+        placeholder={`${players[turn]} to move`}
         autoFocus
       />
     </form>
