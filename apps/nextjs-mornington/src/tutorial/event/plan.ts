@@ -1,4 +1,4 @@
-import { followSelected, edit, receive } from "@lauf/lauf-runner-primitives";
+import { follow, edit, receive } from "@lauf/lauf-runner-primitives";
 import { background } from "@lauf/lauf-runner";
 import { BasicStore } from "@lauf/lauf-store";
 import { BasicMessageQueue } from "@lauf/lauf-queue";
@@ -49,7 +49,7 @@ export function* populatePlayers({ store }: Game) {
   }
 }
 
-const follow = followSelected;
+const follow = follow;
 
 function* detectWinner({ store }: Game) {
   yield* follow(
@@ -74,7 +74,7 @@ function* detectWinner({ store }: Game) {
 function* advanceTurns({ store }: Game) {
   let launching = true;
 
-  yield* followSelected(
+  yield* follow(
     store,
     (state) => state.moves,
     function* () {
