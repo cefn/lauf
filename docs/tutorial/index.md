@@ -2,7 +2,7 @@ To get started straight away, skip to Lesson 1 [Adding a Store to your App](./st
 
 ## Lessons
 
-Each lesson in this series walks through a single development task, taking us closer to a fully-working version of the well-known game [Mornington Crescent](https://www.amazon.co.uk/Little-Book-Mornington-Crescent/dp/0752844229). These examples are implemented using the [React](https://reactjs.org/) framework, although Lauf runs independently of React.
+Each lesson in this series walks through a single development task, taking us closer to a fully-working version of the well-known game [Mornington Crescent](https://wiki.c2.com/?MorningtonCrescent). These examples are implemented using the [React](https://reactjs.org/) framework, although Lauf runs independently of React.
 
 Each of the three sections has two lessons. Each visits progressively more advanced subjects and revolves around a slightly more complex version of the app.
 

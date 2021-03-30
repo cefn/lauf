@@ -1,4 +1,3 @@
-import { isDeepStrictEqual } from "util";
 import { Action, Performance, actor, isAction } from "@lauf/lauf-runner";
 
 type ActionCheck = (candidate: Action<any>) => boolean;

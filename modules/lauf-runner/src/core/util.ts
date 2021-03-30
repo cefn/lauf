@@ -28,10 +28,11 @@ export function planOfAction<Params extends any[], Reaction = any>(
   };
 }
 
-export async function performPlan<Ending, Reaction>(
-  plan: ActionPlan<[], Ending, Reaction>
+export async function performPlan<Args extends any[], Ending, Reaction>(
+  plan: ActionPlan<Args, Ending, Reaction>,
+  args: Args
 ): Promise<Ending> {
-  const ending = await directPlan(plan);
+  const ending = await directPlan(plan, args);
   if (isTermination(ending)) {
     throw `Performer with Exit:never shouldn't terminate`;
   }
@@ -49,11 +50,12 @@ export async function performSequence<Ending, Reaction>(
 }
 
 /** Launches a new ActionSequence from the ActionPlan, then hands over to directSequence. */
-export async function directPlan<Ending, Reaction, Exit>(
-  plan: ActionPlan<[], Ending, Reaction>,
+export async function directPlan<Args extends any[], Ending, Reaction>(
+  plan: ActionPlan<Args, Ending, Reaction>,
+  args: Args,
   performance: Performance<any, Reaction> = actor()
 ): Promise<Ending | Termination> {
-  let sequence = plan();
+  let sequence = plan(...args);
   return directSequence(sequence, performance);
 }
 

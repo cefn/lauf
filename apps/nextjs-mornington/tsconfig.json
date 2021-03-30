@@ -10,6 +10,11 @@
     "resolveJsonModule": true,
     "isolatedModules": true
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    "../../modules/lauf-runner-stopwatch/src/types.ts"
+  ],
   "exclude": ["node_modules"]
 }
