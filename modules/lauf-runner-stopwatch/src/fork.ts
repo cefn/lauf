@@ -1,5 +1,6 @@
-import { ActionPlan } from "@lauf/lauf-runner";
+import { ActionPlan, Termination } from "@lauf/lauf-runner";
 import { Store } from "@lauf/lauf-store";
+import { interceptPlan } from "./intercept";
 import { PlanHistory } from "./types";
 
 function beginPlanHistory<State, Args extends any[], Ending, Reaction>(
@@ -40,7 +41,7 @@ class ForkTracker<State, Args extends any[], Ending, Reaction> {
     ...args: Args
   ): Promise<Ending | Termination> {
     const planId = `${this.getNextPlanOrdinal()}_${plan.name}`;
-    const planLog = new PlanHistorian(this, planHistory, plan, args);
-    return await interceptPlan(plan, args, planLog);
+    const planHistorian = new PlanHistorian(this, planHistory, plan, args);
+    return await interceptPlan(plan, args, planHistorian);
   }
 }
