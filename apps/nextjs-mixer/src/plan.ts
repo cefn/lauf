@@ -1,6 +1,6 @@
 import { BasicMessageQueue } from "@lauf/lauf-queue/src";
-import { background } from "@lauf/lauf-runner";
 import { edit, receive } from "@lauf/lauf-runner-primitives";
+import { backgroundPlan } from "@lauf/lauf-runner/src";
 import { BasicStore } from "@lauf/lauf-store/src";
 
 import {
@@ -30,7 +30,7 @@ export function createAppModel(): AppModel {
 
 export function* mainPlan() {
   const appModel = createAppModel();
-  yield* background(colorChangePlan(appModel));
+  yield* backgroundPlan(colorChangePlan, appModel);
   return appModel;
 }
 

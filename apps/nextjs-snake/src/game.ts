@@ -3,8 +3,8 @@ import {
   Expiry,
   isExpiry,
   expire,
-  background,
   raceWait,
+  backgroundPlan,
 } from "@lauf/lauf-runner";
 import { Draft } from "@lauf/lauf-store";
 import { MessageQueue } from "@lauf/lauf-queue";
@@ -30,10 +30,10 @@ import { isVectorEqual, randomSquare, plus, wrap } from "./util";
 export function* mainPlan() {
   const appModel = createAppModel();
   yield* resetGame(appModel);
-  yield* background(inputDirectionRoutine(appModel));
-  yield* background(fruitRoutine(appModel));
-  yield* background(snakeMotionRoutine(appModel));
-  yield* background(snakeCollisionRoutine(appModel));
+  yield* backgroundPlan(inputDirectionRoutine, appModel);
+  yield* backgroundPlan(fruitRoutine, appModel);
+  yield* backgroundPlan(snakeMotionRoutine, appModel);
+  yield* backgroundPlan(snakeCollisionRoutine, appModel);
   return appModel;
 }
 
@@ -63,11 +63,11 @@ function* moveUntilMotionChange(
   motionQueue: MessageQueue<Motion>
 ): ActionSequence<Motion> {
   //promise future change in motion
-  const [motionChangePromise] = yield* background(receive(motionQueue));
+  const [motionChangePromise] = yield* backgroundPlan(receive, motionQueue);
   while (true) {
     yield* moveSnake(appModel, motion);
     //promise future timeout
-    const [expiryPromise] = yield* background(expire(STEP_MS));
+    const [expiryPromise] = yield* backgroundPlan(expire, STEP_MS);
     const [ending] = yield* raceWait<Expiry | Motion>([
       motionChangePromise,
       expiryPromise,

@@ -1,25 +1,19 @@
 import { promiseDelay, Expiry, EXPIRY } from "./delay";
-import { Action, ActionSequence } from "../types";
-import { planOfAction, performSequence } from "./util";
+import { Action, ActionPlan, ActionSequence } from "../types";
+import { planOfAction, performPlan } from "./util";
 
 // type Mapped<Ending, T extends ActionSequence<Ending>[]> = {
 //   [K in keyof T]: Promise<Ending>;
 // } & { length: T["length"] };
 
-export class Background<Ending> implements Action<readonly [Promise<Ending>]> {
-  constructor(readonly sequence: ActionSequence<Ending>) {}
-  act() {
-    return [performSequence(this.sequence)] as const;
+export class BackgroundPlan<Args extends any[], Ending>
+  implements Action<readonly [Promise<Ending>]> {
+  readonly args: Args;
+  constructor(readonly plan: ActionPlan<Args, Ending>, ...args: Args) {
+    this.args = args;
   }
-}
-
-export class BackgroundAll<
-  Ending,
-  SequenceList extends ActionSequence<Ending>[]
-> implements Action<Promise<Ending>[]> {
-  constructor(readonly sequences: SequenceList) {}
-  act(): Promise<Ending>[] {
-    return this.sequences.map(performSequence);
+  act() {
+    return [performPlan(this.plan, ...this.args)] as const;
   }
 }
 
@@ -65,9 +59,19 @@ class TimeoutWait<Ending> extends RaceWait implements Action<Ending | Expiry> {
   }
 }
 
+export function* backgroundAllPlans<Ending, Reaction>(
+  plans: ActionPlan<[], Ending, Reaction>[]
+): ActionSequence<Promise<Ending>[], Reaction> {
+  const promises: Promise<Ending>[] = [];
+  for (const plan of plans) {
+    const [promise] = yield* backgroundPlan(plan);
+    promises.push(promise);
+  }
+  return promises;
+}
+
 /** Background sequences returning promises */
-export const background = planOfAction(Background);
-export const backgroundAll = planOfAction(BackgroundAll);
+export const backgroundPlan = planOfAction(BackgroundPlan);
 
 /** Block on promises. */
 export const wait = planOfAction(Wait);
