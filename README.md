@@ -47,7 +47,7 @@ That's it.
 
 ## Getting started
 
-To get started understanding and using the approach, read the [introductory tutorial](./docs/tutorial/index.md). Worked examples with eventing and state are the [Snake Game](./apps/nextjs-snake/src/game.ts) or the [Mornington Crescent](./apps/nextjs-mornington/src/tutorial/event/plan.ts) tutorial game. A [clone of Redux's async example app](https://github.com/cefn/lauf/tree/main/apps/lauf-example-async) clarifies how Lauf differs from Redux, Redux-Saga and Redux-Saga-Test-Plan.
+To get started understanding and using the approach, read the [introductory tutorial](./docs/tutorial/index.md). Worked examples with eventing and state are the [Snake Game](./apps/nextjs-snake/src/game.ts) or the [Mornington Crescent](./apps/nextjs-mornington/src/tutorial/event/plan.ts) tutorial game. A [clone of Redux's async example app](https://github.com/cefn/lauf/tree/main/apps/noredux-async) clarifies how Lauf differs from Redux, Redux-Saga and Redux-Saga-Test-Plan.
 
 ## Primitives
 

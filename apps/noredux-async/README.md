@@ -10,9 +10,9 @@ It should be compared with the original [example source code](https://github.com
 
 Lauf ActionPlans define steps that the app should take. Beginning an ActionPlan creates an ActionSequence, which keeps track of progress through the plan. The ActionSequence responds to user interactions and results from asynchronous services. Sequential logic and synchronization points between parallel plans are explicit, visible and controllable.
 
-Like Redux, application state and behaviour is fully defined in isolation from React. In the app, state and triggers are 'rendered' to React through a handful of data bindings and callbacks [shown here](https://github.com/cefn/lauf/blob/main/apps/lauf-example-async/src/containers/App.tsx#L21-L29). An app implemented in this way should be trivial to port to another UI framework, using the same bindings.
+Like Redux, application state and behaviour is fully defined in isolation from React. In the app, state and triggers are 'rendered' to React through a handful of data bindings and callbacks [shown here](https://github.com/cefn/lauf/blob/main/apps/noredux-async/src/containers/App.tsx#L21-L29). An app implemented in this way should be trivial to port to another UI framework, using the same bindings.
 
-By contrast with Redux, all logic is encapsulated in a single, time-travel-debuggable and testable [plans.ts](https://github.com/cefn/lauf/blob/main/apps/lauf-example-async/src/plans.ts) file composed of plan co-routines.
+By contrast with Redux, all logic is encapsulated in a single, time-travel-debuggable and testable [plans.ts](https://github.com/cefn/lauf/blob/main/apps/noredux-async/src/plans.ts) file composed of plan co-routines.
 
 To run a lauf app, a main 'action plan' co-routine is launched, which may delegate to other co-routines or spawn worker co-routines in parallel. Each task is authored as an explicit sequential procedure. Redux recommends tracking progress through explicit Action notifications to a shared reducer meaning task tracing is hard. However, in Lauf a task is implicitly tracked by the paused state of each plan's co-routine while it awaits its next result and progresses towards an outcome. In this way tasks can be read and debugged as code.
 
