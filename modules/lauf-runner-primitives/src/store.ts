@@ -68,10 +68,7 @@ export function* follow<Value, Selected, Ending>(
 }
 
 export class Edit<T> implements Action<Immutable<T>> {
-  constructor(
-    readonly store: Store<T>,
-    readonly operator: Editor<Immutable<T>>
-  ) {}
+  constructor(readonly store: Store<T>, readonly operator: Editor<T>) {}
   act() {
     return this.store.edit(this.operator);
   }

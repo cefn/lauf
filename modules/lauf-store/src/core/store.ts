@@ -6,7 +6,7 @@ import { produce } from "immer";
 export class BasicStore<T>
   extends BasicWatchableValue<Immutable<T>>
   implements Store<T> {
-  edit(editor: Editor<Immutable<T>>) {
+  edit(editor: Editor<T>) {
     const nextValue = (produce<Immutable<T>>(
       this.read(),
       editor
