@@ -49,8 +49,6 @@ export function* populatePlayers({ store }: Game) {
   }
 }
 
-const follow = follow;
-
 function* detectWinner({ store }: Game) {
   yield* follow(
     store,
