@@ -2,6 +2,21 @@
 import fs from "fs";
 import glob from "glob";
 import { isDeepStrictEqual } from "util";
+import yargs from "yargs";
+
+const options = yargs
+  .option("fix", {
+    alias: "f",
+    description: "Fix package.json files",
+    type: "boolean",
+  })
+  .option("missing", {
+    alias: "m",
+    description: "Only add if missing, never replace",
+    type: "boolean",
+  })
+  .help()
+  .alias("help", "h").argv;
 
 type PackageEntry = Record<string, any>;
 
@@ -14,7 +29,7 @@ const packageJsonPaths = glob.sync("**/package.json", {
 function findIncorrectValues(
   packageNode: PackageEntry,
   correctValues: PackageEntry,
-  fix = false
+  { fix, missing }: typeof options
 ) {
   const incorrectValues: PackageEntry = {};
   for (const [name, correctValue] of Object.entries(correctValues)) {
@@ -22,6 +37,9 @@ function findIncorrectValues(
     if (!isDeepStrictEqual(actualValue, correctValue)) {
       incorrectValues[name] = actualValue;
       if (fix) {
+        if (missing && actualValue !== undefined) {
+          continue; //skip values which are already there in some form
+        }
         packageNode[name] = correctValue;
       }
     }
@@ -31,6 +49,7 @@ function findIncorrectValues(
 
 const correctScriptValues = {
   test: "jest",
+  check: "tsc --noEmit",
 } as const;
 
 for (const packageJsonPath of packageJsonPaths) {
@@ -43,7 +62,7 @@ for (const packageJsonPath of packageJsonPaths) {
 
   const scriptNode = parsedPackage["scripts"];
   const incorrectEntries = Object.entries(
-    findIncorrectValues(scriptNode, correctScriptValues)
+    findIncorrectValues(scriptNode, correctScriptValues, options)
   );
   if (incorrectEntries.length > 0) {
     console.log(`Found incorrect pairs in ${packageJsonPath}`);
@@ -54,6 +73,13 @@ for (const packageJsonPath of packageJsonPaths) {
         `${name} should be ${JSON.stringify(
           correctValue
         )}. Actually found ${incorrectValue}`
+      );
+    }
+    if (options.fix) {
+      console.log("FIXING...");
+      fs.writeFileSync(
+        packageJsonPath,
+        JSON.stringify(parsedPackage, null, "  ")
       );
     }
   }
