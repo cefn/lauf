@@ -20,7 +20,7 @@ class SetStorePath<T extends object> implements Action<Immutable<T>> {
   }
 }
 
-class SetStorePathMap<T> implements Action<Immutable<T>> {
+class SetStorePathMap<T extends object> implements Action<Immutable<T>> {
   constructor(
     readonly store: Store<T>,
     readonly pathMap: Record<string, any>
