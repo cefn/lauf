@@ -118,8 +118,8 @@ The modules [lauf-runner](../../modules/lauf-runner) and [lauf-runner-primitives
 - `receive` - take item from a `MessageQueue` (**_blocking_**)
 - `wait` - pause until a single `Promise` completes (**_blocking_**)
 - `raceWait` - pause until one `Promise` completes from a list (**_blocking_**)
-- `background` - spawn an `ActionSequence` without blocking, (**_returns a Promise of the result_**)
-- `backgroundAll` - spawn a list of `ActionSequences` without blocking, (**_returns a Promise of all results_**)
+- `backgroundPlan` - spawn an `ActionPlan` without blocking, (**_returns Promise of plan's return value_**)
+- `backgroundAllPlans` - spawn a list of `ActionPlans` without blocking, (**_returns Promise of all return values_**)
 
 # Revisiting detectWinner()
 
@@ -190,8 +190,8 @@ To run these plans concurrently we create a `launchPlan()`. This creates the `Ga
 ```typescript
 export function* launchPlan() {
   const game = createGame();
-  yield* background(detectWinner(game));
-  yield* background(advanceTurns(game));
+  yield* backgroundPlan(detectWinner, game);
+  yield* backgroundPlan(advanceTurns, game);
   return game;
 }
 ```

@@ -1,6 +1,6 @@
 import { Game, GameState, Player, Station } from "./types";
 import { follow, edit } from "@lauf/lauf-runner-primitives";
-import { background } from "@lauf/lauf-runner";
+import { backgroundPlan } from "@lauf/lauf-runner";
 import { BasicStore } from "@lauf/lauf-store";
 import { prompt } from "./action";
 
@@ -27,8 +27,8 @@ function createGame(): Game {
 export function* launchPlan() {
   const game = createGame();
   yield* populatePlayers(game);
-  yield* background(detectWinner(game));
-  yield* background(advanceTurns(game));
+  yield* backgroundPlan(detectWinner, game);
+  yield* backgroundPlan(advanceTurns, game);
   return game;
 }
 

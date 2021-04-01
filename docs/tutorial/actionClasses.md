@@ -59,8 +59,8 @@ We can do a 'blocking' delegation to the new plan in our `launchPlan()` causing 
 export function* launchPlan() {
   const game = createGame();
   yield* populatePlayers(game); //block until complete
-  yield* background(detectWinner(game)); //spawn without blocking
-  yield* background(advanceTurns(game)); //spawn without blocking
+  yield* backgroundPlan(detectWinner, game); //spawn without blocking
+  yield* backgroundPlan(advanceTurns, game); //spawn without blocking
   return game;
 }
 ```
