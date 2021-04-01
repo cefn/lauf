@@ -2,14 +2,14 @@ import { Action, planOfAction } from "@lauf/lauf-runner";
 import { Store, getByPath, setByPath, setByPathMap } from "@lauf/lauf-store";
 import type { Immutable } from "@lauf/lauf-store";
 
-class GetStorePath<T> implements Action<Immutable<any>> {
+class GetStorePath<T extends object> implements Action<Immutable<any>> {
   constructor(readonly store: Store<T>, readonly path: string) {}
   act() {
     return getByPath(this.store, this.path);
   }
 }
 
-class SetStorePath<T> implements Action<Immutable<T>> {
+class SetStorePath<T extends object> implements Action<Immutable<T>> {
   constructor(
     readonly store: Store<T>,
     readonly path: string,

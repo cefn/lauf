@@ -9,7 +9,7 @@ export function getByPath<T>(store: Store<T>, path: string): Immutable<any> {
   return lodashGet(store.read(), path);
 }
 
-export function setByPath<T>(
+export function setByPath<T extends object>(
   store: Store<T>,
   path: string,
   value: any
@@ -19,7 +19,7 @@ export function setByPath<T>(
   });
 }
 
-export function setByPathMap<T, V = any>(
+export function setByPathMap<T extends object, V = any>(
   store: Store<T>,
   pathMap: PathMap<V>
 ): Immutable<T> {
