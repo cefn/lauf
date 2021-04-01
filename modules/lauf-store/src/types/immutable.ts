@@ -12,6 +12,6 @@ export type Immutable<T> = T extends any[] | object
   ? Readonly<T>
   : never;
 
-export type Editor<T extends Immutable<any>> = (draft: Draft<T>) => void;
+export type Editor<T> = (draft: Draft<Immutable<T>>) => void;
 
 export type { Draft };
