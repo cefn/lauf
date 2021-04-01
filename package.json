@@ -15,7 +15,8 @@
     "test": "jest",
     "test:changed": "lerna run --since origin/main --include-dependents test",
     "typecheck": "lerna run check",
-    "typecheck:changed": "lerna run --since origin/main --include-dependents check"
+    "typecheck:changed": "lerna run --since origin/main --include-dependents check",
+    "typecheck:lauf": "lerna run --scope '@lauf/*' check"
   },
   "devDependencies": {
     "@babel/core": "^7.13.8",
