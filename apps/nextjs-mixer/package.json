@@ -17,7 +17,6 @@
     "styled-components": "^5.2.1"
   },
   "devDependencies": {
-    "@types/styled-components": "^5.1.7",
-    "add": "^2.0.6"
+    "@types/styled-components": "^5.1.7"
   }
 }
