@@ -6,10 +6,10 @@ export type ImmutableObject<T> = Readonly<
   }
 >;
 
-export type Immutable<T> = T extends any[] | object
+export type Immutable<T> = T extends string | number | boolean | null
+  ? T
+  : T extends object
   ? ImmutableObject<T>
-  : T extends string | number | boolean | null
-  ? Readonly<T>
   : never;
 
 export type Editor<T> = (draft: Draft<Immutable<T>>) => void;
