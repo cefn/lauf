@@ -19,10 +19,10 @@ describe("BasicStore behaviour", () => {
     const store = new BasicStore<Record<string, string[]>>({
       ancient: ["Roses are red", "Violets are blue"],
     });
-    const value = store.edit((draft) => {
+    const state = store.edit((draft) => {
       draft.modern = ["Sugar is sweet", "So are you"];
     });
-    expect(value).toEqual({
+    expect(state).toEqual({
       ancient: ["Roses are red", "Violets are blue"],
       modern: ["Sugar is sweet", "So are you"],
     });
@@ -33,22 +33,22 @@ describe("BasicStore behaviour", () => {
       ancient: ["Roses are red", "Violets are blue"],
       modern: ["Sugar is sweet", "So are you"],
     });
-    const valueBefore = store.read();
+    const stateBefore = store.read();
     store.edit((draft) => {
       draft.ancient = draft.ancient || [];
       draft.ancient[0] = "Roses are white";
     });
-    const valueAfter = store.read();
-    expect(Object.is(valueBefore, valueAfter)).toBe(false);
+    const stateAfter = store.read();
+    expect(Object.is(stateBefore, stateAfter)).toBe(false);
     expect(
       [
-        valueBefore.ancient,
-        valueAfter.ancient,
-        valueBefore.ancient,
-        valueAfter.ancient,
+        stateBefore.ancient,
+        stateAfter.ancient,
+        stateBefore.ancient,
+        stateAfter.ancient,
       ].every((item) => Array.isArray(item))
     ).toBe(true);
-    expect(Object.is(valueBefore.ancient, valueAfter.ancient)).toBe(false);
-    expect(Object.is(valueBefore.modern, valueAfter.modern)).toBe(true);
+    expect(Object.is(stateBefore.ancient, stateAfter.ancient)).toBe(false);
+    expect(Object.is(stateBefore.modern, stateAfter.modern)).toBe(true);
   });
 });
