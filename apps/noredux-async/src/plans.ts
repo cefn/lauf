@@ -47,10 +47,9 @@ export function createStore(): Store<AppState> {
 export const selectFocus: Selector<AppState, SubredditName> = (state) =>
   state.focus;
 
-export const selectFocusedCache: Selector<
-  AppState,
-  Immutable<Cache> | undefined
-> = (state) => state.caches[state.focus];
+export const selectFocusedCache: Selector<AppState, Cache | undefined> = (
+  state
+) => state.caches[state.focus];
 
 /** ACTIONS */
 

@@ -3,17 +3,17 @@ import type { Editor, Immutable } from "../types/immutable";
 import { BasicWatchableValue } from "./watchable";
 import { produce } from "immer";
 
-export class BasicStore<T>
-  extends BasicWatchableValue<Immutable<T>>
-  implements Store<T> {
-  edit(editor: Editor<T>) {
-    const nextValue = (produce<Immutable<T>>(
+export class BasicStore<State>
+  extends BasicWatchableValue<Immutable<State>>
+  implements Store<State> {
+  edit(editor: Editor<State>) {
+    const nextState = (produce<Immutable<State>>(
       this.read(),
       editor
-    ) as unknown) as Immutable<T>;
-    return this.write(nextValue);
+    ) as unknown) as Immutable<State>;
+    return this.write(nextState);
   }
-  select<Selected>(selector: Selector<T, Selected>) {
+  select<Selected>(selector: Selector<State, Selected>) {
     return selector(this.read());
   }
 }
