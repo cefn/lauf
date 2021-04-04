@@ -1,11 +1,11 @@
 import { BasicStore } from "@lauf/lauf-store";
 
 describe("BasicStore behaviour", () => {
-  test("Can create BasicStore with primitive root", () => {
-    new BasicStore<string>("foo");
-    new BasicStore<number>(42);
-    new BasicStore<boolean>(true);
-  });
+  // test("Can create BasicStore with primitive root", () => {
+  //   new BasicStore<string>("foo");
+  //   new BasicStore<number>(42);
+  //   new BasicStore<boolean>(true);
+  // });
 
   test("Can create BasicStore with list root", () => {
     new BasicStore<Array<number>>([3, 4, 5]);
