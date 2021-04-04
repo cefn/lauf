@@ -1,6 +1,6 @@
 import { Game, GameState, Player, Station } from "./types";
 import { follow, edit } from "@lauf/lauf-runner-primitives";
-import { backgroundPlan } from "@lauf/lauf-runner";
+import { ActionSequence, backgroundPlan } from "@lauf/lauf-runner";
 import { BasicStore } from "@lauf/lauf-store";
 import { prompt } from "./action";
 
@@ -24,7 +24,7 @@ function createGame(): Game {
   };
 }
 
-export function* launchPlan() {
+export function* launchPlan(): ActionSequence<Game, any> {
   const game = createGame();
   yield* populatePlayers(game);
   yield* backgroundPlan(detectWinner, game);

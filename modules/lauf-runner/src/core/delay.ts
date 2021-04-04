@@ -7,14 +7,19 @@ export function isExpiry(value: any): value is Expiry {
   return value === EXPIRY;
 }
 
-export function promiseDelay(ms: number): Promise<Expiry> {
-  return new Promise((resolve) => setTimeout(resolve, ms, EXPIRY));
+//TODO rename to promiseDelay after checking references to old promiseDelay are gone
+export function promiseDelayValue<V>(ms: number, value: V): Promise<V> {
+  return new Promise((resolve) => setTimeout(resolve, ms, value));
+}
+
+export function promiseExpiry(ms: number): Promise<Expiry> {
+  return promiseDelayValue(ms, EXPIRY);
 }
 
 export class Expire implements Action<Expiry> {
   constructor(readonly ms: number) {}
   act() {
-    return promiseDelay(this.ms);
+    return promiseExpiry(this.ms);
   }
 }
 

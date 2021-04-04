@@ -1,4 +1,4 @@
-import { promiseDelay, Expiry, EXPIRY } from "./delay";
+import { promiseExpiry, Expiry, EXPIRY } from "./delay";
 import { Action, ActionPlan, ActionSequence } from "../types";
 import { planOfAction, performPlan } from "./util";
 
@@ -6,10 +6,13 @@ import { planOfAction, performPlan } from "./util";
 //   [K in keyof T]: Promise<Ending>;
 // } & { length: T["length"] };
 
-export class BackgroundPlan<Args extends any[], Ending>
+export class BackgroundPlan<Args extends any[], Ending, Reaction>
   implements Action<readonly [Promise<Ending>]> {
   readonly args: Args;
-  constructor(readonly plan: ActionPlan<Args, Ending>, ...args: Args) {
+  constructor(
+    readonly plan: ActionPlan<Args, Ending, Reaction>,
+    ...args: Args
+  ) {
     this.args = args;
   }
   act() {
@@ -17,24 +20,28 @@ export class BackgroundPlan<Args extends any[], Ending>
   }
 }
 
-class Wait<Ending = any> implements Action<Ending> {
+class Wait<Ending> implements Action<Ending> {
   constructor(readonly promise: Promise<Ending>) {}
   act() {
     return this.promise;
   }
 }
 
-export class RaceWait<Ending = any>
-  implements Action<[Ending, Promise<Ending>]> {
+function promiseWin<Ending>(
+  competingPromises: Promise<Ending>[]
+): Promise<[Ending, Promise<Ending>]> {
+  return Promise.race(
+    competingPromises.map(async (promise) => {
+      const result = await promise;
+      return [result, promise];
+    })
+  );
+}
+
+export class RaceWait<Ending> implements Action<[Ending, Promise<Ending>]> {
   constructor(readonly promises: Promise<Ending>[]) {}
   act() {
-    return Promise.race(
-      this.promises.map(async (promise) => {
-        const result = await promise;
-        const completion: [Ending, Promise<Ending>] = [result, promise];
-        return completion;
-      })
-    );
+    return promiseWin(this.promises);
   }
 }
 
@@ -45,15 +52,17 @@ export class TeamWait<Ending> implements Action<Ending[]> {
   }
 }
 
-class TimeoutWait<Ending> extends RaceWait implements Action<Ending | Expiry> {
-  constructor(readonly promise: Promise<Ending>, readonly ms: number) {
-    super([promise, promiseDelay(ms)]);
-  }
+class TimeoutWait<Ending> implements Action<Ending | Expiry> {
+  constructor(readonly promise: Promise<Ending>, readonly ms: number) {}
   async act() {
-    const [ending, winner] = await super.act();
+    const [ending, winner] = await promiseWin<Ending | Expiry>([
+      this.promise,
+      promiseExpiry(this.ms),
+    ]);
     if (winner === this.promise) {
       return ending;
     } else {
+      //TODO throw here? simpler in ActionPlan code compared to guards?
       return EXPIRY;
     }
   }
@@ -61,7 +70,8 @@ class TimeoutWait<Ending> extends RaceWait implements Action<Ending | Expiry> {
 
 export function* backgroundAllPlans<Ending, Reaction>(
   plans: ActionPlan<[], Ending, Reaction>[]
-): ActionSequence<Promise<Ending>[], Reaction> {
+): ActionSequence<Promise<Ending>[], any> {
+  //Is reaction type `any` a dangerous hack?
   const promises: Promise<Ending>[] = [];
   for (const plan of plans) {
     const [promise] = yield* backgroundPlan(plan);

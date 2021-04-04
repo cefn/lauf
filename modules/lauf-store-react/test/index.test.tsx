@@ -5,7 +5,7 @@
 import React from "react";
 import { useSelected, useStore } from "../src";
 import { render, fireEvent, waitFor, screen } from "@testing-library/react";
-import { BasicStore, Selector, Store } from "@lauf/lauf-store";
+import { BasicStore, Immutable, Selector, Store } from "@lauf/lauf-store";
 import { act } from "react-dom/test-utils";
 
 const planets = ["earth", "mars"] as const;
@@ -100,11 +100,13 @@ describe("useSelected : (re)render using subset of store", () => {
 
 describe("Component state follows selector", () => {
   /** DEFINE STATE, STORE, UI */
+
+  type Coord = [number, number];
   interface TestState {
-    readonly coord: [number, number];
+    readonly coord: Coord;
   }
 
-  const selectCoord: Selector<TestState> = (state) => state.coord;
+  const selectCoord: Selector<TestState, Coord> = (state) => state.coord;
 
   const Component = ({ store }: { store: Store<TestState> }) => {
     const coord = useSelected(store, selectCoord);

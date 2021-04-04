@@ -10,16 +10,17 @@ import { BasicMessageQueue, MessageQueue } from "@lauf/lauf-queue";
 import { receive } from "./queue";
 import { ExitStatus, Follower, Controls } from "./types";
 
-type QueueHandler<Selected, Ending> = ActionPlan<
+type QueueHandler<Selected, Ending, Reaction> = ActionPlan<
   [MessageQueue<Selected>, Selected],
-  Ending
+  Ending,
+  Reaction
 >;
 
-export function* withQueue<Value, Selected, Ending>(
+export function* withQueue<Value, Selected, Ending, Reaction>(
   store: Store<Value>,
   selector: Selector<Value, Selected>,
-  handleQueue: QueueHandler<Selected, Ending>
-): ActionSequence<Ending> {
+  handleQueue: QueueHandler<Selected, Ending, any>
+): ActionSequence<Ending, any> {
   const queue = new BasicMessageQueue<Selected>();
   let prevSelected: Selected = selector(store.read());
   const selectedNotifier = (value: Immutable<Value>) => {
@@ -38,11 +39,11 @@ export function* withQueue<Value, Selected, Ending>(
   }
 }
 
-export function* follow<Value, Selected, Ending>(
-  store: Store<Value>,
-  selector: Selector<Value, Selected>,
-  follower: Follower<Selected, Ending>
-): ActionSequence<Ending> {
+export function* follow<State, Selected, Ending, Reaction>(
+  store: Store<State>,
+  selector: Selector<State, Selected>,
+  follower: Follower<Selected, Ending, Reaction>
+): ActionSequence<Ending, Reaction | Selected> {
   return yield* withQueue(store, selector, function* (queue, selected) {
     let result;
     let lastSelected: Selected | undefined;
@@ -94,13 +95,13 @@ export class StorePlans<State> {
   select = <Selected>(selector: Selector<State, Selected>) =>
     select(this.store, selector);
 
-  follow = <Selected, Ending>(
+  follow = <Selected, Ending, Reaction>(
     selector: Selector<State, Selected>,
-    follower: Follower<Selected, Ending>
+    follower: Follower<Selected, Ending, Reaction>
   ) => follow(this.store, selector, follower);
 
-  withQueue = <Selected, Ending>(
+  withQueue = <Selected, Ending, Reaction>(
     selector: Selector<State, Selected>,
-    handleQueue: QueueHandler<Selected, Ending>
+    handleQueue: QueueHandler<Selected, Ending, Reaction>
   ) => withQueue(this.store, selector, handleQueue);
 }
