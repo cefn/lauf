@@ -1,0 +1,10 @@
+{
+  "name": "@lauf/lauf-runner-stopwatch",
+  "version": "0.1.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "test": "jest --passWithNoTests",
+    "check": "tsc --noEmit"
+  }
+}
