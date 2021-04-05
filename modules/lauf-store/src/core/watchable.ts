@@ -1,16 +1,16 @@
 import { Watchable, WatchableValue, Watcher } from "../types/watchable";
 
-export class BasicWatchable<T> implements Watchable<T> {
-  protected watchers: ReadonlyArray<Watcher<T>>;
-  constructor(watchers: ReadonlyArray<Watcher<T>> = []) {
+export class BasicWatchable<Value> implements Watchable<Value> {
+  protected watchers: ReadonlyArray<Watcher<Value>>;
+  constructor(watchers: ReadonlyArray<Watcher<Value>> = []) {
     this.watchers = watchers;
   }
-  protected notify(item: T) {
+  protected notify(item: Value) {
     for (const watcher of this.watchers) {
       watcher(item);
     }
   }
-  watch(watcher: Watcher<T>) {
+  watch(watcher: Watcher<Value>) {
     this.watchers = [...this.watchers, watcher];
     return () => {
       this.watchers = this.watchers.filter(
@@ -20,15 +20,15 @@ export class BasicWatchable<T> implements Watchable<T> {
   }
 }
 
-export class BasicWatchableValue<T>
-  extends BasicWatchable<T>
-  implements WatchableValue<T> {
-  protected value!: T;
-  constructor(value: T, watchers?: ReadonlyArray<Watcher<T>>) {
+export class BasicWatchableValue<Value>
+  extends BasicWatchable<Value>
+  implements WatchableValue<Value> {
+  protected value!: Value;
+  constructor(value: Value, watchers?: ReadonlyArray<Watcher<Value>>) {
     super(watchers);
     this.write(value);
   }
-  write(value: T) {
+  write(value: Value) {
     this.value = value;
     this.notify(value);
     return value;

@@ -1,5 +1,5 @@
-import { followSelected, edit, receive } from "@lauf/lauf-runner-primitives";
-import { background } from "@lauf/lauf-runner";
+import { follow, edit, receive } from "@lauf/lauf-runner-primitives";
+import { ActionSequence, backgroundPlan } from "@lauf/lauf-runner";
 import { BasicStore } from "@lauf/lauf-store";
 import { BasicMessageQueue } from "@lauf/lauf-queue";
 import { Game, GameState, Player, Station } from "./types";
@@ -20,12 +20,12 @@ function createGame(): Game {
   };
 }
 
-export function* launchPlan() {
+export function* launchPlan(): ActionSequence<Game, any> {
   const game = createGame();
   yield* populatePlayers(game);
-  yield* background(detectWinner(game));
-  yield* background(advanceTurns(game));
-  yield* background(handleInput(game));
+  yield* backgroundPlan(detectWinner, game);
+  yield* backgroundPlan(advanceTurns, game);
+  yield* backgroundPlan(handleInput, game);
   return game;
 }
 
@@ -48,8 +48,6 @@ export function* populatePlayers({ store }: Game) {
     }
   }
 }
-
-const follow = followSelected;
 
 function* detectWinner({ store }: Game) {
   yield* follow(
@@ -74,7 +72,7 @@ function* detectWinner({ store }: Game) {
 function* advanceTurns({ store }: Game) {
   let launching = true;
 
-  yield* followSelected(
+  yield* follow(
     store,
     (state) => state.moves,
     function* () {
@@ -93,7 +91,7 @@ function* advanceTurns({ store }: Game) {
   );
 }
 
-function* handleInput({ store, queue }: Game) {
+function* handleInput({ store, queue }: Game): ActionSequence<never, any> {
   while (true) {
     const station = yield* receive(queue);
     //retrieve matching stations

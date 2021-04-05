@@ -1,5 +1,5 @@
 import { Store, BasicStore, Selector, Immutable } from "@lauf/lauf-store";
-import { edit, followSelected } from "@lauf/lauf-runner-primitives";
+import { edit, follow } from "@lauf/lauf-runner-primitives";
 import {
   Action,
   ActionSequence,
@@ -47,10 +47,9 @@ export function createStore(): Store<AppState> {
 export const selectFocus: Selector<AppState, SubredditName> = (state) =>
   state.focus;
 
-export const selectFocusedCache: Selector<
-  AppState,
-  Immutable<Cache> | undefined
-> = (state) => state.caches[state.focus];
+export const selectFocusedCache: Selector<AppState, Cache | undefined> = (
+  state
+) => state.caches[state.focus];
 
 /** ACTIONS */
 
@@ -67,8 +66,8 @@ const fetchSubreddit = planOfAction(FetchSubreddit);
 
 /** PLANS */
 
-export function* mainPlan(store: Store<AppState>): ActionSequence {
-  yield* followSelected(store, selectFocus, function* (focus) {
+export function* mainPlan(store: Store<AppState>): ActionSequence<void, any> {
+  yield* follow(store, selectFocus, function* (focus) {
     // invoked on initial value and every subsequent change
     if (focus) {
       const cache = selectFocusedCache(store.read());
@@ -82,7 +81,7 @@ export function* mainPlan(store: Store<AppState>): ActionSequence {
 export function* fetchPlan(
   store: Store<AppState>,
   name: SubredditName
-): ActionSequence {
+): ActionSequence<void, any> {
   //initialise cache and transition to 'fetching' state
   yield* edit(store, (draft) => {
     draft.caches[name] = {

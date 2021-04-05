@@ -4,20 +4,18 @@ import {
   teamWait,
   timeoutWait,
   wait,
-  promiseDelay,
+  promiseExpiry,
   expire,
   Expiry,
   isExpiry,
   ActionPlan,
   performPlan,
-  background,
-  backgroundAll,
-  ActionSequence,
+  backgroundAllPlans,
 } from "@lauf/lauf-runner";
 
 describe("Foreground and Background operations", () => {
   const delayMs = 10;
-  const simplePlan: ActionPlan<[], Expiry> = function* () {
+  const simplePlan: ActionPlan<[], Expiry, Expiry> = function* () {
     return yield* expire(delayMs);
   };
 
@@ -30,15 +28,13 @@ describe("Foreground and Background operations", () => {
 
   test("team() : executes inner plans in parallel to completion", async () => {
     const before = new Date().getTime();
-    const sequenceGroup: ActionSequence<Expiry>[] = [
-      simplePlan(),
-      simplePlan(),
-      simplePlan(),
+    const planGroup: Array<ActionPlan<[], Expiry, Expiry>> = [
+      simplePlan,
+      simplePlan,
+      simplePlan,
     ];
-    const endings = await performPlan<Expiry[], any>(function* () {
-      const promises = yield* backgroundAll<Expiry, typeof sequenceGroup>(
-        sequenceGroup
-      );
+    const endings = await performPlan(function* () {
+      const promises = yield* backgroundAllPlans(planGroup);
       const endings = yield* teamWait(promises);
       return endings;
     });
@@ -47,20 +43,20 @@ describe("Foreground and Background operations", () => {
     //it waited
     expect(duration).toBeGreaterThanOrEqual(delayMs * 0.5);
     //they were run in parallel, not series
-    expect(duration).toBeLessThan(delayMs * sequenceGroup.length);
+    expect(duration).toBeLessThan(delayMs * planGroup.length);
     //they all completed
     expect(endings.every(isExpiry)).toBeTruthy();
   });
 
   test("backgroundAll : yields array of completion promises", async () => {
     const before = new Date().getTime();
-    const sequenceGroup: ActionSequence<Expiry>[] = [
-      simplePlan(),
-      simplePlan(),
-      simplePlan(),
+    const planGroup: Array<ActionPlan<[], Expiry, Expiry>> = [
+      simplePlan,
+      simplePlan,
+      simplePlan,
     ];
     const endingPromises = await performPlan(function* () {
-      return yield* backgroundAll(sequenceGroup);
+      return yield* backgroundAllPlans(planGroup);
     });
     const after = new Date().getTime();
     const duration = after - before;
@@ -88,15 +84,13 @@ describe("Scheduling Action Sequences", () => {
   });
 
   test("race : executes sequences in parallel, yields winning [result,sequence]", async () => {
-    let goldPromise, silverPromise, bronzePromise;
+    const goldPromise = promiseExpiry(2).then(() => "gold");
+    const silverPromise = promiseExpiry(4).then(() => "silver");
+    const bronzePromise = promiseExpiry(6).then(() => "bronze");
     const [ending, sequence] = await performPlan(function* () {
-      const promises = yield* backgroundAll([
-        wait(promiseDelay(2).then(() => "gold")),
-        wait(promiseDelay(4).then(() => "silver")),
-        wait(promiseDelay(6).then(() => "bronze")),
-      ]);
-      [goldPromise, silverPromise, bronzePromise] = promises;
-      return yield* raceWait(lodashShuffle(promises));
+      return yield* raceWait(
+        lodashShuffle([goldPromise, silverPromise, bronzePromise])
+      );
     });
     expect(ending).toStrictEqual("gold");
     expect(sequence).toStrictEqual(goldPromise);
@@ -105,10 +99,9 @@ describe("Scheduling Action Sequences", () => {
   test("timeout : handles sequence success ", async () => {
     const delayMs = 2;
     const timeoutMs = 10;
-    const quickSequence = wait(promiseDelay(delayMs).then(() => "success"));
+    const quickPromise = promiseExpiry(delayMs).then(() => "success");
     const quickResult = await performPlan(function* () {
-      const [promise] = yield* background(quickSequence);
-      return yield* timeoutWait(promise, timeoutMs);
+      return yield* timeoutWait(quickPromise, timeoutMs);
     });
     expect(quickResult).toStrictEqual("success");
     expect(isExpiry(quickResult)).toBeFalsy();
@@ -117,29 +110,31 @@ describe("Scheduling Action Sequences", () => {
   test("timeout : handles sequence failure", async () => {
     const delayMs = 10;
     const timeoutMs = 2;
-    const slowSequence = wait(promiseDelay(delayMs).then(() => "success"));
+    const slowPromise = promiseExpiry(delayMs).then(() => "success");
     const slowResult = await performPlan(function* () {
-      const [promise] = yield* background(slowSequence);
-      return yield* timeoutWait(promise, timeoutMs);
+      return yield* timeoutWait(slowPromise, timeoutMs);
     });
     expect(slowResult).not.toEqual("success");
     expect(isExpiry(slowResult)).toBeTruthy();
   });
 
   test("team : waits for all sequences to complete", async () => {
-    const sequences = [
-      wait(promiseDelay(6).then(() => "silver")),
-      wait(promiseDelay(3).then(() => "gold")),
-      wait(promiseDelay(9).then(() => "bronze")),
-    ];
+    const goldPromise = promiseExpiry(2).then(() => "gold");
+    const silverPromise = promiseExpiry(4).then(() => "silver");
+    const bronzePromise = promiseExpiry(6).then(() => "bronze");
     const before = new Date().getTime();
     const result = await performPlan(function* () {
-      const promises = yield* backgroundAll(sequences);
-      return yield* teamWait(promises);
+      return yield* teamWait(
+        lodashShuffle([goldPromise, silverPromise, bronzePromise])
+      );
     });
     const after = new Date().getTime();
     const duration = after - before;
-    expect(result).toEqual(["silver", "gold", "bronze"]); //get all results
-    expect(duration).toBeGreaterThanOrEqual(8); //waited for slowest
+    //get all results
+    expect(result).toContain("gold");
+    expect(result).toContain("silver");
+    expect(result).toContain("bronze");
+    //waited for slowest
+    expect(duration).toBeGreaterThanOrEqual(5);
   });
 });

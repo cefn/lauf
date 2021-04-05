@@ -1,6 +1,6 @@
 import { Game, GameState, Player, Station } from "./types";
-import { followSelected, edit } from "@lauf/lauf-runner-primitives";
-import { background } from "@lauf/lauf-runner";
+import { follow, edit } from "@lauf/lauf-runner-primitives";
+import { ActionSequence, backgroundPlan } from "@lauf/lauf-runner";
 import { BasicStore } from "@lauf/lauf-store";
 import { prompt } from "./action";
 
@@ -24,11 +24,11 @@ function createGame(): Game {
   };
 }
 
-export function* launchPlan() {
+export function* launchPlan(): ActionSequence<Game, any> {
   const game = createGame();
   yield* populatePlayers(game);
-  yield* background(detectWinner(game));
-  yield* background(advanceTurns(game));
+  yield* backgroundPlan(detectWinner, game);
+  yield* backgroundPlan(advanceTurns, game);
   return game;
 }
 
@@ -53,7 +53,7 @@ export function* populatePlayers({ store }: Game) {
 }
 
 function* detectWinner({ store }: Game) {
-  yield* followSelected(
+  yield* follow(
     store,
     (state) => state.moves,
     function* () {
@@ -75,7 +75,7 @@ function* detectWinner({ store }: Game) {
 function* advanceTurns({ store }: Game) {
   let launching = true;
 
-  yield* followSelected(
+  yield* follow(
     store,
     (state) => state.moves,
     function* () {

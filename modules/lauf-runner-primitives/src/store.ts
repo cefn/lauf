@@ -10,16 +10,17 @@ import { BasicMessageQueue, MessageQueue } from "@lauf/lauf-queue";
 import { receive } from "./queue";
 import { ExitStatus, Follower, Controls } from "./types";
 
-type QueueHandler<Selected, Ending> = ActionPlan<
+type QueueHandler<Selected, Ending, Reaction> = ActionPlan<
   [MessageQueue<Selected>, Selected],
-  Ending
+  Ending,
+  Reaction
 >;
 
-export function* withQueue<Value, Selected, Ending>(
+export function* withQueue<Value, Selected, Ending, Reaction>(
   store: Store<Value>,
   selector: Selector<Value, Selected>,
-  handleQueue: QueueHandler<Selected, Ending>
-): ActionSequence<Ending> {
+  handleQueue: QueueHandler<Selected, Ending, any>
+): ActionSequence<Ending, any> {
   const queue = new BasicMessageQueue<Selected>();
   let prevSelected: Selected = selector(store.read());
   const selectedNotifier = (value: Immutable<Value>) => {
@@ -38,11 +39,11 @@ export function* withQueue<Value, Selected, Ending>(
   }
 }
 
-export function* followSelected<Value, Selected, Ending>(
-  store: Store<Value>,
-  selector: Selector<Value, Selected>,
-  follower: Follower<Selected, Ending>
-): ActionSequence<Ending> {
+export function* follow<State, Selected, Ending, Reaction>(
+  store: Store<State>,
+  selector: Selector<State, Selected>,
+  follower: Follower<Selected, Ending, Reaction>
+): ActionSequence<Ending, Reaction | Selected> {
   return yield* withQueue(store, selector, function* (queue, selected) {
     let result;
     let lastSelected: Selected | undefined;
@@ -67,37 +68,40 @@ export function* followSelected<Value, Selected, Ending>(
   });
 }
 
-export class Edit<T> implements Action<Immutable<T>> {
-  constructor(
-    readonly store: Store<T>,
-    readonly operator: Editor<Immutable<T>>
-  ) {}
+export class Edit<State> implements Action<Immutable<State>> {
+  constructor(readonly store: Store<State>, readonly operator: Editor<State>) {}
   act() {
     return this.store.edit(this.operator);
   }
 }
 export const edit = planOfAction(Edit);
 
-export class Select<T, V> implements Action<V> {
-  constructor(readonly store: Store<T>, readonly selector: Selector<T, V>) {}
+export class Select<State, Selected> implements Action<Immutable<Selected>> {
+  constructor(
+    readonly store: Store<State>,
+    readonly selector: Selector<State, Selected>
+  ) {}
   act() {
     return this.store.select(this.selector);
   }
 }
 export const select = planOfAction(Select);
 
-export class StorePlans<T> {
-  constructor(readonly store: Store<T>) {}
+export class StorePlans<State> {
+  constructor(readonly store: Store<State>) {}
 
-  edit = (editor: Editor<T>) => edit(this.store, editor);
+  edit = (editor: Editor<State>) => edit(this.store, editor);
 
-  select = <V>(selector: Selector<T, V>) => select(this.store, selector);
+  select = <Selected>(selector: Selector<State, Selected>) =>
+    select(this.store, selector);
 
-  followSelected = <V, E>(selector: Selector<T, V>, follower: Follower<V, E>) =>
-    followSelected(this.store, selector, follower);
+  follow = <Selected, Ending, Reaction>(
+    selector: Selector<State, Selected>,
+    follower: Follower<Selected, Ending, Reaction>
+  ) => follow(this.store, selector, follower);
 
-  withQueue = <V, E>(
-    selector: Selector<T, V>,
-    handleQueue: QueueHandler<V, E>
+  withQueue = <Selected, Ending, Reaction>(
+    selector: Selector<State, Selected>,
+    handleQueue: QueueHandler<Selected, Ending, Reaction>
   ) => withQueue(this.store, selector, handleQueue);
 }

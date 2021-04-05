@@ -6,12 +6,17 @@ export type ImmutableObject<T> = Readonly<
   }
 >;
 
-export type Immutable<T> = T extends any[] | object
+export type Immutable<T> = T extends
+  | string
+  | number
+  | boolean
+  | null
+  | undefined
+  ? T
+  : T extends any[] | object
   ? ImmutableObject<T>
-  : T extends string | number | boolean | null
-  ? Readonly<T>
   : never;
 
-export type Editor<T extends Immutable<any>> = (draft: Draft<T>) => void;
+export type Editor<T> = (draft: Draft<Immutable<T>>) => void;
 
 export type { Draft };

@@ -4,11 +4,15 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "check": "tsc --noEmit"
   },
   "dependencies": {
     "immer": "^8.0.1",
     "lodash.get": "^4.4.2",
     "lodash.set": "^4.3.2"
+  },
+  "devDependencies": {
+    "typescript": "^4.2.2"
   }
 }

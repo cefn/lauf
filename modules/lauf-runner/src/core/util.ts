@@ -18,19 +18,19 @@ export const actor: Performer<never, any> = async function* () {
 };
 
 /** Streamline plan creation from any Action class. */
-export function planOfAction<Params extends any[], Reaction = any>(
-  actionClass: ActionClass<Params, Reaction>
-): ActionPlan<Params, Reaction> {
-  return function* (...actionParams: Params) {
+export function planOfAction<Args extends any[], Ending>(
+  actionClass: ActionClass<Args, Ending>
+): ActionPlan<Args, Ending, Ending> {
+  return function* (...actionParams: Args) {
     const action = new actionClass(...actionParams);
-    const result: Reaction = yield action;
+    const result: Ending = yield action;
     return result;
   };
 }
 
 export async function performPlan<Args extends any[], Ending, Reaction>(
   plan: ActionPlan<Args, Ending, Reaction>,
-  args: Args
+  ...args: Args
 ): Promise<Ending> {
   const ending = await directPlan(plan, args);
   if (isTermination(ending)) {

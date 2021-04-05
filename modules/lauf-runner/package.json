@@ -4,6 +4,10 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "check": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "typescript": "^4.2.2"
   }
 }

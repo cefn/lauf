@@ -2,7 +2,9 @@ import { BasicStore, Selector, Store } from "@lauf/lauf-store";
 import { Immutable } from "@lauf/lauf-store";
 import { useState, useEffect, createContext } from "react";
 
-export function useStore<T>(initialTree: Immutable<T>): Store<T> {
+export function useStore<T extends object>(
+  initialTree: Immutable<T>
+): Store<T> {
   const [store, setStore] = useState(() => {
     return new BasicStore<T>(initialTree);
   });
@@ -15,7 +17,7 @@ export function useStore<T>(initialTree: Immutable<T>): Store<T> {
   return store;
 }
 
-export function useSelected<State, Selected = any>(
+export function useSelected<State, Selected>(
   store: Store<State>,
   selector: Selector<State, Selected>
 ) {

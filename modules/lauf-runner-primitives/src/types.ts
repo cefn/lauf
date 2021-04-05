@@ -9,4 +9,8 @@ export type Controls<Selected, Ending> = {
   exit: (ending: Ending) => ExitStatus;
 };
 
-export type Follower<T, V> = ActionPlan<[T, Controls<T, V>], void | ExitStatus>;
+export type Follower<Selected, Ending, Reaction> = ActionPlan<
+  [Selected, Controls<Selected, Ending>],
+  void | ExitStatus,
+  Reaction
+>;
