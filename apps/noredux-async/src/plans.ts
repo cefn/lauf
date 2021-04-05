@@ -66,7 +66,7 @@ const fetchSubreddit = planOfAction(FetchSubreddit);
 
 /** PLANS */
 
-export function* mainPlan(store: Store<AppState>): ActionSequence {
+export function* mainPlan(store: Store<AppState>): ActionSequence<void, any> {
   yield* follow(store, selectFocus, function* (focus) {
     // invoked on initial value and every subsequent change
     if (focus) {
@@ -81,7 +81,7 @@ export function* mainPlan(store: Store<AppState>): ActionSequence {
 export function* fetchPlan(
   store: Store<AppState>,
   name: SubredditName
-): ActionSequence {
+): ActionSequence<void, any> {
   //initialise cache and transition to 'fetching' state
   yield* edit(store, (draft) => {
     draft.caches[name] = {

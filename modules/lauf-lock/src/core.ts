@@ -4,7 +4,7 @@ function arrayWithout<T>(arr: ReadonlyArray<T>, index: number) {
   return [...arr.slice(0, index), ...arr.slice(index + 1)];
 }
 
-export class BasicLock<T = any> implements Lock {
+export class BasicLock<T> implements Lock {
   protected keys: ReadonlyArray<T | void> = [];
   protected releasePromises: ReadonlyArray<Promise<void>> = [];
   async acquire(key?: T): Promise<Release> {

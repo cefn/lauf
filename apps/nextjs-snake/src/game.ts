@@ -27,7 +27,7 @@ import {
 } from "./domain";
 import { isVectorEqual, randomSquare, plus, wrap } from "./util";
 
-export function* mainPlan() {
+export function* mainPlan(): ActionSequence<AppModel, any> {
   const appModel = createAppModel();
   yield* resetGame(appModel);
   yield* backgroundPlan(inputDirectionRoutine, appModel);
@@ -61,7 +61,7 @@ function* moveUntilMotionChange(
   appModel: AppModel,
   motion: Direction,
   motionQueue: MessageQueue<Motion>
-): ActionSequence<Motion> {
+): ActionSequence<Motion, any> {
   //promise future change in motion
   const [motionChangePromise] = yield* backgroundPlan(receive, motionQueue);
   while (true) {
@@ -83,7 +83,7 @@ function* moveUntilMotionChange(
 
 function* fruitRoutine(appModel: AppModel) {
   const { follow, select } = appModel;
-  yield* follow(selectHead, function* (head) {
+  yield* follow(selectHead, function* (head): ActionSequence<void, any> {
     const fruitPos = yield* select(selectFruitPos);
     if (isVectorEqual(fruitPos, head.pos)) {
       yield* eatFruit(appModel);
@@ -92,7 +92,11 @@ function* fruitRoutine(appModel: AppModel) {
 }
 
 /** Handle directions being activated and released (driven by keypresses or touchscreen drags) */
-function* inputDirectionRoutine({ edit, select, inputQueue }: AppModel) {
+function* inputDirectionRoutine({
+  edit,
+  select,
+  inputQueue,
+}: AppModel): ActionSequence<never, any> {
   while (true) {
     //block for next instruction
     const [inputDirection, active] = yield* receive(inputQueue);
@@ -143,7 +147,7 @@ function* eatFruit({ edit }: AppModel) {
 
 function* snakeCollisionRoutine(appModel: AppModel) {
   const { follow, select } = appModel;
-  yield* follow(selectHead, function* (head) {
+  yield* follow(selectHead, function* (head): ActionSequence<void, any> {
     const segments = yield* select(selectSegments);
     for (const segment of segments) {
       if (segment !== head && isVectorEqual(head.pos, segment.pos)) {

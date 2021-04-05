@@ -1,5 +1,5 @@
 import { follow, edit, receive } from "@lauf/lauf-runner-primitives";
-import { backgroundPlan } from "@lauf/lauf-runner";
+import { ActionSequence, backgroundPlan } from "@lauf/lauf-runner";
 import { BasicStore } from "@lauf/lauf-store";
 import { BasicMessageQueue } from "@lauf/lauf-queue";
 import { Game, GameState, Player, Station } from "./types";
@@ -20,7 +20,7 @@ function createGame(): Game {
   };
 }
 
-export function* launchPlan() {
+export function* launchPlan(): ActionSequence<Game, any> {
   const game = createGame();
   yield* populatePlayers(game);
   yield* backgroundPlan(detectWinner, game);
@@ -91,7 +91,7 @@ function* advanceTurns({ store }: Game) {
   );
 }
 
-function* handleInput({ store, queue }: Game) {
+function* handleInput({ store, queue }: Game): ActionSequence<never, any> {
   while (true) {
     const station = yield* receive(queue);
     //retrieve matching stations

@@ -1,7 +1,7 @@
 import React from "react";
 import assert from "assert";
 import { render, act } from "@testing-library/react";
-import { performSequence, promiseDelay } from "@lauf/lauf-runner";
+import { performSequence, promiseExpiry } from "@lauf/lauf-runner";
 import { mainPlan, _test_game } from "../src/game";
 import { Game } from "../src/view";
 import { SPRITE_SHEET } from "../src/components/graphics";
@@ -36,7 +36,7 @@ describe.skip("Passing test case  - incompatible jsx config", () => {
       for (let i = 0; i < 5; i++) {
         for (const direction of ["LEFT", "UP"] as Direction[]) {
           inputQueue.send([direction, true]);
-          await promiseDelay(400);
+          await promiseExpiry(400);
           inputQueue.send([direction, false]);
         }
       }

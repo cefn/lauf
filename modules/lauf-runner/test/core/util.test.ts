@@ -1,8 +1,14 @@
 import assert from "assert";
-import { ActionPlan, performPlan, Expire, expire } from "@lauf/lauf-runner";
+import {
+  ActionPlan,
+  performPlan,
+  Expire,
+  expire,
+  Expiry,
+} from "@lauf/lauf-runner";
 
 describe("Define, run and regression test simple plan", () => {
-  const plan: ActionPlan<[], number> = function* () {
+  const plan: ActionPlan<[], number, Expiry> = function* () {
     const beforeMs = new Date().getTime();
     for (let i = 0; i < 3; i++) {
       yield* expire(i);
@@ -20,22 +26,22 @@ describe("Define, run and regression test simple plan", () => {
     let step;
     const sequence = plan();
 
-    step = sequence.next(undefined);
+    step = sequence.next();
     assert(step.done === false);
     expect(step.value).toBeInstanceOf(Expire);
     expect((step.value as Expire).ms).toBe(0);
 
-    step = sequence.next(undefined);
+    step = sequence.next();
     assert(step.done === false);
     expect(step.value).toBeInstanceOf(Expire);
     expect((step.value as Expire).ms).toBe(1);
 
-    step = sequence.next(undefined);
+    step = sequence.next();
     assert(step.done === false);
     expect(step.value).toBeInstanceOf(Expire);
     expect((step.value as Expire).ms).toBe(2);
 
-    step = sequence.next(undefined);
+    step = sequence.next();
     assert(step.done === true);
     expect(typeof step.value).toBe("number");
   });

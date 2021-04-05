@@ -21,7 +21,7 @@ export function isAction(item: any): item is Action<any> {
  * accepts their reactions in return, until an Ending
  * is returned.
  */
-export type ActionSequence<Ending = void, Reaction = any> = Generator<
+export type ActionSequence<Ending, Reaction> = Generator<
   Action<Reaction>,
   Ending,
   Reaction
@@ -33,11 +33,9 @@ export type ActionSequence<Ending = void, Reaction = any> = Generator<
 // ];
 
 /** ActionPlan contains step-by-step instructions for an ActionSequence. */
-export type ActionPlan<
-  Args extends any[] = any[],
-  Ending = void,
-  Reaction = any
-> = (...args: Args) => ActionSequence<Ending, Reaction>;
+export type ActionPlan<Args extends any[], Ending, Reaction> = (
+  ...args: Args
+) => ActionSequence<Ending, Reaction>;
 
 //TODO add Sync routine as an option for testing?
 export type Performance<Exit, Reaction> = AsyncGenerator<

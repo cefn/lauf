@@ -1,7 +1,7 @@
 import { BasicMessageQueue } from "@lauf/lauf-queue/src";
-import { edit, receive } from "@lauf/lauf-runner-primitives";
-import { backgroundPlan } from "@lauf/lauf-runner/src";
-import { BasicStore } from "@lauf/lauf-store/src";
+import { edit, Receive, receive } from "@lauf/lauf-runner-primitives";
+import { ActionSequence, backgroundPlan } from "@lauf/lauf-runner/src";
+import { BasicStore, Immutable } from "@lauf/lauf-store/src";
 
 import {
   AppModel,
@@ -34,7 +34,9 @@ export function* mainPlan() {
   return appModel;
 }
 
-export function* colorChangePlan(appModel: AppModel) {
+export function* colorChangePlan(
+  appModel: AppModel
+): ActionSequence<never, any> {
   const { changeQueue } = appModel;
   while (true) {
     const [color, amount] = yield* receive(changeQueue);
