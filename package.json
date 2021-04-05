@@ -46,6 +46,7 @@
     "jest-expect-message": "^1.0.2",
     "lerna": "^4.0.0",
     "lodash": "^4.17.21",
+    "minimatch": "^3.0.4",
     "prettier": "^2.2.1",
     "prompt-sync": "^4.2.0",
     "ts-jest": "^26.5.2",
