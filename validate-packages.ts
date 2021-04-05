@@ -4,6 +4,7 @@ import fs from "fs";
 import glob from "glob";
 import { isDeepStrictEqual } from "util";
 import yargs from "yargs";
+import minimatch from "minimatch";
 import lodashGet from "lodash/get";
 import lodashSet from "lodash/set";
 import chalk from "chalk";
@@ -19,8 +20,30 @@ const RULES: ReadonlyArray<PackageJsonRule> = [
     expected: "tsc --noEmit",
     status: "error",
   },
+  {
+    path: "devDependencies.typescript",
+    expected: "^4.2.2",
+    status: "error",
+  },
 ] as const;
-type Rule = typeof RULES[number];
+
+const { strategy, filterPackages, filterPaths } = yargs
+  .option("strategy", {
+    description: "Select alignment strategy",
+    type: "string",
+    default: "dryRun",
+    choices: ["dryRun", "fixErrors", "fixWarnings"],
+  })
+  .option("filterPackages", {
+    description: "Filter pattern for package names",
+    type: "string",
+  })
+  .option("filterPaths", {
+    description: "Filter pattern for property names",
+    type: "string",
+  })
+  .help()
+  .alias("help", "h").argv;
 
 const STATUSES = [
   "warning", //report violation
@@ -28,6 +51,7 @@ const STATUSES = [
 ] as const;
 
 type Status = typeof STATUSES[number];
+type Rule = typeof RULES[number];
 
 interface PackageJsonRule {
   /** The path to get/set within package.json (lodash) */
@@ -37,16 +61,6 @@ interface PackageJsonRule {
   status: Status;
 }
 
-const { strategy } = yargs
-  .option("strategy", {
-    description: "Select alignment strategy",
-    type: "string",
-    default: "dryRun",
-    choices: ["dryRun", "fixErrors", "fixWarnings"],
-  })
-  .help()
-  .alias("help", "h").argv;
-
 const packageJsonPaths = glob.sync("**/package.json", {
   ignore: "**/node_modules/**/package.json",
 });
@@ -55,6 +69,12 @@ let failed = false;
 
 for (const packageJsonPath of packageJsonPaths) {
   const packageJson = JSON.parse(fs.readFileSync(packageJsonPath).toString());
+
+  if (filterPackages) {
+    if (!minimatch(packageJson.name, filterPackages)) {
+      continue;
+    }
+  }
 
   //skip workspace root
   if (packageJson.workspaces) {
@@ -72,6 +92,12 @@ for (const packageJsonPath of packageJsonPaths) {
   const found: Record<Rule["path"], Violation> = {};
   let rewritePackageJson = false;
   for (const { path, expected, status } of RULES) {
+    if (filterPaths) {
+      if (!minimatch(path, filterPaths)) {
+        continue;
+      }
+    }
+
     const actual = lodashGet(packageJson, path) as string;
     if (!isDeepStrictEqual(actual, expected)) {
       //record violation
