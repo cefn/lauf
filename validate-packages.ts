@@ -6,6 +6,21 @@ import { isDeepStrictEqual } from "util";
 import yargs from "yargs";
 import lodashGet from "lodash/get";
 import lodashSet from "lodash/set";
+import chalk from "chalk";
+
+const RULES: ReadonlyArray<PackageJsonRule> = [
+  {
+    path: "scripts.test",
+    expected: "jest",
+    status: "warning",
+  },
+  {
+    path: "scripts.check",
+    expected: "tsc --noEmit",
+    status: "error",
+  },
+] as const;
+type Rule = typeof RULES[number];
 
 const STATUSES = [
   "warning", //report violation
@@ -21,19 +36,6 @@ interface PackageJsonRule {
   expected: string | RegExp;
   status: Status;
 }
-
-const RULES: PackageJsonRule[] = [
-  {
-    path: "test",
-    expected: "jest",
-    status: "warning",
-  },
-  {
-    path: "check",
-    expected: "tsc --noEmit",
-    status: "error",
-  },
-];
 
 const { strategy } = yargs
   .option("strategy", {
@@ -54,38 +56,69 @@ let failed = false;
 for (const packageJsonPath of packageJsonPaths) {
   const packageJson = JSON.parse(fs.readFileSync(packageJsonPath).toString());
 
-  //only manipulate leaf packages (those without workspace property)
+  //skip workspace root
   if (packageJson.workspaces) {
+    console.log(chalk.green(`Skipping workspace root ${packageJson.name}`));
     assert(packageJson.name === "lauf-monorepo");
     continue;
   }
 
-  let fixed = false;
-
+  //traverse package json tree, checking and (optionally) fixing
+  type Violation = {
+    actual: string;
+    expected: string | RegExp;
+    fixed: boolean;
+  };
+  const found: Record<Rule["path"], Violation> = {};
+  let rewritePackageJson = false;
   for (const { path, expected, status } of RULES) {
-    const actual = lodashGet(packageJson, path);
+    const actual = lodashGet(packageJson, path) as string;
     if (!isDeepStrictEqual(actual, expected)) {
-      //report violation
-      console.log(`Path: ${path} should be ${expected} but found ${actual}`);
-      //record for exit status
+      //record violation
+      let violationColor: typeof chalk.redBright = chalk.redBright;
       if (status === "error") {
+        //exit status
         failed = true;
+      } else if (status === "warning") {
+        violationColor = chalk.yellow;
+      } else {
+        throw `Unexpected status`;
       }
+      const message = `${violationColor(
+        status.toUpperCase()
+      )} ${path} was '${chalk.red(actual)}' not '${chalk.green(expected)}'`;
       //check strategy, possibly skip fix depending on rule status
       if (
-        (status === "error" && ["dryrun"].includes(strategy)) ||
+        (status === "error" && ["dryRun"].includes(strategy)) ||
         (status === "warning" && ["dryRun", "fixWarnings"].includes(strategy))
       ) {
-        console.log(`strategy = ${strategy} so not fixing`);
+        //skip the fix
+        found[path] = { actual, expected, fixed: false };
         continue;
+      } else {
+        //proceed with fix
+        found[path] = { actual, expected, fixed: true };
+        console.log(`${message} FIXED`);
+        lodashSet(packageJson, path, expected);
+        rewritePackageJson = true;
       }
-      //proceed to fix
-      lodashSet(packageJson, path, expected);
-      fixed = true;
     }
   }
 
-  if (fixed) {
+  if (Object.entries(found).length > 0) {
+    console.log(`${packageJson.name} (${chalk.gray(packageJsonPath)})`);
+    for (const [path, { actual, expected, fixed }] of Object.entries(found)) {
+      console.log(
+        `${chalk.yellow(path)} ${chalk.red(actual)}${chalk.yellow(
+          " not "
+        )}${chalk.green(expected)} (${
+          fixed ? "FIXED" : `NOT FIXED (${strategy})`
+        })`
+      );
+    }
+  }
+
+  if (rewritePackageJson) {
     fs.writeFileSync(packageJsonPath, JSON.stringify(packageJson, null, "  "));
   }
 }
