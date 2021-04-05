@@ -6,5 +6,8 @@
   "scripts": {
     "test": "jest",
     "check": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "typescript": "^4.2.2"
   }
 }
