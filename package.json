@@ -14,9 +14,9 @@
     "lint:changed": "lerna exec --since origin/main --include-dependents -- eslint . --ext .js,.jsx,.ts,.tsx",
     "test": "jest",
     "test:changed": "lerna run --since origin/main --include-dependents test",
-    "typecheck": "lerna run check",
-    "typecheck:changed": "lerna run --since origin/main --include-dependents check",
-    "typecheck:lauf": "lerna run --scope '@lauf/*' check",
+    "check": "lerna run check",
+    "check:changed": "lerna run --since origin/main --include-dependents check",
+    "check:lauf": "lerna run --scope '@lauf/*' check",
     "validate": "npx ts-node ./validate-packages.ts"
   },
   "devDependencies": {
