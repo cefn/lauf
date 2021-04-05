@@ -9,6 +9,6 @@ export interface Store<State> extends WatchableValue<Immutable<State>> {
   // partition: (key: keyof State) => Store<State[typeof key]>;
 }
 
-export type Selector<State, Selected = any> = (
+export type Selector<State, Selected> = (
   state: Immutable<State>
 ) => Immutable<Selected>;

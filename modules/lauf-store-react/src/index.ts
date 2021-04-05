@@ -17,7 +17,7 @@ export function useStore<T extends object>(
   return store;
 }
 
-export function useSelected<State, Selected = any>(
+export function useSelected<State, Selected>(
   store: Store<State>,
   selector: Selector<State, Selected>
 ) {

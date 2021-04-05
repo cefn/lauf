@@ -1,4 +1,4 @@
-import { promiseDelay } from "../src/core/delay";
+import { promiseExpiry } from "../src/core/delay";
 
 const promiseCriterion = async function (
   criterion: () => boolean,
@@ -6,6 +6,6 @@ const promiseCriterion = async function (
 ) {
   const start = new Date().getTime();
   while (!criterion() && new Date().getTime() - start < timeout) {
-    await promiseDelay(1);
+    await promiseExpiry(1);
   }
 };

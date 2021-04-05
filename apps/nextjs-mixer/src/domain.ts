@@ -11,7 +11,7 @@ export const INITIAL_STATE = {
   color: [0, 0, 0],
 } as const;
 
-export const selectColor: Selector<AppState> = (state) => state.color;
+export const selectColor: Selector<AppState, Rgb> = (state) => state.color;
 
 export interface AppModel {
   colorStore: Store<AppState>;
