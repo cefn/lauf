@@ -1,47 +1,70 @@
-import { ActionPlan, Termination } from "@lauf/lauf-runner";
-import { Store } from "@lauf/lauf-store";
-import { interceptPlan } from "./intercept";
-import { PlanHistory } from "./types";
+import { Action, ActionPlan, Termination } from "@lauf/lauf-runner/src";
+import { Store } from "@lauf/lauf-store/src";
+import { interceptPlan, PlanInterceptor } from "./intercept";
+import { ForkId, ActionPhase, ReactionPhase } from "./types";
 
-function beginPlanHistory<State, Args extends any[], Ending, Reaction>(
-  store: Store<State>,
-  plan: ActionPlan<Args, Ending, Reaction>,
-  args: Args
-) {
-  return {
-    plan,
-    args,
-    initialState: store.read(),
-    actionPhases: [],
-    reactionPhases: [],
-    forkHistories: {},
-  };
+class ForkRegistry<State> {
+  private nextForkId = 0;
+  private nextEventId = 0;
+  constructor(readonly store: Store<State>) {}
+
+  forkHandles: Record<ForkId, ForkHandle<State, any, any, any>> = {};
+
+  assignForkId() {
+    return this.nextForkId++;
+  }
+
+  assignEventId() {
+    return this.nextEventId++;
+  }
+
+  async watchPlan<Args extends any[], Ending, Reaction>(
+    plan: ActionPlan<Args, Ending, Reaction>,
+    args: Args,
+    parentId: null
+  ): Promise<Ending | Termination> {
+    const idPrefix = parentId ? `${parentId}:` : "";
+    const idSuffix = `${this.assignForkId()}-${plan.name}`;
+    const id = idPrefix + idSuffix;
+    const forkHandle = new ForkHandle(this, plan, args, id, parentId);
+    return await interceptPlan(plan, args, forkHandle);
+  }
 }
 
-class ForkTracker<State, Args extends any[], Ending, Reaction> {
+class ForkHandle<State, Args extends any[], Ending, Reaction>
+  implements PlanInterceptor<Reaction> {
+  private actionPhases: ReadonlyArray<ActionPhase<State, Reaction>> = [];
+  private reactionPhases: ReadonlyArray<ReactionPhase<State, Reaction>> = [];
+
   constructor(
-    readonly store: Store<State>,
+    readonly registry: ForkRegistry<State>,
     readonly plan: ActionPlan<Args, Ending, Reaction>,
-    readonly args: Args
-  ) {
-    this.planHistory = beginPlanHistory(store, plan, args);
-  }
-  protected planHistory: PlanHistory<State, Args, Ending, Reaction>;
-  private nextPlanOrdinal: number = 0;
-  private nextEventOrdinal: number = 0;
-  getNextPlanOrdinal() {
-    return this.nextPlanOrdinal++;
-  }
-  getNextEventOrdinal() {
-    return this.nextEventOrdinal++;
+    readonly args: Args,
+    readonly id: ForkId,
+    readonly parentId: ForkId | null
+  ) {}
+
+  interceptAction(action: Action<Reaction>): Action<Reaction> {
+    this.actionPhases = [
+      ...this.actionPhases,
+      {
+        action,
+        prevState: this.registry.store.read(),
+        eventId: this.registry.assignEventId(),
+        timestamp: new Date().getTime(),
+      },
+    ];
+    return action;
   }
 
-  async forkPlan(
-    plan: ActionPlan<Args, Ending, Reaction>,
-    ...args: Args
-  ): Promise<Ending | Termination> {
-    const planId = `${this.getNextPlanOrdinal()}_${plan.name}`;
-    const planHistorian = new PlanHistorian(this, planHistory, plan, args);
-    return await interceptPlan(plan, args, planHistorian);
+  interceptReaction(reaction: Reaction): Reaction {
+    const reactionPhase: ReactionPhase<State, Reaction> = {
+      reaction,
+      prevState: this.registry.store.read(),
+      eventId: this.registry.assignEventId(),
+      timestamp: new Date().getTime(),
+    };
+    this.reactionPhases = [...this.reactionPhases, reactionPhase];
+    return reaction;
   }
 }

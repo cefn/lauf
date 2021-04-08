@@ -1,27 +1,17 @@
-import { Action, ActionPlan } from "@lauf/lauf-runner";
-import { Immutable } from "@lauf/lauf-store";
+import { Action } from "@lauf/lauf-runner";
 
-export interface PlanHistory<State, Args extends any[], Ending, Reaction> {
-  initialState: Immutable<State>;
-  plan: ActionPlan<Args, Ending, Reaction>;
-  args: Args;
-  actionPhases: ReadonlyArray<ActionPhase<State, Reaction>>;
-  reactionPhases: ReadonlyArray<ReactionPhase<State, Reaction>>;
-  forkHistories: {
-    [key: string]: PlanHistory<State, any, any, Reaction>;
-  };
-}
+export type Id = string;
 
-interface Phase<State> {
-  prevState: Immutable<State>;
-  eventOrdinal: number;
+export interface Phase<State> {
+  prevState: State;
+  eventId: number;
   timestamp: number;
 }
 
-interface ActionPhase<State, Reaction> extends Phase<State> {
+export interface ActionPhase<State, Reaction> extends Phase<State> {
   action: Action<Reaction>;
 }
 
-interface ReactionPhase<State, Reaction> extends Phase<State> {
+export interface ReactionPhase<State, Reaction> extends Phase<State> {
   reaction: Reaction;
 }

@@ -5,10 +5,11 @@ import {
   Performer,
   Termination,
 } from "@lauf/lauf-runner";
+import { Immutable } from "@lauf/lauf-store/src";
 
 export interface PlanInterceptor<Reaction> {
-  interceptAction: <R extends Reaction>(action: Action<R>) => Action<R>;
-  interceptReaction: <R extends Reaction>(reaction: R) => R;
+  interceptAction: (action: Action<Reaction>) => Action<Reaction>;
+  interceptReaction: (reaction: Reaction) => Reaction;
 }
 
 export async function interceptPlan<Args extends any[], Ending, Reaction>(
