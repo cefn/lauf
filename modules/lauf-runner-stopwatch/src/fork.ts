@@ -1,14 +1,19 @@
-import { Action, ActionPlan, Termination } from "@lauf/lauf-runner/src";
-import { Store } from "@lauf/lauf-store/src";
+import {
+  Action,
+  ActionPlan,
+  PlanRunner,
+  Termination,
+  BackgroundPlan,
+} from "@lauf/lauf-runner";
+import { Store } from "@lauf/lauf-store";
 import { interceptPlan, PlanInterceptor } from "./intercept";
 import { Id, ActionPhase, ReactionPhase } from "./types";
 
 export class ForkRegistry<State> {
   private nextForkOrdinal = 0;
   private nextEventOrdinal = 0;
-  constructor(readonly store: Store<State>) {}
-
   forkHandles: Record<Id, ForkHandle<State, any, any, any>> = {};
+  constructor(readonly store: Store<State>) {}
 
   assignForkId() {
     return this.nextForkOrdinal++;
@@ -29,6 +34,13 @@ export class ForkRegistry<State> {
     const forkHandle = new ForkHandle(this, plan, args, id, parentId);
     this.forkHandles[id] = forkHandle;
     return await interceptPlan(plan, args, forkHandle);
+  }
+
+  getRunner<Args extends any[], Ending, Reaction>(
+    parentId: Id
+  ): PlanRunner<Args, Ending, Reaction> {
+    return (plan: ActionPlan<Args, Ending, Reaction>, ...args: Args) =>
+      this.watchPlan(plan, args, parentId);
   }
 }
 
@@ -55,6 +67,9 @@ class ForkHandle<State, Args extends any[], Ending, Reaction>
         timestamp: new Date().getTime(),
       },
     ];
+    if (action instanceof BackgroundPlan) {
+      action.runner = this.registry.getRunner(this.id);
+    }
     return action;
   }
 

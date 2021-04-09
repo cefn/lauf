@@ -1,22 +1,26 @@
 import { promiseExpiry, Expiry, EXPIRY } from "./delay";
-import { Action, ActionPlan, ActionSequence } from "../types";
+import {
+  Action,
+  ActionPlan,
+  ActionSequence,
+  PlanRunner,
+  Termination,
+} from "../types";
 import { planOfAction, performPlan } from "./util";
 
-// type Mapped<Ending, T extends ActionSequence<Ending>[]> = {
-//   [K in keyof T]: Promise<Ending>;
-// } & { length: T["length"] };
-
 export class BackgroundPlan<Args extends any[], Ending, Reaction>
-  implements Action<readonly [Promise<Ending>]> {
-  readonly args: Args;
+  implements Action<readonly [Promise<Ending | Termination>]> {
+  //TODO runner writeable for ForkHandler support - reconsider
+  runner: PlanRunner<Args, Ending, Reaction>;
   constructor(
     readonly plan: ActionPlan<Args, Ending, Reaction>,
-    ...args: Args
+    readonly args: Args,
+    runner: PlanRunner<Args, Ending, Reaction> = performPlan
   ) {
-    this.args = args;
+    this.runner = runner;
   }
   act() {
-    return [performPlan(this.plan, ...this.args)] as const;
+    return [this.runner(this.plan, ...this.args)] as const;
   }
 }
 
@@ -70,11 +74,11 @@ class TimeoutWait<Ending> implements Action<Ending | Expiry> {
 
 export function* backgroundAllPlans<Ending, Reaction>(
   plans: ActionPlan<[], Ending, Reaction>[]
-): ActionSequence<Promise<Ending>[], any> {
-  //Is reaction type `any` a dangerous hack?
-  const promises: Promise<Ending>[] = [];
+): ActionSequence<Promise<Ending | Termination>[], any> {
+  //Is reaction type `any` a dangerous hack? Should be unknown?
+  const promises: Promise<Ending | Termination>[] = [];
   for (const plan of plans) {
-    const [promise] = yield* backgroundPlan(plan);
+    const [promise] = yield* backgroundPlan(plan, []);
     promises.push(promise);
   }
   return promises;

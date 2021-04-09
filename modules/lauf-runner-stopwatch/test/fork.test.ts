@@ -2,34 +2,42 @@ import assert from "assert";
 import { BasicStore, Store } from "@lauf/lauf-store";
 import { setStorePath, SetStorePath } from "@lauf/lauf-runner-primitives";
 import { ForkRegistry } from "../src/fork";
+import { backgroundPlan, wait } from "@lauf/lauf-runner/src";
 
-type Poem = {
+type LovePoem = {
   roses?: "red";
   violets?: "blue";
   sugar?: "sweet";
   so?: "you";
 };
 
-function* setLine<K extends keyof Poem>(
-  store: Store<Poem>,
-  key: K,
-  value: Poem[K]
-) {
+type MicrobesPoem = {
+  adam?: "'ad'em'";
+};
+
+function* setLine<
+  Poem extends LovePoem | MicrobesPoem,
+  K extends string & keyof Poem
+>(store: Store<Poem>, key: K, value: Poem[K]) {
   yield* setStorePath(store, key, value);
 }
 
-function* poemPlan(store: Store<Poem>) {
+function* lovePoemPlan(store: Store<LovePoem>) {
   yield* setLine(store, "roses", "red");
   yield* setLine(store, "violets", "blue");
   yield* setLine(store, "sugar", "sweet");
   yield* setLine(store, "so", "you");
 }
 
-test("ActionPlans can be run by a ForkRegistry", async () => {
+function* microbesPoemPlan(store: Store<MicrobesPoem>) {
+  yield* setLine(store, "adam", "'ad'em'");
+}
+
+test("ForkRegistry tracks concurrent plans spawned by a parent plan", async () => {
   //run the plan
-  const store = new BasicStore<Poem>({});
+  const store = new BasicStore<LovePoem>({});
   const registry = new ForkRegistry(store);
-  await registry.watchPlan(poemPlan, [store]);
+  await registry.watchPlan(lovePoemPlan, [store]);
 
   //check intercepted data from the run
 
@@ -42,7 +50,7 @@ test("ActionPlans can be run by a ForkRegistry", async () => {
 
   Object.entries(registry.forkHandles).map(([forkId, forkHandle]) => {
     //id is allocated based on plan function name
-    expect(forkId).toBe("0-poemPlan");
+    expect(forkId).toBe("0-lovePoemPlan");
     //4 action phases are recorded
     expect(forkHandle.actionPhases.length).toBe(4);
     expect(forkHandle.reactionPhases.length).toBe(4);
@@ -83,4 +91,33 @@ test("ActionPlans can be run by a ForkRegistry", async () => {
       }
     });
   });
+});
+
+test("ForkRegistry tracks concurrent plans spawned by a parent plan", async () => {
+  //create a plan
+  function* concurrentPoems(store: Store<LovePoem & MicrobesPoem>) {
+    yield* wait(
+      Promise.all([
+        backgroundPlan(lovePoemPlan, [store]),
+        backgroundPlan(microbesPoemPlan, [store]),
+      ])
+    );
+  }
+  //run the plan
+  const store = new BasicStore<LovePoem & MicrobesPoem>({});
+  const registry = new ForkRegistry(store);
+  await registry.watchPlan(concurrentPoems, [store]);
+
+  //check intercepted data from the run
+  expect(store.read()).toEqual({
+    roses: "red",
+    violets: "blue",
+    sugar: "sweet",
+    so: "you",
+    adam: "'ad'em",
+  });
+
+  const forkHandlesEntries = Object.entries(registry.forkHandles);
+  //expect handle for main plan and two backgrounded plans
+  expect(forkHandlesEntries.length).toBe(3);
 });

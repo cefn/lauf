@@ -37,6 +37,11 @@ export type ActionPlan<Args extends any[], Ending, Reaction> = (
   ...args: Args
 ) => ActionSequence<Ending, Reaction>;
 
+export type PlanRunner<Args extends any[], Ending, Reaction> = (
+  plan: ActionPlan<Args, Ending, Reaction>,
+  ...args: Args
+) => Promise<Ending | Termination>;
+
 //TODO add Sync routine as an option for testing?
 export type Performance<Exit, Reaction> = AsyncGenerator<
   Reaction,
