@@ -16,7 +16,7 @@ describe("Process Logging", () => {
       }
       const noop = planOfAction(Noop);
 
-      const planInterceptor: PlanInterceptor = {
+      const planInterceptor: PlanInterceptor<any> = {
         interceptAction<Reaction>(action: Action<Reaction>) {
           interceptActionNotifier(action);
           return action;
@@ -27,7 +27,7 @@ describe("Process Logging", () => {
         },
       };
 
-      function* countPlan(): ActionSequence {
+      function* countPlan(): ActionSequence<void, any> {
         for (const i of [3, 4, 5]) {
           yield* noop(i);
         }
