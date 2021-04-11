@@ -72,6 +72,7 @@ class TimeoutWait<Ending> implements Action<Ending | Expiry> {
   }
 }
 
+//TODO possibly retire this owing to compromised signature? Only handles no-arg plans
 export function* backgroundAllPlans<Ending, Reaction>(
   plans: ActionPlan<[], Ending, Reaction>[]
 ): ActionSequence<Promise<Ending | Termination>[], any> {

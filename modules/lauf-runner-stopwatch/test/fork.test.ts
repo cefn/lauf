@@ -12,7 +12,7 @@ type LovePoem = {
 };
 
 type MicrobesPoem = {
-  adam?: "'ad'em'";
+  adam?: "'ad'em";
 };
 
 function* setLine<
@@ -30,17 +30,21 @@ function* lovePoemPlan(store: Store<LovePoem>) {
 }
 
 function* microbesPoemPlan(store: Store<MicrobesPoem>) {
-  yield* setLine(store, "adam", "'ad'em'");
+  yield* setLine(store, "adam", "'ad'em");
 }
 
-test("ForkRegistry tracks concurrent plans spawned by a parent plan", async () => {
-  //run the plan
+test("ForkRegistry tracks a single plan", async () => {
+  //CREATE STORE AND REGISTRY
   const store = new BasicStore<LovePoem>({});
   const registry = new ForkRegistry(store);
+
+  //BEFORE RUN
+  expect(store.read()).toEqual({});
+
+  //GET REGISTRY TO RUN PLAN
   await registry.watchPlan(lovePoemPlan, [store]);
 
-  //check intercepted data from the run
-
+  //AFTER RUN
   expect(store.read()).toEqual({
     roses: "red",
     violets: "blue",
@@ -48,13 +52,14 @@ test("ForkRegistry tracks concurrent plans spawned by a parent plan", async () =
     so: "you",
   });
 
+  //INSPECT DATA INTERCEPTED BY REGISTRY
   Object.entries(registry.forkHandles).map(([forkId, forkHandle]) => {
-    //id is allocated based on plan function name
+    //id was allocated based on plan function name
     expect(forkId).toBe("0-lovePoemPlan");
-    //4 action phases are recorded
+    //4 phases recorded
     expect(forkHandle.actionPhases.length).toBe(4);
     expect(forkHandle.reactionPhases.length).toBe(4);
-    //content of each action phase matches action
+    //each phase matches action
     forkHandle.actionPhases.map((actionPhase, actionIndex) => {
       const { eventId, prevState, action } = actionPhase;
       expect(eventId).toBe(actionIndex * 2); //an action event and reaction event for each
@@ -96,17 +101,24 @@ test("ForkRegistry tracks concurrent plans spawned by a parent plan", async () =
 test("ForkRegistry tracks concurrent plans spawned by a parent plan", async () => {
   //create a plan
   function* concurrentPoems(store: Store<LovePoem & MicrobesPoem>) {
-    yield* wait(
-      Promise.all([
-        backgroundPlan(lovePoemPlan, [store]),
-        backgroundPlan(microbesPoemPlan, [store]),
-      ])
+    const [lovePoemCompleted] = yield* backgroundPlan(lovePoemPlan, [store]);
+    const [microbesPoemCompleted] = yield* backgroundPlan(microbesPoemPlan, [
+      store,
+    ]);
+
+    const result = yield* wait(
+      Promise.all([lovePoemCompleted, microbesPoemCompleted])
     );
+    return result;
   }
   //run the plan
   const store = new BasicStore<LovePoem & MicrobesPoem>({});
   const registry = new ForkRegistry(store);
-  await registry.watchPlan(concurrentPoems, [store]);
+  const result = await registry.watchPlan<
+    any[],
+    [void | readonly ["terminate"], void | readonly ["terminate"]],
+    any
+  >(concurrentPoems, [store]);
 
   //check intercepted data from the run
   expect(store.read()).toEqual({
