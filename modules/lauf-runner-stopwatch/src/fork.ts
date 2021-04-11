@@ -23,6 +23,20 @@ export class ForkRegistry<State> {
     return this.nextEventOrdinal++;
   }
 
+  //TODO use @lauf/lock to ensure watchPlan has terminated properly
+  async replayUntil(actionId: number) {
+    const rootHandles = Object.values(this.forkHandles).filter(
+      (handle) => handle.parentId === null
+    );
+    const [firstActionPhase] = rootHandles
+      .map((rootHandle) => rootHandle.actionPhases)
+      .filter(
+        (actionPhases) => actionPhases.length && actionPhases[0]?.eventId === 0
+      );
+    for (const rootHandle of rootHandles) {
+    }
+  }
+
   async watchPlan<Args extends any[], Ending, Reaction>(
     plan: ActionPlan<Args, Ending, Reaction>,
     args: Args,
