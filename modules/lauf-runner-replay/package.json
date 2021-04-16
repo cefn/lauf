@@ -1,0 +1,13 @@
+{
+  "name": "@lauf/lauf-runner-replay",
+  "version": "0.1.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "test": "jest --passWithNoTests",
+    "check": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "typescript": "^4.2.2"
+  }
+}
