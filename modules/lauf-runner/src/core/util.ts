@@ -1,45 +1,50 @@
 import {
   ActionPlan,
-  ActionClass,
   ActionSequence,
-  Action,
   ActionPerformer,
+  AnyFn,
+  Invocation,
+  isTermination,
+  Termination,
+  Reaction,
 } from "../types";
 
-export const DEFAULT_PERFORMER: ActionPerformer = <Reaction>(
-  action: Action<Reaction>
-) => action.act();
+export const DEFAULT_PERFORMER: ActionPerformer = async <Fn extends AnyFn>(
+  ...invocation: Invocation<Fn>
+) => {
+  const [fn, args]: [Fn, Parameters<Fn>] = invocation;
+  return await fn(...args);
+};
 
-/** Streamline plan creation from any Action class. */
-export function planOfAction<Args extends any[], Ending>(
-  actionClass: ActionClass<Args, Ending>
-): ActionPlan<Args, Ending, Ending> {
-  return function* (...actionParams: Args) {
-    const action = new actionClass(...actionParams);
-    const result: Ending = yield action;
-    return result;
+export function planOfFunction<Fn extends AnyFn>(
+  fn: Fn
+): ActionPlan<Parameters<Fn>, Reaction<Fn>, Fn> {
+  return function* (
+    ...parameters: Parameters<Fn>
+  ): ActionSequence<Reaction<Fn>, Fn> {
+    return yield [fn, parameters];
   };
 }
 
-export async function performPlan<Args extends any[], Ending, Reaction>(
-  plan: ActionPlan<Args, Ending, Reaction>,
+export async function performPlan<Args extends any[], Ending, Fn extends AnyFn>(
+  plan: ActionPlan<Args, Ending, Fn>,
   ...args: Args
-): Promise<Ending> {
+): Promise<Ending | Termination> {
   return await directPlan(plan, args, DEFAULT_PERFORMER);
 }
 
-export async function performSequence<Ending, Reaction>(
-  sequence: ActionSequence<Ending, Reaction>
-): Promise<Ending> {
+export async function performSequence<Ending, Fn extends AnyFn>(
+  sequence: ActionSequence<Ending, Fn>
+): Promise<Ending | Termination> {
   return await directSequence(sequence, DEFAULT_PERFORMER);
 }
 
 /** Launches a new ActionSequence from the ActionPlan, then hands over to directSequence. */
-export async function directPlan<Args extends any[], Ending, Reaction>(
-  plan: ActionPlan<Args, Ending, Reaction>,
+export async function directPlan<Args extends any[], Ending, Fn extends AnyFn>(
+  plan: ActionPlan<Args, Ending, Fn>,
   args: Args,
   performer: ActionPerformer
-): Promise<Ending> {
+): Promise<Ending | Termination> {
   let sequence = plan(...args);
   return directSequence(sequence, performer);
 }
@@ -49,10 +54,10 @@ export async function directPlan<Args extends any[], Ending, Reaction>(
  * * A Performer (generates Reactions, consumes Actions)
  * */
 //TODO change argument order for consistency with 'performXXX' test library methods
-export async function directSequence<Ending, Reaction, Exit>(
-  sequence: ActionSequence<Ending, Reaction>,
+export async function directSequence<Ending, Fn extends AnyFn, Exit>(
+  sequence: ActionSequence<Ending, Fn>,
   performer: ActionPerformer
-): Promise<Ending> {
+): Promise<Ending | Termination> {
   let sequenceResult = sequence.next(); //prime the sequence
   while (true) {
     //sequence finished, return ending
@@ -60,8 +65,11 @@ export async function directSequence<Ending, Reaction, Exit>(
       return sequenceResult.value;
     }
     //sequence continued, perform action
-    const reaction = await performer(sequenceResult.value);
-    //pass result of action, get next action
+    const reaction = await performer(...sequenceResult.value);
+    if (isTermination(reaction)) {
+      return reaction;
+    }
+    //pass result of action, get next action or ending
     sequenceResult = sequence.next(reaction);
   }
 }

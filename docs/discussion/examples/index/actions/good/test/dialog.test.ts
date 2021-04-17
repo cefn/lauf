@@ -1,9 +1,10 @@
-import { directSequence, isTermination } from "@lauf/lauf-runner";
 import {
-  performUntilActionFulfils,
-  createActionMatcher,
-  performWithMocks,
-} from "@lauf/lauf-runner-trial";
+  Action,
+  directSequence,
+  isTermination,
+  TERMINATE,
+} from "@lauf/lauf-runner";
+import { actionMatches } from "@lauf/lauf-runner-trial";
 
 import { Prompt } from "../prompt";
 
@@ -11,12 +12,14 @@ import { dialogPlan } from "../dialog";
 
 describe("Dialog ", () => {
   test("dialogPlan() prompts for name - minimal test", async () => {
-    await directSequence(
-      dialogPlan(),
-      performUntilActionFulfils(
-        createActionMatcher(new Prompt("What is your full name?: "))
-      )
-    );
+    await directSequence(dialogPlan(), async (action: Action<any>) => {
+      if (
+        actionMatches<string>(new Prompt("What is your full name?: "), action)
+      ) {
+        return TERMINATE;
+      }
+      return await action.act();
+    });
   });
 
   test("dialogPlan() prompts for name - detailed test", async () => {

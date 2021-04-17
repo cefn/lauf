@@ -1,31 +1,6 @@
 import { promiseExpiry, Expiry, EXPIRY } from "./delay";
-import { Action, ActionPlan, ActionSequence } from "../types";
-import { planOfAction, performPlan } from "./util";
-
-// type Mapped<Ending, T extends ActionSequence<Ending>[]> = {
-//   [K in keyof T]: Promise<Ending>;
-// } & { length: T["length"] };
-
-export class BackgroundPlan<Args extends any[], Ending, Reaction>
-  implements Action<readonly [Promise<Ending>]> {
-  readonly args: Args;
-  constructor(
-    readonly plan: ActionPlan<Args, Ending, Reaction>,
-    ...args: Args
-  ) {
-    this.args = args;
-  }
-  act() {
-    return [performPlan(this.plan, ...this.args)] as const;
-  }
-}
-
-class Wait<Ending> implements Action<Ending> {
-  constructor(readonly promise: Promise<Ending>) {}
-  act() {
-    return this.promise;
-  }
-}
+import { ActionPlan, ActionSequence, AnyFn, Termination } from "../types";
+import { performPlan, planOfFunction } from "./util";
 
 function promiseWin<Ending>(
   competingPromises: Promise<Ending>[]
@@ -38,41 +13,11 @@ function promiseWin<Ending>(
   );
 }
 
-export class RaceWait<Ending> implements Action<[Ending, Promise<Ending>]> {
-  constructor(readonly promises: Promise<Ending>[]) {}
-  act() {
-    return promiseWin(this.promises);
-  }
-}
-
-export class TeamWait<Ending> implements Action<Ending[]> {
-  constructor(readonly promises: Promise<Ending>[]) {}
-  act() {
-    return Promise.all(this.promises);
-  }
-}
-
-class TimeoutWait<Ending> implements Action<Ending | Expiry> {
-  constructor(readonly promise: Promise<Ending>, readonly ms: number) {}
-  async act() {
-    const [ending, winner] = await promiseWin<Ending | Expiry>([
-      this.promise,
-      promiseExpiry(this.ms),
-    ]);
-    if (winner === this.promise) {
-      return ending;
-    } else {
-      //TODO throw here? simpler in ActionPlan code compared to guards?
-      return EXPIRY;
-    }
-  }
-}
-
-export function* backgroundAllPlans<Ending, Reaction>(
-  plans: ActionPlan<[], Ending, Reaction>[]
-): ActionSequence<Promise<Ending>[], any> {
+export function* backgroundAllPlans<Ending, Fn extends AnyFn>(
+  plans: ActionPlan<[], Ending, Fn>[]
+): ActionSequence<Promise<Ending | Termination>[], Fn> {
   //Is reaction type `any` a dangerous hack?
-  const promises: Promise<Ending>[] = [];
+  const promises: Promise<Ending | Termination>[] = [];
   for (const plan of plans) {
     const [promise] = yield* backgroundPlan(plan);
     promises.push(promise);
@@ -81,10 +26,38 @@ export function* backgroundAllPlans<Ending, Reaction>(
 }
 
 /** Background sequences returning promises */
-export const backgroundPlan = planOfAction(BackgroundPlan);
+export const backgroundPlan = planOfFunction(
+  async <Args extends any[], Ending, Fn extends AnyFn>(
+    plan: ActionPlan<Args, Ending, Fn>,
+    ...args: Args
+  ): Promise<readonly [Promise<Termination | Ending>]> => {
+    const endingPromise = performPlan(plan, ...args);
+    return [endingPromise] as const;
+  }
+);
 
 /** Block on promises. */
-export const wait = planOfAction(Wait);
-export const raceWait = planOfAction(RaceWait);
-export const teamWait = planOfAction(TeamWait);
-export const timeoutWait = planOfAction(TimeoutWait);
+export const wait = planOfFunction(async (promise) => await promise);
+
+export const raceWait = planOfFunction(promiseWin);
+
+export const teamWait = planOfFunction(
+  async <Ending>(promises: Promise<Ending>[]) => {
+    return await Promise.all(promises);
+  }
+);
+
+export const timeoutWait = planOfFunction(
+  async <Ending>(promise: Promise<Ending>, ms: number) => {
+    const [ending, winner] = await promiseWin<Ending | Expiry>([
+      promise,
+      promiseExpiry(ms),
+    ]);
+    if (winner === promise) {
+      return ending;
+    } else {
+      //TODO throw here? simpler in ActionPlan code compared to guards?
+      return EXPIRY;
+    }
+  }
+);

@@ -4,35 +4,34 @@ export function isTermination(value: any): value is Termination {
   return value === TERMINATE;
 }
 
-export interface Action<Reaction> {
-  act: () => Reaction | Promise<Reaction>;
-}
+/** Any function can be used */
+export type AnyFn = (...args: any[]) => any;
 
-/** Duck-typing of Action */
-export function isAction(item: any): item is Action<any> {
-  return typeof item.act === "function" && item.act.length === 0;
-}
+/** This is the type returned by a function, (unrolling returned Promise for Async functions) */
+export type Reaction<Fn extends AnyFn> = Fn extends () => Promise<
+  infer Promised
+>
+  ? Promised
+  : ReturnType<Fn>;
 
-/** Utility interface defining classes that implement Action */
-export interface ActionClass<Params extends any[], Reaction> {
-  new (...params: Params): Action<Reaction>;
-}
+/** Represents an invocation of a function, without actually invoking it */
+export type Invocation<Fn extends AnyFn> = [Fn, Parameters<Fn>];
 
-/** An ActionSequence is a Generator with a next() that yields actions and
+/** An ActionSequence is a Generator with a next() that yields invocations and
  * accepts their reactions in return, until an Ending
  * is returned.
  */
-export type ActionSequence<Ending, Reaction> = Generator<
-  Action<Reaction>,
+export type ActionSequence<Ending, Fn extends AnyFn> = Generator<
+  Invocation<Fn>,
   Ending,
-  Reaction
+  Reaction<Fn>
 >;
 
 /** ActionPlan contains step-by-step instructions for an ActionSequence. */
-export type ActionPlan<Args extends any[], Ending, Reaction> = (
+export type ActionPlan<Args extends any[], Ending, Fn extends AnyFn> = (
   ...args: Args
-) => ActionSequence<Ending, Reaction>;
+) => ActionSequence<Ending, Fn>;
 
-export type ActionPerformer = <Reaction>(
-  action: Action<Reaction>
-) => Reaction | Promise<Reaction>;
+export type ActionPerformer = <Fn extends AnyFn>(
+  ...invocation: Invocation<Fn>
+) => Promise<Reaction<Fn> | Termination>;

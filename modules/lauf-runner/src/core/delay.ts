@@ -1,5 +1,4 @@
-import { Action } from "../types";
-import { planOfAction } from "../core/util";
+import { planOfFunction } from "../core/util";
 
 export const EXPIRY = ["expiry"] as const;
 export type Expiry = typeof EXPIRY;
@@ -16,11 +15,4 @@ export function promiseExpiry(ms: number): Promise<Expiry> {
   return promiseDelayValue(ms, EXPIRY);
 }
 
-export class Expire implements Action<Expiry> {
-  constructor(readonly ms: number) {}
-  act() {
-    return promiseExpiry(this.ms);
-  }
-}
-
-export const expire = planOfAction(Expire);
+export const expire = planOfFunction(promiseExpiry);
