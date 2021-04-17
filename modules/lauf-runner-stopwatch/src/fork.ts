@@ -10,10 +10,13 @@ import { interceptPlan, PlanInterceptor } from "./intercept";
 import { Id, ActionPhase, ReactionPhase } from "./types";
 
 export class ForkRegistry<State> {
-  private nextForkOrdinal = 0;
-  private nextEventOrdinal = 0;
+  protected nextForkOrdinal = 0;
+  protected nextEventOrdinal = 0;
+  protected initialState: State;
   forkHandles: Record<Id, ForkHandle<State, any, any, any>> = {};
-  constructor(readonly store: Store<State>) {}
+  constructor(readonly store: Store<State>) {
+    this.initialState = store.read();
+  }
 
   assignForkId() {
     return this.nextForkOrdinal++;
@@ -24,6 +27,7 @@ export class ForkRegistry<State> {
   }
 
   //TODO use @lauf/lock to ensure watchPlan has terminated properly
+  //and isn't still monitoring and manipulating resources in parallel
   async replayUntil(actionId: number) {
     const rootHandles = Object.values(this.forkHandles).filter(
       (handle) => handle.parentId === null
@@ -33,8 +37,6 @@ export class ForkRegistry<State> {
       .filter(
         (actionPhases) => actionPhases.length && actionPhases[0]?.eventId === 0
       );
-    for (const rootHandle of rootHandles) {
-    }
   }
 
   async watchPlan<Args extends any[], Ending, Reaction>(
