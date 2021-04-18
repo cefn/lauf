@@ -4,34 +4,32 @@ export function isTermination(value: any): value is Termination {
   return value === TERMINATE;
 }
 
-/** Any function can be used */
-export type AnyFn = (...args: any[]) => any;
-
-/** This is the type returned by a function, (unrolling returned Promise for Async functions) */
-export type Reaction<Fn extends AnyFn> = Fn extends () => Promise<
-  infer Promised
->
-  ? Promised
-  : ReturnType<Fn>;
-
 /** Represents an invocation of a function, without actually invoking it */
-export type Invocation<Fn extends AnyFn> = [Fn, Parameters<Fn>];
+export type ActionInvocation<Reaction, ActionArgs extends any[]> = [
+  (...args: ActionArgs) => Reaction,
+  ActionArgs
+];
+
+// export type Awaited<T> = T extends Promise<infer A> ? A : T;
 
 /** An ActionSequence is a Generator with a next() that yields invocations and
  * accepts their reactions in return, until an Ending
  * is returned.
  */
-export type ActionSequence<Ending, Fn extends AnyFn> = Generator<
-  Invocation<Fn>,
+export type ActionSequence<
   Ending,
-  Reaction<Fn>
->;
+  Reaction,
+  ActionArgs extends any[]
+> = Generator<ActionInvocation<Reaction, ActionArgs>, Ending, Reaction>;
 
 /** ActionPlan contains step-by-step instructions for an ActionSequence. */
-export type ActionPlan<Args extends any[], Ending, Fn extends AnyFn> = (
-  ...args: Args
-) => ActionSequence<Ending, Fn>;
+export type ActionPlan<
+  PlanEnding,
+  PlanArgs extends any[],
+  Reaction,
+  ActionArgs extends any[]
+> = (...args: PlanArgs) => ActionSequence<PlanEnding, Reaction, ActionArgs>;
 
-export type ActionPerformer = <Fn extends AnyFn>(
-  ...invocation: Invocation<Fn>
-) => Promise<Reaction<Fn> | Termination>;
+export type ActionPerformer = <Reaction, ActionArgs extends any[]>(
+  ...invocation: ActionInvocation<Reaction, ActionArgs>
+) => Promise<Reaction | Termination>;

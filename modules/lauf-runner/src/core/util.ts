@@ -2,47 +2,65 @@ import {
   ActionPlan,
   ActionSequence,
   ActionPerformer,
-  AnyFn,
-  Invocation,
+  ActionInvocation,
   isTermination,
   Termination,
-  Reaction,
 } from "../types";
 
-export const DEFAULT_PERFORMER: ActionPerformer = async <Fn extends AnyFn>(
-  ...invocation: Invocation<Fn>
+export const DEFAULT_PERFORMER: ActionPerformer = async <
+  Reaction,
+  ActionArgs extends any[]
+>(
+  ...[fn, args]: ActionInvocation<Reaction, ActionArgs>
 ) => {
-  const [fn, args]: [Fn, Parameters<Fn>] = invocation;
-  return await fn(...args);
+  return fn(...args);
 };
 
-export function planOfFunction<Fn extends AnyFn>(
-  fn: Fn
-): ActionPlan<Parameters<Fn>, Reaction<Fn>, Fn> {
+// Temporary? strategy to 'unroll' the actual returned type from Async functions
+type Awaited<T> = T extends Promise<infer A> ? A : T;
+
+export function planOfFunction<Reaction, ActionArgs extends any[]>(
+  fn: (...args: ActionArgs) => Reaction
+): ActionPlan<Awaited<Reaction>, ActionArgs, Awaited<Reaction>, ActionArgs> {
   return function* (
-    ...parameters: Parameters<Fn>
-  ): ActionSequence<Reaction<Fn>, Fn> {
-    return yield [fn, parameters];
+    ...parameters: ActionArgs
+  ): ActionSequence<Awaited<Reaction>, Awaited<Reaction>, ActionArgs> {
+    //TYPE ASSERTION! Promise-generating functions are implicitly unrolled by async Performer
+    return yield [fn as (...args: ActionArgs) => Awaited<Reaction>, parameters];
   };
 }
 
-export async function performPlan<Args extends any[], Ending, Fn extends AnyFn>(
-  plan: ActionPlan<Args, Ending, Fn>,
-  ...args: Args
+export async function performPlan<
+  Ending,
+  PlanArgs extends any[],
+  Reaction,
+  ActionArgs extends any[]
+>(
+  plan: ActionPlan<Ending, PlanArgs, Reaction, ActionArgs>,
+  ...args: PlanArgs
 ): Promise<Ending | Termination> {
   return await directPlan(plan, args, DEFAULT_PERFORMER);
 }
 
-export async function performSequence<Ending, Fn extends AnyFn>(
-  sequence: ActionSequence<Ending, Fn>
+export async function performSequence<
+  Ending,
+  Reaction,
+  ActionArgs extends any[]
+>(
+  sequence: ActionSequence<Ending, Reaction, ActionArgs>
 ): Promise<Ending | Termination> {
   return await directSequence(sequence, DEFAULT_PERFORMER);
 }
 
 /** Launches a new ActionSequence from the ActionPlan, then hands over to directSequence. */
-export async function directPlan<Args extends any[], Ending, Fn extends AnyFn>(
-  plan: ActionPlan<Args, Ending, Fn>,
-  args: Args,
+export async function directPlan<
+  Ending,
+  PlanArgs extends any[],
+  Reaction,
+  ActionArgs extends any[]
+>(
+  plan: ActionPlan<Ending, PlanArgs, Reaction, ActionArgs>,
+  args: PlanArgs,
   performer: ActionPerformer
 ): Promise<Ending | Termination> {
   let sequence = plan(...args);
@@ -53,9 +71,12 @@ export async function directPlan<Args extends any[], Ending, Fn extends AnyFn>(
  * * An ActionSequence (generates Actions, consumes Reactions)
  * * A Performer (generates Reactions, consumes Actions)
  * */
-//TODO change argument order for consistency with 'performXXX' test library methods
-export async function directSequence<Ending, Fn extends AnyFn, Exit>(
-  sequence: ActionSequence<Ending, Fn>,
+export async function directSequence<
+  Ending,
+  Reaction,
+  ActionArgs extends any[]
+>(
+  sequence: ActionSequence<Ending, Reaction, ActionArgs>,
   performer: ActionPerformer
 ): Promise<Ending | Termination> {
   let sequenceResult = sequence.next(); //prime the sequence

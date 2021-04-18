@@ -1,5 +1,5 @@
 import { promiseExpiry, Expiry, EXPIRY } from "./delay";
-import { ActionPlan, ActionSequence, AnyFn, Termination } from "../types";
+import { ActionPlan, ActionSequence, Termination } from "../types";
 import { performPlan, planOfFunction } from "./util";
 
 function promiseWin<Ending>(
@@ -13,10 +13,13 @@ function promiseWin<Ending>(
   );
 }
 
-export function* backgroundAllPlans<Ending, Fn extends AnyFn>(
-  plans: ActionPlan<[], Ending, Fn>[]
-): ActionSequence<Promise<Ending | Termination>[], Fn> {
-  //Is reaction type `any` a dangerous hack?
+export function* backgroundAllPlans<Ending, Reaction, ActionArgs extends any[]>(
+  plans: ActionPlan<Ending, [], Reaction, ActionArgs>[]
+): ActionSequence<
+  Promise<Ending | Termination>[], //aggregated list
+  readonly [Promise<Ending | Termination>], //reactions from backgroundPlan
+  [typeof plans[number]] //arguments to backgroundPlan
+> {
   const promises: Promise<Ending | Termination>[] = [];
   for (const plan of plans) {
     const [promise] = yield* backgroundPlan(plan);
@@ -27,12 +30,11 @@ export function* backgroundAllPlans<Ending, Fn extends AnyFn>(
 
 /** Background sequences returning promises */
 export const backgroundPlan = planOfFunction(
-  async <Args extends any[], Ending, Fn extends AnyFn>(
-    plan: ActionPlan<Args, Ending, Fn>,
-    ...args: Args
+  async <Ending, PlanArgs extends any[], Reaction, ActionArgs extends any[]>(
+    plan: ActionPlan<Ending, PlanArgs, Reaction, ActionArgs>,
+    ...args: PlanArgs
   ): Promise<readonly [Promise<Termination | Ending>]> => {
-    const endingPromise = performPlan(plan, ...args);
-    return [endingPromise] as const;
+    return [performPlan(plan, ...args)] as const;
   }
 );
 
