@@ -5,19 +5,19 @@ export class BasicWatchable<Value> implements Watchable<Value> {
   constructor(watchers: ReadonlyArray<Watcher<Value>> = []) {
     this.watchers = watchers;
   }
-  protected notify(item: Value) {
+  protected notify = (item: Value) => {
     for (const watcher of this.watchers) {
       watcher(item);
     }
-  }
-  watch(watcher: Watcher<Value>) {
+  };
+  watch = (watcher: Watcher<Value>) => {
     this.watchers = [...this.watchers, watcher];
     return () => {
       this.watchers = this.watchers.filter(
         (candidate) => candidate !== watcher
       );
     };
-  }
+  };
 }
 
 export class BasicWatchableValue<Value>
@@ -28,12 +28,12 @@ export class BasicWatchableValue<Value>
     super(watchers);
     this.write(value);
   }
-  write(value: Value) {
+  write = (value: Value) => {
     this.value = value;
     this.notify(value);
     return value;
-  }
-  read() {
+  };
+  read = () => {
     return this.value;
-  }
+  };
 }

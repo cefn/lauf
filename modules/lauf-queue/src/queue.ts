@@ -4,8 +4,11 @@ import type { Watcher } from "@lauf/lauf-store";
 export class BasicMessageQueue<T> implements MessageQueue<T> {
   items: ReadonlyArray<T> = [];
   watchers: ReadonlyArray<Watcher<T>> = [];
-  constructor(readonly maxItems = Number.MAX_SAFE_INTEGER, readonly maxWatchers = Number.MAX_SAFE_INTEGER) {}
-  send(item: T) {
+  constructor(
+    readonly maxItems = Number.MAX_SAFE_INTEGER,
+    readonly maxWatchers = Number.MAX_SAFE_INTEGER
+  ) {}
+  send = (item: T) => {
     if (this.watchers.length) {
       let consumer: Watcher<T>;
       [consumer, ...this.watchers] = this.watchers as [Watcher<T>];
@@ -18,9 +21,9 @@ export class BasicMessageQueue<T> implements MessageQueue<T> {
     } else {
       return false;
     }
-  }
+  };
   //TODO add a boolean option here for non-blocking
-  receive() {
+  receive = () => {
     if (this.items.length) {
       let item: T;
       [item, ...this.items] = this.items as [T];
@@ -32,5 +35,5 @@ export class BasicMessageQueue<T> implements MessageQueue<T> {
     } else {
       throw new Error(`Queue already has ${this.maxWatchers}`);
     }
-  }
+  };
 }

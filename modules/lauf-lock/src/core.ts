@@ -1,4 +1,4 @@
-import { Lock, Release } from "./types";
+import { Lock } from "./types";
 
 function arrayWithout<T>(arr: ReadonlyArray<T>, index: number) {
   return [...arr.slice(0, index), ...arr.slice(index + 1)];
@@ -7,7 +7,7 @@ function arrayWithout<T>(arr: ReadonlyArray<T>, index: number) {
 export class BasicLock<T> implements Lock {
   protected keys: ReadonlyArray<T | void> = [];
   protected releasePromises: ReadonlyArray<Promise<void>> = [];
-  async acquire(key?: T): Promise<Release> {
+  acquire = async (key?: T) => {
     let release = null;
     do {
       const index = this.keys.indexOf(key);
@@ -32,5 +32,5 @@ export class BasicLock<T> implements Lock {
       }
     } while (release === null);
     return release;
-  }
+  };
 }
