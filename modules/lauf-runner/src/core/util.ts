@@ -7,6 +7,7 @@ import {
   Termination,
   isTermination,
   Performance,
+  Action,
 } from "../types";
 
 export const actor: Performer<never, any> = async function* () {
@@ -17,6 +18,21 @@ export const actor: Performer<never, any> = async function* () {
   }
 };
 
+export class Call<Args extends any[], Reaction> implements Action<Reaction> {
+  args: Args;
+  constructor(
+    readonly fn: (...args: Args) => Reaction | Promise<Reaction>,
+    ...args: Args
+  ) {
+    this.args = args;
+  }
+  act() {
+    return this.fn(...this.args);
+  }
+}
+
+export const call = planOfAction(Call);
+
 /** Streamline plan creation from any Action class. */
 export function planOfAction<Args extends any[], Ending>(
   actionClass: ActionClass<Args, Ending>
@@ -25,6 +41,14 @@ export function planOfAction<Args extends any[], Ending>(
     const action = new actionClass(...actionParams);
     const result: Ending = yield action;
     return result;
+  };
+}
+
+export function planOfFunction<Args extends any[], Reaction>(
+  fn: (...args: Args) => Reaction
+) {
+  return function* (...args: Args) {
+    yield* call(fn, ...args);
   };
 }
 
