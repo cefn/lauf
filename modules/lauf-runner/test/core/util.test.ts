@@ -5,6 +5,9 @@ import {
   Expire,
   expire,
   Expiry,
+  Call,
+  call,
+  planOfFunction,
 } from "@lauf/lauf-runner";
 
 describe("Define, run and regression test simple plan", () => {
@@ -44,5 +47,52 @@ describe("Define, run and regression test simple plan", () => {
     step = sequence.next();
     assert(step.done === true);
     expect(typeof step.value).toBe("number");
+  });
+});
+
+describe("Call primitive can trigger invocation of async function", () => {
+  //define a dummy async function accepting a string, calling a spy
+  const spy = jest.fn();
+  const fn = async (val: string) => spy(val);
+
+  test("Simple yield of Call action triggers async function", async () => {
+    spy.mockReset();
+    //define the plan
+    function* plan() {
+      yield new Call(fn, "foo");
+    }
+    //run the plan
+    await performPlan(plan);
+    //check spy was called
+    expect(spy).toBeCalledTimes(1);
+    expect(spy).toBeCalledWith("foo");
+  });
+
+  test("Delegating yield to ActionSequence created by call() plan triggers async function", async () => {
+    spy.mockReset();
+    //define the plan
+    function* plan() {
+      yield* call(fn, "bar");
+    }
+    //run the plan
+    await performPlan(plan);
+    //check spy was called
+    expect(spy).toBeCalledTimes(1);
+    expect(spy).toBeCalledWith("bar");
+  });
+
+  test("planOfAsync creates a plan bound to async function. Delegating yield to new plan triggers async function", async () => {
+    spy.mockReset();
+    //define bound plan
+    const fnPlan = planOfFunction(fn);
+    //define the plan
+    function* plan() {
+      yield* fnPlan("bar");
+    }
+    //run the plan
+    await performPlan(plan);
+    //check spy was called
+    expect(spy).toBeCalledTimes(1);
+    expect(spy).toBeCalledWith("bar");
   });
 });
