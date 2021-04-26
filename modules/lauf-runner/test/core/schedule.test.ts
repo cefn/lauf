@@ -15,7 +15,7 @@ import {
 
 describe("Foreground and Background operations", () => {
   const delayMs = 10;
-  const simplePlan: ActionPlan<[], Expiry, Expiry> = function* () {
+  const simplePlan: ActionPlan<Expiry, [], Expiry, [number]> = function* () {
     return yield* expire(delayMs);
   };
 
@@ -28,7 +28,7 @@ describe("Foreground and Background operations", () => {
 
   test("team() : executes inner plans in parallel to completion", async () => {
     const before = new Date().getTime();
-    const planGroup: Array<ActionPlan<[], Expiry, Expiry>> = [
+    const planGroup: Array<ActionPlan<Expiry, [], Expiry, [number]>> = [
       simplePlan,
       simplePlan,
       simplePlan,
@@ -50,7 +50,7 @@ describe("Foreground and Background operations", () => {
 
   test("backgroundAll : yields array of completion promises", async () => {
     const before = new Date().getTime();
-    const planGroup: Array<ActionPlan<[], Expiry, Expiry>> = [
+    const planGroup: Array<ActionPlan<Expiry, [], Expiry, [number]>> = [
       simplePlan,
       simplePlan,
       simplePlan,
