@@ -5,30 +5,27 @@ describe("BasicWatchable behaviour", () => {
     new BasicWatchable();
   });
 
-  test("Can watch BasicWatchable", () => {
-    class Notifiable<T> extends BasicWatchable<T> {
-      public notify(item: T) {
-        return super.notify(item);
-      }
+  /** Expose protected notify() for testing */
+  class Notifiable<T> extends BasicWatchable<T> {
+    public doNotify(item: T) {
+      return this.notify(item);
     }
+  }
+
+  test("Can watch BasicWatchable", () => {
     const notifiable = new Notifiable<string>();
     const watcher = jest.fn();
     notifiable.watch(watcher);
-    notifiable.notify("foo");
+    notifiable.doNotify("foo");
     expect(watcher).toHaveBeenCalledWith("foo");
   });
 
   test("Can unwatch BasicWatchable", () => {
-    class Notifiable<T> extends BasicWatchable<T> {
-      public notify(item: T) {
-        return super.notify(item);
-      }
-    }
     const notifiable = new Notifiable<string>();
     const watcher = jest.fn();
     const unwatch = notifiable.watch(watcher);
     unwatch();
-    notifiable.notify("foo");
+    notifiable.doNotify("foo");
     expect(watcher).not.toHaveBeenCalled();
   });
 });

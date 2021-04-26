@@ -6,16 +6,16 @@ import { castDraft, Draft, produce } from "immer";
 export class BasicStore<State extends object>
   extends BasicWatchableValue<Immutable<State>>
   implements Store<State> {
-  edit(editor: Editor<State>) {
+  edit = (editor: Editor<State>) => {
     const nextState = (produce<Immutable<State>>(
       this.read(),
       editor
     ) as unknown) as Immutable<State>;
     return this.write(nextState);
-  }
-  select<Selected>(selector: Selector<State, Selected>) {
+  };
+  select = <Selected>(selector: Selector<State, Selected>) => {
     return selector(this.read());
-  }
+  };
   partition = (key: keyof State) => new BasicStorePartition(this, key);
 }
 
@@ -30,7 +30,7 @@ export class BasicStorePartition<
     super();
     this.track();
   }
-  private track() {
+  private track = () => {
     let lastSubState: SubState | undefined;
     this.store.watch((state) => {
       const subState = state[this.key];
@@ -39,7 +39,7 @@ export class BasicStorePartition<
       }
       this.notify(subState as Immutable<SubState>);
     });
-  }
+  };
   read = () => {
     return (this.store.read()[this.key] as unknown) as Immutable<SubState>;
   };
@@ -56,8 +56,8 @@ export class BasicStorePartition<
     });
     return this.read();
   };
-  select<Selected>(selector: Selector<SubState, Selected>) {
+  select = <Selected>(selector: Selector<SubState, Selected>) => {
     return selector(this.read());
-  }
+  };
   partition = (key: keyof SubState) => new BasicStorePartition(this, key);
 }
