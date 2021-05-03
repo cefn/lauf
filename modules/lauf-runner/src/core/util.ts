@@ -3,20 +3,13 @@ import {
   ActionClass,
   Performer,
   ActionSequence,
-  TERMINATE,
   Termination,
   isTermination,
-  Performance,
   Action,
 } from "../types";
 
-export const actor: Performer<never, any> = async function* () {
-  let action = yield;
-  while (true) {
-    const reaction = await action.act();
-    action = yield reaction;
-  }
-};
+export const ACTOR: Performer = async <Reaction>(action: Action<Reaction>) =>
+  await action.act();
 
 export class Call<Args extends any[], Reaction> implements Action<Reaction> {
   args: Args;
@@ -77,10 +70,10 @@ export async function performSequence<Ending, Reaction>(
 export async function directPlan<Args extends any[], Ending, Reaction>(
   plan: ActionPlan<Args, Ending, Reaction>,
   args: Args,
-  performance: Performance<any, Reaction> = actor()
+  performer: Performer = ACTOR
 ): Promise<Ending | Termination> {
   let sequence = plan(...args);
-  return directSequence(sequence, performance);
+  return directSequence(sequence, performer);
 }
 
 /** Hands Actions and Reactions between two co-routines.
@@ -90,24 +83,20 @@ export async function directPlan<Args extends any[], Ending, Reaction>(
 //TODO change argument order for consistency with 'performXXX' test library methods
 export async function directSequence<Ending, Reaction, Exit>(
   sequence: ActionSequence<Ending, Reaction>,
-  performance: Performance<any, Reaction> = actor()
+  performer: Performer = ACTOR
 ): Promise<Ending | Termination> {
   let sequenceResult = sequence.next(); //prime the sequence
-  if (sequenceResult.done) {
-    return sequenceResult.value;
-  }
-  let performanceResult = await performance.next(); //prime the performer
-  if (performanceResult.done) {
-    return TERMINATE;
-  }
   while (true) {
-    performanceResult = await performance.next(sequenceResult.value);
-    if (performanceResult.done) {
-      return TERMINATE;
-    }
-    sequenceResult = sequence.next(performanceResult.value);
+    //sequence finished, return ending
     if (sequenceResult.done) {
       return sequenceResult.value;
     }
+    //sequence continued, perform action
+    const reaction = await performer(sequenceResult.value);
+    if (isTermination(reaction)) {
+      return reaction;
+    }
+    //pass result of action, get next action or ending
+    sequenceResult = sequence.next(reaction);
   }
 }

@@ -1,9 +1,13 @@
 import { isDeepStrictEqual } from "util";
-import { directSequence, isTermination } from "@lauf/lauf-runner";
 import {
-  performWithMocks,
-  performUntilReactionFulfils,
-} from "@lauf/lauf-runner-trial";
+  Action,
+  Performer,
+  ACTOR,
+  directSequence,
+  isTermination,
+  TERMINATE,
+} from "@lauf/lauf-runner";
+import { actionMatches } from "@lauf/lauf-runner-trial";
 import { BasicStore, Immutable } from "@lauf/lauf-store";
 
 import {
@@ -25,18 +29,27 @@ describe("Plans", () => {
       const { focus: initialFocus } = initialAppState;
       const focusedPostsSelector = createPostsSelector(initialFocus);
 
-      const testEnding = await directSequence(
-        mainPlan(store),
-        performUntilReactionFulfils(
-          () =>
-            isDeepStrictEqual(store.select(focusedPostsSelector), [
-              { title: "About React" },
-            ]),
-          performWithMocks([
-            [new FetchSubreddit(initialFocus), [{ title: "About React" }]],
-          ])
-        )
-      );
+      const retrievalAction = new FetchSubreddit(initialFocus);
+      const retrievedPosts = [{ title: "About React" }];
+
+      const testPerformer: Performer = async (action: Action<any>) => {
+        if (actionMatches(action, retrievalAction)) {
+          return retrievedPosts;
+        } else {
+          const reaction = await action.act();
+          if (
+            isDeepStrictEqual(
+              store.select(focusedPostsSelector),
+              retrievedPosts
+            )
+          ) {
+            return TERMINATE;
+          }
+          return reaction;
+        }
+      };
+
+      const testEnding = await directSequence(mainPlan(store), testPerformer);
 
       //the testPerformer should complete all its steps
       expect(isTermination(testEnding)).toBe(true);
@@ -47,20 +60,26 @@ describe("Plans", () => {
       const newFocus = "frontend";
       const newFocusPostsSelector = createPostsSelector(newFocus);
 
-      //launch the plan
-      const testEndingPromise = directSequence(
-        mainPlan(store),
-        performUntilReactionFulfils(
-          () =>
+      const testPerformer: Performer = async (action: Action<any>) => {
+        if (actionMatches(action, new FetchSubreddit("reactjs"))) {
+          return [{ title: "About React" }];
+        } else if (actionMatches(action, new FetchSubreddit(newFocus))) {
+          return [{ title: "About Frontend" }];
+        } else {
+          const reaction = await ACTOR(action);
+          if (
             isDeepStrictEqual(store.select(newFocusPostsSelector), [
               { title: "About Frontend" },
-            ]),
-          performWithMocks([
-            [new FetchSubreddit("reactjs"), [{ title: "About React" }]],
-            [new FetchSubreddit(newFocus), [{ title: "About Frontend" }]],
-          ])
-        )
-      );
+            ])
+          ) {
+            return TERMINATE;
+          }
+          return reaction;
+        }
+      };
+
+      //launch the plan
+      const testEndingPromise = directSequence(mainPlan(store), testPerformer);
 
       //change the focused subreddit
       store.edit((state) => {
