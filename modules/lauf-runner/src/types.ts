@@ -1,4 +1,4 @@
-export const TERMINATE = ["terminate"] as const;
+export const TERMINATE = Symbol("terminate");
 export type Termination = typeof TERMINATE;
 export function isTermination(value: any): value is Termination {
   return value === TERMINATE;
