@@ -1,7 +1,7 @@
 import { Action } from "../types";
 import { planOfAction } from "../core/util";
 
-export const EXPIRY = ["expiry"] as const;
+export const EXPIRY = Symbol("expiry");
 export type Expiry = typeof EXPIRY;
 export function isExpiry(value: any): value is Expiry {
   return value === EXPIRY;
