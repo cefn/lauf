@@ -1,9 +1,3 @@
-export const TERMINATE = Symbol("terminate");
-export type Termination = typeof TERMINATE;
-export function isTermination(value: any): value is Termination {
-  return value === TERMINATE;
-}
-
 export interface Action<Reaction> {
   act: () => Reaction | Promise<Reaction>;
 }
@@ -35,4 +29,4 @@ export type ActionPlan<Args extends any[], Ending, Reaction> = (
 /** Performer takes actions, returns reactions. For example it may run the action and return its reaction. */
 export type Performer = <Reaction>(
   action: Action<Reaction>
-) => Promise<Reaction | Termination>;
+) => Promise<Reaction>;
