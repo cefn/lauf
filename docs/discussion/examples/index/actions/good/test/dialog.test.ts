@@ -1,9 +1,5 @@
-import { directSequence, isTermination } from "@lauf/lauf-runner";
-import {
-  performUntilActionFulfils,
-  createActionMatcher,
-  performWithMocks,
-} from "@lauf/lauf-runner-trial";
+import { ACTOR, directSequence, isTermination } from "@lauf/lauf-runner";
+import { cutBeforeActionMatches, mockReaction } from "@lauf/lauf-runner-trial";
 
 import { Prompt } from "../prompt";
 
@@ -13,50 +9,53 @@ describe("Dialog ", () => {
   test("dialogPlan() prompts for name - minimal test", async () => {
     await directSequence(
       dialogPlan(),
-      performUntilActionFulfils(
-        createActionMatcher(new Prompt("What is your full name?: "))
-      )
+      cutBeforeActionMatches(new Prompt("What is your full name?: "), ACTOR)
     );
   });
 
   test("dialogPlan() prompts for name - detailed test", async () => {
-    const dialogSequence = dialogPlan();
     const ending = await directSequence(
-      dialogSequence,
-      performUntilActionFulfils(
-        createActionMatcher(new Prompt("What is your full name?: "))
-      )
+      dialogPlan(),
+      cutBeforeActionMatches(new Prompt("What is your full name?: "), ACTOR)
     );
     expect(isTermination(ending));
   });
 
   test("dialogPlan() challenges single names - minimal test", async () => {
-    await directSequence(
-      dialogPlan(),
-      performUntilActionFulfils(
-        createActionMatcher(
-          new Prompt(
-            "What?! Are you a celebrity or something, Sting? Enter a first and last name: "
-          )
-        ),
-        performWithMocks([[new Prompt("What is your full name?: "), "Sting"]])
-      )
+    let testPerformer = ACTOR;
+    testPerformer = mockReaction(
+      new Prompt("What is your full name?: "),
+      "Sting",
+      testPerformer
     );
+    testPerformer = cutBeforeActionMatches(
+      new Prompt(
+        "What?! Are you a celebrity or something, Sting? Enter a first and last name: "
+      ),
+      testPerformer
+    );
+
+    await directSequence(dialogPlan(), testPerformer);
   });
 
   test("dialogPlan() challenges single names - detailed test", async () => {
     const dialogSequence = dialogPlan();
-    const ending = await directSequence(
-      dialogSequence,
-      performUntilActionFulfils(
-        createActionMatcher(
-          new Prompt(
-            "What?! Are you a celebrity or something, Sting? Enter a first and last name: "
-          )
-        ),
-        performWithMocks([[new Prompt("What is your full name?: "), "Sting"]])
-      )
+    //call act by default
+    let testPerformer = ACTOR;
+    //mock an action
+    testPerformer = mockReaction(
+      new Prompt("What is your full name?: "),
+      "Sting",
+      testPerformer
     );
+    //cut when condition reached
+    testPerformer = cutBeforeActionMatches(
+      new Prompt(
+        "What?! Are you a celebrity or something, Sting? Enter a first and last name: "
+      ),
+      testPerformer
+    );
+    const ending = await directSequence(dialogSequence, testPerformer);
     expect(isTermination(ending));
   });
 });

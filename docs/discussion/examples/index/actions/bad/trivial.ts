@@ -3,7 +3,7 @@ import { ActionSequence, performPlan } from "@lauf/lauf-runner";
 
 import { prompt } from "./prompt";
 
-performPlan(function* (): ActionSequence {
+performPlan(function* (): ActionSequence<void, any> {
   yield {
     act: () => prompt("What is your full name? "),
   };
