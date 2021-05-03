@@ -1,13 +1,11 @@
 import { isDeepStrictEqual } from "util";
 import {
-  Action,
   Performer,
   ACTOR,
   directSequence,
   isTermination,
-  TERMINATE,
 } from "@lauf/lauf-runner";
-import { actionMatches } from "@lauf/lauf-runner-trial";
+import { mockReaction, cutAfterReaction } from "@lauf/lauf-runner-trial";
 import { BasicStore, Immutable } from "@lauf/lauf-store";
 
 import {
@@ -29,30 +27,27 @@ describe("Plans", () => {
       const { focus: initialFocus } = initialAppState;
       const focusedPostsSelector = createPostsSelector(initialFocus);
 
-      const retrievalAction = new FetchSubreddit(initialFocus);
-      const retrievedPosts = [{ title: "About React" }];
+      let testPerformer = ACTOR;
+      //mock the fetch
+      testPerformer = mockReaction(
+        new FetchSubreddit(initialFocus),
+        [{ title: "About React" }],
+        testPerformer
+      );
+      //cut when condition reached
+      testPerformer = cutAfterReaction(
+        () =>
+          isDeepStrictEqual(store.select(focusedPostsSelector), [
+            { title: "About React" },
+          ]),
+        testPerformer
+      );
 
-      const testPerformer: Performer = async (action: Action<any>) => {
-        if (actionMatches(action, retrievalAction)) {
-          return retrievedPosts;
-        } else {
-          const reaction = await action.act();
-          if (
-            isDeepStrictEqual(
-              store.select(focusedPostsSelector),
-              retrievedPosts
-            )
-          ) {
-            return TERMINATE;
-          }
-          return reaction;
-        }
-      };
+      //begin performing
+      const testEndingPromise = directSequence(mainPlan(store), testPerformer);
 
-      const testEnding = await directSequence(mainPlan(store), testPerformer);
-
-      //the testPerformer should complete all its steps
-      expect(isTermination(testEnding)).toBe(true);
+      //performer should eventually reach the cut
+      expect(isTermination(await testEndingPromise)).toBe(true);
     }, 30000);
 
     test("Posts retrieved, stored when focused subreddit changes", async () => {
@@ -60,36 +55,37 @@ describe("Plans", () => {
       const newFocus = "frontend";
       const newFocusPostsSelector = createPostsSelector(newFocus);
 
-      const testPerformer: Performer = async (action: Action<any>) => {
-        if (actionMatches(action, new FetchSubreddit("reactjs"))) {
-          return [{ title: "About React" }];
-        } else if (actionMatches(action, new FetchSubreddit(newFocus))) {
-          return [{ title: "About Frontend" }];
-        } else {
-          const reaction = await ACTOR(action);
-          if (
-            isDeepStrictEqual(store.select(newFocusPostsSelector), [
-              { title: "About Frontend" },
-            ])
-          ) {
-            return TERMINATE;
-          }
-          return reaction;
-        }
-      };
+      let testPerformer: Performer = ACTOR;
+      //mock certain actions
+      testPerformer = mockReaction(
+        new FetchSubreddit("reactjs"),
+        [{ title: "About React" }],
+        testPerformer
+      );
+      testPerformer = mockReaction(
+        new FetchSubreddit(newFocus),
+        [{ title: "About Frontend" }],
+        testPerformer
+      );
+      //cut when condition reached
+      testPerformer = cutAfterReaction(
+        () =>
+          isDeepStrictEqual(store.select(newFocusPostsSelector), [
+            { title: "About Frontend" },
+          ]),
+        testPerformer
+      );
 
-      //launch the plan
+      //begin performing
       const testEndingPromise = directSequence(mainPlan(store), testPerformer);
 
-      //change the focused subreddit
+      //trigger change to focused subreddit
       store.edit((state) => {
         state.focus = newFocus;
       });
 
-      //the testPerformer should complete all its steps
+      //performer should eventually reach the cut
       expect(isTermination(await testEndingPromise)).toBe(true);
     });
-
-    //TODO test that a change of focus causes a fetch request.
   });
 });
