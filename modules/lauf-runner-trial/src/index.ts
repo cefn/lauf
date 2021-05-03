@@ -14,7 +14,7 @@ export function mockReaction<T>(
   mockAction: Action<T>,
   mockReaction: T,
   wrappedPerformer: Performer
-) {
+): Performer {
   return async (action: Action<any>) => {
     if (actionMatches(action, mockAction)) {
       return mockReaction;
@@ -23,10 +23,10 @@ export function mockReaction<T>(
   };
 }
 
-export function cutBeforeAction<T>(
+export function cutBeforeAction(
   actionCheck: (action: Action<any>) => boolean,
   wrappedPerformer: Performer
-) {
+): Performer {
   return async (action: Action<any>) => {
     if (actionCheck(action)) {
       return TERMINATE;
@@ -35,10 +35,20 @@ export function cutBeforeAction<T>(
   };
 }
 
-export function cutAfterReaction<T>(
+export function cutBeforeActionMatches(
+  expectedAction: Action<any>,
+  wrappedPerformer: Performer
+): Performer {
+  return cutBeforeAction(
+    (actualAction) => actionMatches(actualAction, expectedAction),
+    wrappedPerformer
+  );
+}
+
+export function cutAfterReaction(
   reactionCheck: (reaction: any) => boolean,
   wrappedPerformer: Performer
-) {
+): Performer {
   return async (action: Action<any>) => {
     const reaction = await wrappedPerformer(action);
     if (reactionCheck(reaction)) {
