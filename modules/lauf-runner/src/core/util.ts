@@ -3,8 +3,6 @@ import {
   ActionClass,
   Performer,
   ActionSequence,
-  Termination,
-  isTermination,
   Action,
 } from "../types";
 
@@ -45,33 +43,25 @@ export function planOfFunction<Args extends any[], Reaction>(
   };
 }
 
-export async function performPlan<Args extends any[], Ending, Reaction>(
+export function performPlan<Args extends any[], Ending, Reaction>(
   plan: ActionPlan<Args, Ending, Reaction>,
   ...args: Args
 ): Promise<Ending> {
-  const ending = await directPlan(plan, args);
-  if (isTermination(ending)) {
-    throw `Performer with Exit:never shouldn't terminate`;
-  }
-  return ending;
+  return directPlan(plan, args, ACTOR);
 }
 
-export async function performSequence<Ending, Reaction>(
+export function performSequence<Ending, Reaction>(
   sequence: ActionSequence<Ending, Reaction>
 ): Promise<Ending> {
-  const ending = await directSequence(sequence);
-  if (isTermination(ending)) {
-    throw `Performer with Exit:never shouldn't terminate`;
-  }
-  return ending;
+  return directSequence(sequence, ACTOR);
 }
 
 /** Launches a new ActionSequence from the ActionPlan, then hands over to directSequence. */
 export async function directPlan<Args extends any[], Ending, Reaction>(
   plan: ActionPlan<Args, Ending, Reaction>,
   args: Args,
-  performer: Performer = ACTOR
-): Promise<Ending | Termination> {
+  performer: Performer
+): Promise<Ending> {
   let sequence = plan(...args);
   return directSequence(sequence, performer);
 }
@@ -83,8 +73,8 @@ export async function directPlan<Args extends any[], Ending, Reaction>(
 //TODO change argument order for consistency with 'performXXX' test library methods
 export async function directSequence<Ending, Reaction, Exit>(
   sequence: ActionSequence<Ending, Reaction>,
-  performer: Performer = ACTOR
-): Promise<Ending | Termination> {
+  performer: Performer
+): Promise<Ending> {
   let sequenceResult = sequence.next(); //prime the sequence
   while (true) {
     //sequence finished, return ending
@@ -93,9 +83,6 @@ export async function directSequence<Ending, Reaction, Exit>(
     }
     //sequence continued, perform action
     const reaction = await performer(sequenceResult.value);
-    if (isTermination(reaction)) {
-      return reaction;
-    }
     //pass result of action, get next action or ending
     sequenceResult = sequence.next(reaction);
   }

@@ -1,11 +1,10 @@
 import { isDeepStrictEqual } from "util";
+import { Performer, ACTOR, directSequence } from "@lauf/lauf-runner";
 import {
-  Performer,
-  ACTOR,
-  directSequence,
-  isTermination,
-} from "@lauf/lauf-runner";
-import { mockReaction, cutAfterReaction } from "@lauf/lauf-runner-trial";
+  mockReaction,
+  cutAfterReaction,
+  ReactionCut,
+} from "@lauf/lauf-runner-trial";
 import { BasicStore, Immutable } from "@lauf/lauf-store";
 
 import {
@@ -15,6 +14,7 @@ import {
   initialAppState,
   SubredditName,
 } from "../src/plans";
+import { Edit } from "@lauf/lauf-runner-primitives/src";
 
 describe("Plans", () => {
   describe("mainPlan() behaviour", () => {
@@ -46,8 +46,14 @@ describe("Plans", () => {
       //begin performing
       const testEndingPromise = directSequence(mainPlan(store), testPerformer);
 
-      //performer should eventually reach the cut
-      expect(isTermination(await testEndingPromise)).toBe(true);
+      //performer should be cut
+      try {
+        await testEndingPromise;
+      } catch (thrown) {
+        expect(thrown).toBeInstanceOf(ReactionCut);
+        expect(thrown.action).toBeInstanceOf(Edit);
+        expect(thrown.action.store).toBe(store);
+      }
     }, 30000);
 
     test("Posts retrieved, stored when focused subreddit changes", async () => {
@@ -84,8 +90,14 @@ describe("Plans", () => {
         state.focus = newFocus;
       });
 
-      //performer should eventually reach the cut
-      expect(isTermination(await testEndingPromise)).toBe(true);
+      //performer should cut after editing the store so it fulfils the check
+      try {
+        await testEndingPromise;
+      } catch (thrown) {
+        expect(thrown).toBeInstanceOf(ReactionCut);
+        expect(thrown.action).toBeInstanceOf(Edit);
+        expect(thrown.action.store).toBe(store);
+      }
     });
   });
 });

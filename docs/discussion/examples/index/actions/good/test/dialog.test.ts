@@ -1,5 +1,9 @@
-import { ACTOR, directSequence, isTermination } from "@lauf/lauf-runner";
-import { cutBeforeActionMatches, mockReaction } from "@lauf/lauf-runner-trial";
+import { ACTOR, directSequence } from "@lauf/lauf-runner";
+import {
+  ActionCut,
+  cutBeforeActionMatching,
+  mockReaction,
+} from "@lauf/lauf-runner-trial";
 
 import { Prompt } from "../prompt";
 
@@ -7,18 +11,26 @@ import { dialogPlan } from "../dialog";
 
 describe("Dialog ", () => {
   test("dialogPlan() prompts for name - minimal test", async () => {
-    await directSequence(
-      dialogPlan(),
-      cutBeforeActionMatches(new Prompt("What is your full name?: "), ACTOR)
-    );
+    try {
+      await directSequence(
+        dialogPlan(),
+        cutBeforeActionMatching(new Prompt("What is your full name?: "), ACTOR)
+      );
+    } catch (thrown) {
+      expect(thrown).toBeInstanceOf(ActionCut);
+    }
   });
 
   test("dialogPlan() prompts for name - detailed test", async () => {
-    const ending = await directSequence(
-      dialogPlan(),
-      cutBeforeActionMatches(new Prompt("What is your full name?: "), ACTOR)
-    );
-    expect(isTermination(ending));
+    try {
+      await directSequence(
+        dialogPlan(),
+        cutBeforeActionMatching(new Prompt("What is your full name?: "), ACTOR)
+      );
+    } catch (thrown) {
+      expect(thrown).toBeInstanceOf(ActionCut);
+      expect(thrown.action).toBeInstanceOf(Prompt);
+    }
   });
 
   test("dialogPlan() challenges single names - minimal test", async () => {
@@ -28,14 +40,18 @@ describe("Dialog ", () => {
       "Sting",
       testPerformer
     );
-    testPerformer = cutBeforeActionMatches(
+    testPerformer = cutBeforeActionMatching(
       new Prompt(
         "What?! Are you a celebrity or something, Sting? Enter a first and last name: "
       ),
       testPerformer
     );
 
-    await directSequence(dialogPlan(), testPerformer);
+    try {
+      await directSequence(dialogPlan(), testPerformer);
+    } catch (thrown) {
+      expect(thrown).toBeInstanceOf(ActionCut);
+    }
   });
 
   test("dialogPlan() challenges single names - detailed test", async () => {
@@ -49,13 +65,17 @@ describe("Dialog ", () => {
       testPerformer
     );
     //cut when condition reached
-    testPerformer = cutBeforeActionMatches(
+    testPerformer = cutBeforeActionMatching(
       new Prompt(
         "What?! Are you a celebrity or something, Sting? Enter a first and last name: "
       ),
       testPerformer
     );
-    const ending = await directSequence(dialogSequence, testPerformer);
-    expect(isTermination(ending));
+    try {
+      await directSequence(dialogSequence, testPerformer);
+    } catch (thrown) {
+      expect(thrown).toBeInstanceOf(ActionCut);
+      expect(thrown.action).toBeInstanceOf(Prompt);
+    }
   });
 });
