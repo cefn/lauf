@@ -1,9 +1,9 @@
 import {
-  createActionMatcher,
-  performWithMocks,
-  performUntilActionFulfils,
-  performUntilReactionFulfils,
-} from "../src/perform";
+  actionMatches,
+  mockReaction,
+  cutBeforeAction,
+  cutAfterReaction,
+} from "../src";
 
 describe("", () => {
   test("", () => {});

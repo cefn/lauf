@@ -27,21 +27,12 @@ export type ActionSequence<Ending, Reaction> = Generator<
   Reaction
 >;
 
-// export type ActionSequenceIteration<Ending, Reaction> = [
-//   IteratorResult<Action<Reaction>, Ending>,
-//   ActionSequence<Ending, Reaction>
-// ];
-
 /** ActionPlan contains step-by-step instructions for an ActionSequence. */
 export type ActionPlan<Args extends any[], Ending, Reaction> = (
   ...args: Args
 ) => ActionSequence<Ending, Reaction>;
 
-//TODO add Sync routine as an option for testing?
-export type Performance<Exit, Reaction> = AsyncGenerator<
-  Reaction,
-  Exit,
-  Action<Reaction>
->;
-
-export type Performer<Exit, Reaction> = () => Performance<Exit, Reaction>;
+/** Performer takes actions, returns reactions. For example it may run the action and return its reaction. */
+export type Performer = <Reaction>(
+  action: Action<Reaction>
+) => Promise<Reaction | Termination>;

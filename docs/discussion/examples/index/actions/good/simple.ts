@@ -3,7 +3,7 @@ import { ActionSequence, performPlan } from "@lauf/lauf-runner";
 
 import { prompt, alert } from "./prompt";
 
-function* simplePlan(): ActionSequence {
+function* simplePlan(): ActionSequence<void, any> {
   const name = yield* prompt("What is your full name? ");
   yield* alert(`Pleased to meet you, ${name as string}!`);
 }

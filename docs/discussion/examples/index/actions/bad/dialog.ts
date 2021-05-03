@@ -1,9 +1,10 @@
 #!/usr/bin/env -S npx ts-node
 import { ActionSequence, performPlan } from "@lauf/lauf-runner";
+import { Alert } from "../good/prompt";
 
 import { prompt, alert } from "./prompt";
 
-export function* dialogPlan(): ActionSequence<string[]> {
+export function* dialogPlan(): ActionSequence<string[], any> {
   let names = null;
   let message = "What is your full name?: ";
   while (true) {

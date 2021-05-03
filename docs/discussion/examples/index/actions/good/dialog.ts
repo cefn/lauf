@@ -3,7 +3,7 @@ import { ActionSequence, performPlan } from "@lauf/lauf-runner";
 
 import { prompt, alert } from "./prompt";
 
-export function* dialogPlan(): ActionSequence<string[]> {
+export function* dialogPlan(): ActionSequence<string[], any> {
   let names = null;
   let message = "What is your full name?: ";
   while (true) {
@@ -21,7 +21,7 @@ export function* dialogPlan(): ActionSequence<string[]> {
       message = "I'm sorry, you can't be anonymous. Enter your full name: ";
     }
   }
-  const [first, last] = names;
+  const [first, _last] = names;
   yield* alert(`Pleased to meet you, ${first}!`);
   return names;
 }

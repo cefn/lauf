@@ -1,9 +1,11 @@
 import { isDeepStrictEqual } from "util";
-import { directSequence, isTermination } from "@lauf/lauf-runner";
 import {
-  performWithMocks,
-  performUntilReactionFulfils,
-} from "@lauf/lauf-runner-trial";
+  Performer,
+  ACTOR,
+  directSequence,
+  isTermination,
+} from "@lauf/lauf-runner";
+import { mockReaction, cutAfterReaction } from "@lauf/lauf-runner-trial";
 import { BasicStore, Immutable } from "@lauf/lauf-store";
 
 import {
@@ -25,21 +27,27 @@ describe("Plans", () => {
       const { focus: initialFocus } = initialAppState;
       const focusedPostsSelector = createPostsSelector(initialFocus);
 
-      const testEnding = await directSequence(
-        mainPlan(store),
-        performUntilReactionFulfils(
-          () =>
-            isDeepStrictEqual(store.select(focusedPostsSelector), [
-              { title: "About React" },
-            ]),
-          performWithMocks([
-            [new FetchSubreddit(initialFocus), [{ title: "About React" }]],
-          ])
-        )
+      let testPerformer = ACTOR;
+      //mock the fetch
+      testPerformer = mockReaction(
+        new FetchSubreddit(initialFocus),
+        [{ title: "About React" }],
+        testPerformer
+      );
+      //cut when condition reached
+      testPerformer = cutAfterReaction(
+        () =>
+          isDeepStrictEqual(store.select(focusedPostsSelector), [
+            { title: "About React" },
+          ]),
+        testPerformer
       );
 
-      //the testPerformer should complete all its steps
-      expect(isTermination(testEnding)).toBe(true);
+      //begin performing
+      const testEndingPromise = directSequence(mainPlan(store), testPerformer);
+
+      //performer should eventually reach the cut
+      expect(isTermination(await testEndingPromise)).toBe(true);
     }, 30000);
 
     test("Posts retrieved, stored when focused subreddit changes", async () => {
@@ -47,30 +55,37 @@ describe("Plans", () => {
       const newFocus = "frontend";
       const newFocusPostsSelector = createPostsSelector(newFocus);
 
-      //launch the plan
-      const testEndingPromise = directSequence(
-        mainPlan(store),
-        performUntilReactionFulfils(
-          () =>
-            isDeepStrictEqual(store.select(newFocusPostsSelector), [
-              { title: "About Frontend" },
-            ]),
-          performWithMocks([
-            [new FetchSubreddit("reactjs"), [{ title: "About React" }]],
-            [new FetchSubreddit(newFocus), [{ title: "About Frontend" }]],
-          ])
-        )
+      let testPerformer: Performer = ACTOR;
+      //mock certain actions
+      testPerformer = mockReaction(
+        new FetchSubreddit("reactjs"),
+        [{ title: "About React" }],
+        testPerformer
+      );
+      testPerformer = mockReaction(
+        new FetchSubreddit(newFocus),
+        [{ title: "About Frontend" }],
+        testPerformer
+      );
+      //cut when condition reached
+      testPerformer = cutAfterReaction(
+        () =>
+          isDeepStrictEqual(store.select(newFocusPostsSelector), [
+            { title: "About Frontend" },
+          ]),
+        testPerformer
       );
 
-      //change the focused subreddit
+      //begin performing
+      const testEndingPromise = directSequence(mainPlan(store), testPerformer);
+
+      //trigger change to focused subreddit
       store.edit((state) => {
         state.focus = newFocus;
       });
 
-      //the testPerformer should complete all its steps
+      //performer should eventually reach the cut
       expect(isTermination(await testEndingPromise)).toBe(true);
     });
-
-    //TODO test that a change of focus causes a fetch request.
   });
 });
