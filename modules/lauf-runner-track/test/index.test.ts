@@ -32,6 +32,8 @@ describe("Track actions and reactions from running sequences", () => {
     await tracker.performPlan(countPlan, store);
     //Check end result is as normal
     expect(store.read()).toEqual({ counter: 5 });
+    //Check basic number of events is as expected
+    expect(tracker.events.length).toBe(10);
   });
 
   test("Actions and Reactions are performed as usual : forked plan", async () => {
@@ -46,6 +48,9 @@ describe("Track actions and reactions from running sequences", () => {
     await tracker.performPlan(forkingCountPlan, store);
     //Check end result is as normal
     expect(store.read()).toEqual({ counter: 5 });
+    //Extra 4 events in forked plan are from
+    //backgroundPlan,wait (each having Action,Reaction)
+    expect(tracker.events.length).toBe(14);
   });
 
   test("Actions, Reactions, State changes are recorded in tracker", async () => {
