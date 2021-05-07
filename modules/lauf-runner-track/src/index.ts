@@ -102,6 +102,10 @@ export class Tracker<State> {
     id += `-${plan.name}`;
 
     //construct handle (including child fork interception)
+    //TODO split this function into...
+    //createForkAction
+    //recordAction
+    //recordReaction
     const forkHandle = {
       id,
       plan,
@@ -109,41 +113,12 @@ export class Tracker<State> {
       performer: async (action: Action<any>) => {
         //intercept child fork
         if (action instanceof BackgroundPlan) {
-          //create child handle, constructing forked performer
-          const childForkHandle = this.createForkHandle(
-            action.plan,
-            action.args,
-            action.performer,
-            forkHandle
-          );
-          //create action using forked performer instead
-          action = new BackgroundPlan(
-            action.plan,
-            action.args,
-            childForkHandle.performer
-          );
+          action = this.interceptForkAction(action, forkHandle);
         }
-        //record action
-        const actionEvent: ActionEvent<Args, Ending, Reaction> = {
-          action,
-          forkHandle,
-          ...this.populateEvent(),
-        };
-        this.trackerStore.edit((state) => {
-          state.events = [...state.events, actionEvent];
-        });
+        const actionEvent = this.recordAction(action, forkHandle);
         //complete action
         const reaction = await performer(action);
-        //record reaction
-        const reactionEvent: ReactionEvent<Args, Ending, Reaction> = {
-          reaction,
-          actionEvent,
-          forkHandle,
-          ...this.populateEvent(),
-        };
-        this.trackerStore.edit((state) => {
-          state.events = [...state.events, reactionEvent];
-        });
+        this.recordReaction(reaction, actionEvent, forkHandle);
         return reaction;
       },
     };
@@ -154,6 +129,56 @@ export class Tracker<State> {
       };
     });
     return forkHandle;
+  }
+
+  interceptForkAction<Args extends any[], Ending, Reaction>(
+    action: BackgroundPlan<Args, Ending, Reaction>,
+    parentForkHandle: ForkHandle<Args, Ending, Reaction>
+  ) {
+    //create child handle, constructing forked performer
+    const childForkHandle = this.createForkHandle(
+      action.plan,
+      action.args,
+      action.performer,
+      parentForkHandle
+    );
+    //substitute action that uses forked performer instead
+    return new BackgroundPlan(
+      action.plan,
+      action.args,
+      childForkHandle.performer
+    );
+  }
+
+  recordAction<Args extends any[], Ending, Reaction>(
+    action: Action<Reaction>,
+    forkHandle: ForkHandle<Args, Ending, Reaction>
+  ) {
+    const actionEvent: ActionEvent<Args, Ending, Reaction> = {
+      action,
+      forkHandle,
+      ...this.populateEvent(),
+    };
+    this.trackerStore.edit((state) => {
+      state.events = [...state.events, actionEvent];
+    });
+    return actionEvent;
+  }
+
+  recordReaction<Args extends any[], Ending, Reaction>(
+    reaction: Reaction,
+    actionEvent: ActionEvent<Args, Ending, Reaction>,
+    forkHandle: ForkHandle<Args, Ending, Reaction>
+  ) {
+    const reactionEvent: ReactionEvent<Args, Ending, Reaction> = {
+      reaction,
+      actionEvent,
+      forkHandle,
+      ...this.populateEvent(),
+    };
+    this.trackerStore.edit((state) => {
+      state.events = [...state.events, reactionEvent];
+    });
   }
 
   async performPlan<Args extends any[], Ending, Reaction>(
