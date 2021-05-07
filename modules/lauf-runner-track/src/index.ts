@@ -8,55 +8,39 @@ import {
 } from "@lauf/lauf-runner";
 import { Immutable, Store } from "@lauf/lauf-store";
 
-export class Event {
-  readonly time: number;
-  constructor(readonly ordinal: number) {
-    this.time = new Date().getTime();
-  }
+export interface Event {
+  time: number;
+  ordinal: number;
 }
 
-export class ForkEvent extends Event {
-  constructor(readonly forkHandle: ForkHandle<any, any, any>, ordinal: number) {
-    super(ordinal);
-  }
+export interface StoreEvent<State> extends Event {
+  store: Store<State>;
+  state: Immutable<State>;
 }
 
-export class ActionEvent<Reaction> extends ForkEvent {
-  constructor(
-    readonly action: Action<Reaction>,
-    forkHandle: ForkHandle<any, any, any>,
-    ordinal: number
-  ) {
-    super(forkHandle, ordinal);
-  }
-}
+export type ForkId = string;
 
-export class ReactionEvent<Reaction> extends ForkEvent {
-  constructor(
-    readonly reaction: Reaction,
-    forkHandle: ForkHandle<any, any, any>,
-    ordinal: number
-  ) {
-    super(forkHandle, ordinal);
-  }
-}
-
-export class StoreEvent<State> extends Event {
-  readonly state: Immutable<State>;
-  constructor(readonly store: Store<State>, ordinal: number) {
-    super(ordinal);
-    this.state = store.read();
-  }
-}
-
-type ForkId = string;
-
-interface ForkHandle<Args extends any[], Ending, Reaction> {
+export interface ForkHandle<Args extends any[], Ending, Reaction> {
   id: ForkId;
   performer: Performer;
   plan: ActionPlan<Args, Ending, Reaction>;
   args: Args;
   ending?: Ending;
+}
+
+export interface ForkEvent<Args extends any[], Ending, Reaction> extends Event {
+  forkHandle: ForkHandle<Args, Ending, Reaction>;
+}
+
+export interface ActionEvent<Args extends any[], Ending, Reaction>
+  extends ForkEvent<Args, Ending, Reaction> {
+  action: Action<Reaction>;
+}
+
+export interface ReactionEvent<Args extends any[], Ending, Reaction>
+  extends ForkEvent<Args, Ending, Reaction> {
+  reaction: Reaction;
+  actionEvent: ActionEvent<Args, Ending, Reaction>;
 }
 
 export class Tracker<State> {
@@ -68,11 +52,14 @@ export class Tracker<State> {
     readonly store: Store<State>,
     readonly performer: Performer = ACTOR
   ) {
-    const recordState = () =>
-      (this.events = [
-        ...this.events,
-        new StoreEvent(store, this.assignEventId()),
-      ]);
+    const recordState = () => {
+      const storeEvent: StoreEvent<State> = {
+        store,
+        state: store.read(),
+        ...this.populateEvent(),
+      };
+      this.events = [...this.events, storeEvent];
+    };
     recordState(); //record initial state
     store.watch(recordState); //track future events
   }
@@ -83,6 +70,13 @@ export class Tracker<State> {
 
   assignEventId() {
     return this.nextEventOrdinal++;
+  }
+
+  populateEvent() {
+    return {
+      time: new Date().getTime(),
+      ordinal: this.assignEventId(),
+    };
   }
 
   protected createForkHandle<Args extends any[], Ending, Reaction>(
@@ -118,15 +112,23 @@ export class Tracker<State> {
             childForkHandle.performer
           );
         }
-        this.events = [
-          ...this.events,
-          new ActionEvent(action, forkHandle, this.assignEventId()),
-        ];
+        //record action
+        const actionEvent: ActionEvent<Args, Ending, Reaction> = {
+          action,
+          forkHandle,
+          ...this.populateEvent(),
+        };
+        this.events = [...this.events, actionEvent];
+        //complete action
         const reaction = await performer(action);
-        this.events = [
-          ...this.events,
-          new ReactionEvent(reaction, forkHandle, this.assignEventId()),
-        ];
+        //record reaction
+        const reactionEvent: ReactionEvent<Args, Ending, Reaction> = {
+          reaction,
+          actionEvent,
+          forkHandle,
+          ...this.populateEvent(),
+        };
+        this.events = [...this.events, reactionEvent];
         return reaction;
       },
     };

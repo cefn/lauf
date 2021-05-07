@@ -25,6 +25,11 @@ describe("Track actions and reactions from running sequences", () => {
     }
   }
 
+  function* forkingCountPlan(store: Store<State>): ActionSequence<void, any> {
+    const [countPromise] = yield* backgroundPlan(countPlan, store);
+    yield* wait(countPromise);
+  }
+
   test("Actions and Reactions are performed as usual : single plan", async () => {
     //Configure, track and run plan
     const store = new BasicStore<State>({ counter: 0 });
@@ -37,11 +42,6 @@ describe("Track actions and reactions from running sequences", () => {
   });
 
   test("Actions and Reactions are performed as usual : forked plan", async () => {
-    function* forkingCountPlan(store: Store<State>): ActionSequence<void, any> {
-      const [countPromise] = yield* backgroundPlan(countPlan, store);
-      yield* wait(countPromise);
-    }
-
     //Configure, track and run plan
     const store = new BasicStore<State>({ counter: 0 });
     const tracker = new Tracker(store);
@@ -66,8 +66,7 @@ describe("Track actions and reactions from running sequences", () => {
       event;
 
     /** First event records initial state */
-    event = tracker.events[pos++];
-    assert(event instanceof StoreEvent);
+    event = tracker.events[pos++] as StoreEvent<State>;
     expect(event.store).toBe(store);
     expect(event.state).toEqual({
       counter: 0,
@@ -76,22 +75,21 @@ describe("Track actions and reactions from running sequences", () => {
     //Each edit triggers a sequence of events:
     for (const newValue of [3, 4, 5]) {
       /** First the edit is instructed*/
-      event = tracker.events[pos++];
-      assert(event instanceof ActionEvent);
+      event = tracker.events[pos++] as ActionEvent<any, any, any>;
       assert(event.action instanceof Call);
       expect(event.action.fn).toBe(store.edit);
+      const actionEvent = event;
 
       /** On change the edited state is notified  */
-      event = tracker.events[pos++];
-      assert(event instanceof StoreEvent);
+      event = tracker.events[pos++] as StoreEvent<State>;
       expect(event.store).toBe(store);
       expect(event.state).toEqual({
         counter: newValue,
       });
 
       /** Finally the edit instruction returns */
-      event = tracker.events[pos++];
-      assert(event instanceof ReactionEvent);
+      event = tracker.events[pos++] as ReactionEvent<any, any, any>;
+      expect(event.actionEvent).toBe(actionEvent); //the previous action event
       expect(event.reaction).toEqual({
         counter: newValue,
       });
