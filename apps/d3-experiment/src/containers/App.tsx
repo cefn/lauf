@@ -20,8 +20,7 @@ const splitStyle: CSS.Properties = {
 export function App() {
   const [store] = useState(() => new BasicStore(initialState));
   const [tracker] = useState(() => new Tracker(store));
-
-  useEffect(() => void tracker.performPlan(countPlan, store), []);
+  const [awaited] = useState(() => tracker.performPlan(countPlan, store));
 
   return (
     <>
@@ -29,7 +28,7 @@ export function App() {
         <Counter store={store} />
       </div>
       <div style={{ ...splitStyle, right: 0 }}>
-        <TrackLanes tracker={tracker} />
+        <TrackLanes {...{ tracker, awaited }} />
       </div>
     </>
   );
