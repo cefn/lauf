@@ -6,7 +6,7 @@ import {
   directPlan,
   Performer,
 } from "@lauf/lauf-runner";
-import { Immutable, Store } from "@lauf/lauf-store";
+import { BasicStore, Immutable, Store } from "@lauf/lauf-store";
 
 export interface Event {
   time: number;
@@ -43,25 +43,36 @@ export interface ReactionEvent<Args extends any[], Ending, Reaction>
   actionEvent: ActionEvent<Args, Ending, Reaction>;
 }
 
+interface TrackerState {
+  forkHandles: Record<ForkId, ForkHandle<any, any, any>>;
+  events: Event[];
+}
+
+const initialTrackerState: Immutable<TrackerState> = {
+  forkHandles: {},
+  events: [],
+} as const;
+
 export class Tracker<State> {
   protected nextForkOrdinal = 0;
   protected nextEventOrdinal = 0;
-  forkHandles: Immutable<Record<ForkId, ForkHandle<any, any, any>>> = {};
-  events: Immutable<Event[]> = [];
+  readonly trackerStore = new BasicStore(initialTrackerState);
   constructor(
-    readonly store: Store<State>,
+    readonly planStore: Store<State>,
     readonly performer: Performer = ACTOR
   ) {
     const recordState = () => {
       const storeEvent: StoreEvent<State> = {
-        store,
-        state: store.read(),
+        store: planStore,
+        state: planStore.read(),
         ...this.populateEvent(),
       };
-      this.events = [...this.events, storeEvent];
+      this.trackerStore.edit((state) => {
+        state.events = [...state.events, storeEvent];
+      });
     };
     recordState(); //record initial state
-    store.watch(recordState); //track future events
+    planStore.watch(recordState); //track future events
   }
 
   assignForkId() {
@@ -118,7 +129,9 @@ export class Tracker<State> {
           forkHandle,
           ...this.populateEvent(),
         };
-        this.events = [...this.events, actionEvent];
+        this.trackerStore.edit((state) => {
+          state.events = [...state.events, actionEvent];
+        });
         //complete action
         const reaction = await performer(action);
         //record reaction
@@ -128,14 +141,18 @@ export class Tracker<State> {
           forkHandle,
           ...this.populateEvent(),
         };
-        this.events = [...this.events, reactionEvent];
+        this.trackerStore.edit((state) => {
+          state.events = [...state.events, reactionEvent];
+        });
         return reaction;
       },
     };
-    this.forkHandles = {
-      ...this.forkHandles,
-      [forkHandle.id]: forkHandle,
-    };
+    this.trackerStore.edit((state) => {
+      state.forkHandles = {
+        ...state.forkHandles,
+        [forkHandle.id]: forkHandle,
+      };
+    });
     return forkHandle;
   }
 
