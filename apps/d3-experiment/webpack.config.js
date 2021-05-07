@@ -27,4 +27,6 @@ module.exports = {
       template: "./public/index.html",
     }),
   ],
+  //TODO limit this to debug builds?
+  devtool: "source-map",
 };
