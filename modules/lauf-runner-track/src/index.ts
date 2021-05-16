@@ -8,8 +8,6 @@ import {
 } from "@lauf/lauf-runner";
 import { BasicStore, Immutable, Store } from "@lauf/lauf-store";
 
-let nextEventOrdinal = 0;
-let nextForkOrdinal = 0;
 export type EventId = number;
 export type ForkId = string;
 
@@ -24,8 +22,8 @@ function freezeThis(
 
 export class Event {
   constructor(
-    readonly time: number = new Date().getTime(),
-    readonly ordinal: number = nextEventOrdinal++
+    readonly ordinal: number,
+    readonly time: number = new Date().getTime()
   ) {
     freezeThis(this, Event);
   }
@@ -33,8 +31,8 @@ export class Event {
 
 export class StoreEvent<State> extends Event {
   readonly state: Immutable<State>;
-  constructor(readonly store: Store<State>, time?: number, ordinal?: number) {
-    super(time, ordinal);
+  constructor(readonly store: Store<State>, ordinal: number, time?: number) {
+    super(ordinal, time);
     this.state = store.read();
     freezeThis(this, StoreEvent);
   }
@@ -42,11 +40,13 @@ export class StoreEvent<State> extends Event {
 
 export class ForkHandle<Args extends any[], Ending, Reaction> {
   ending?: Ending;
+  actionEvents: ActionEvent<Args, Ending, Reaction>[] = [];
+  reactionEvents: ReactionEvent<Args, Ending, Reaction>[] = [];
   constructor(
     readonly plan: ActionPlan<Args, Ending, Reaction>,
     readonly args: Args,
     readonly performer: Performer,
-    readonly id: ForkId = (nextForkOrdinal++).toString(),
+    readonly id: ForkId,
     ending?: Ending
   ) {
     this.ending = ending;
@@ -57,10 +57,10 @@ export class ForkHandle<Args extends any[], Ending, Reaction> {
 export class ForkEvent<Args extends any[], Ending, Reaction> extends Event {
   constructor(
     readonly forkHandle: ForkHandle<Args, Ending, Reaction>,
-    time?: number,
-    ordinal?: number
+    ordinal: number,
+    time?: number
   ) {
-    super(time, ordinal);
+    super(ordinal, time);
     freezeThis(this, ForkEvent);
   }
 }
@@ -73,10 +73,10 @@ export class ActionEvent<
   constructor(
     readonly action: Action<Reaction>,
     forkHandle: ForkHandle<Args, Ending, Reaction>,
-    time?: number,
-    ordinal?: number
+    ordinal: number,
+    time?: number
   ) {
-    super(forkHandle, time, ordinal);
+    super(forkHandle, ordinal, time);
     freezeThis(this, ActionEvent);
   }
 }
@@ -90,22 +90,26 @@ export class ReactionEvent<
     readonly reaction: Reaction,
     readonly actionEvent: ActionEvent<Args, Ending, Reaction>,
     forkHandle: ForkHandle<Args, Ending, Reaction>,
-    time?: number,
-    ordinal?: number
+    ordinal: number,
+    time?: number
   ) {
-    super(forkHandle, time, ordinal);
+    super(forkHandle, ordinal, time);
     freezeThis(this, ReactionEvent);
   }
 }
 
-export interface TrackerState {
+export interface TrackerState<AppState> {
   forkHandles: Record<ForkId, ForkHandle<any, any, any>>;
-  events: Event[];
+  storeEvents: StoreEvent<AppState>[];
+  nextEventOrdinal: number;
+  nextForkOrdinal: number;
 }
 
-const initialTrackerState: Immutable<TrackerState> = {
+const initialTrackerState: Immutable<TrackerState<any>> = {
   forkHandles: {},
-  events: [],
+  storeEvents: [],
+  nextEventOrdinal: 0,
+  nextForkOrdinal: 0,
 } as const;
 
 export class Tracker<AppState> {
@@ -116,7 +120,9 @@ export class Tracker<AppState> {
   ) {
     const recordState = () => {
       this.trackerStore.edit((state) => {
-        state.events.push(new StoreEvent(planStore));
+        state.storeEvents.push(
+          new StoreEvent(planStore, state.nextEventOrdinal++)
+        );
       });
     };
     recordState(); //record initial state
@@ -129,9 +135,10 @@ export class Tracker<AppState> {
     performer: Performer,
     parent?: ForkHandle<any, any, any>
   ): ForkHandle<Args, Ending, Reaction> {
+    const { nextForkOrdinal } = this.trackerStore.read();
     //construct id
     let forkId = parent ? `${parent.id}-` : "";
-    forkId += nextForkOrdinal++;
+    forkId += nextForkOrdinal;
     forkId += `-${forkPlan.name}`;
     const forkPerformer = async (action: Action<any>) => {
       //intercept child fork action
@@ -150,11 +157,10 @@ export class Tracker<AppState> {
       forkPerformer,
       forkId
     );
+    //assign increment ordinal
     this.trackerStore.edit((state) => {
-      state.forkHandles = {
-        ...state.forkHandles,
-        [forkId]: forkHandle,
-      };
+      state.forkHandles[forkId] = forkHandle;
+      state.nextForkOrdinal++;
     });
     return forkHandle;
   }
@@ -182,9 +188,11 @@ export class Tracker<AppState> {
     action: Action<Reaction>,
     forkHandle: ForkHandle<Args, Ending, Reaction>
   ) {
-    const actionEvent = new ActionEvent(action, forkHandle);
+    const { nextEventOrdinal } = this.trackerStore.read();
+    const actionEvent = new ActionEvent(action, forkHandle, nextEventOrdinal);
     this.trackerStore.edit((state) => {
-      state.events.push(actionEvent);
+      state.nextEventOrdinal++;
+      state.forkHandles[forkHandle.id]?.actionEvents.push(actionEvent);
     });
     return actionEvent;
   }
@@ -194,9 +202,15 @@ export class Tracker<AppState> {
     actionEvent: ActionEvent<Args, Ending, Reaction>,
     forkHandle: ForkHandle<Args, Ending, Reaction>
   ) {
-    const reactionEvent = new ReactionEvent(reaction, actionEvent, forkHandle);
     this.trackerStore.edit((state) => {
-      state.events.push(reactionEvent);
+      state.forkHandles[forkHandle.id]?.reactionEvents.push(
+        new ReactionEvent(
+          reaction,
+          actionEvent,
+          forkHandle,
+          state.nextEventOrdinal++
+        )
+      );
     });
   }
 
