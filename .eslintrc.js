@@ -28,5 +28,18 @@ module.exports = {
     serviceworker: true,
   },
   ignorePatterns: ["build", ".*.js", "*.config.js", "node_modules"],
-  rules: {},
+  rules: {
+    //CH added speculatively to prevent https://github.com/microsoft/TypeScript/issues/18433
+    "no-restricted-globals": [
+      "error",
+      "closed",
+      "event",
+      "fdescribe",
+      "name",
+      "length",
+      "location",
+      "parent",
+      "top",
+    ],
+  },
 };
