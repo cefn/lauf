@@ -6,14 +6,15 @@ import { mainPlan, _test_game } from "../src/game";
 import { Game } from "../src/view";
 import { SPRITE_SHEET } from "../src/components/graphics";
 import { posToStyle } from "../src/components/sprite";
-import { Direction } from "../src/domain";
+import { createAppModel, Direction } from "../src/domain";
 
 const { resetGame, eatFruit } = _test_game;
 
 describe.skip("Passing test case  - incompatible jsx config", () => {
   test("Selector tracks fruitPos after replacement", async () => {
     //launch app
-    const appModel = await performSequence(mainPlan());
+    const appModel = createAppModel();
+    await performSequence(mainPlan(appModel));
     const { gameStore, inputQueue } = appModel;
     const { container } = render(<Game {...appModel} />);
 

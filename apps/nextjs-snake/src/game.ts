@@ -27,8 +27,7 @@ import {
 } from "./domain";
 import { isVectorEqual, randomSquare, plus, wrap } from "./util";
 
-export function* mainPlan(): ActionSequence<AppModel, any> {
-  const appModel = createAppModel();
+export function* mainPlan(appModel: AppModel): ActionSequence<AppModel, any> {
   yield* resetGame(appModel);
   yield* backgroundPlan(inputDirectionRoutine, appModel);
   yield* backgroundPlan(fruitRoutine, appModel);
