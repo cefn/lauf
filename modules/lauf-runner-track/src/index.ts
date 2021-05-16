@@ -98,7 +98,7 @@ export class ReactionEvent<
   }
 }
 
-interface TrackerState {
+export interface TrackerState {
   forkHandles: Record<ForkId, ForkHandle<any, any, any>>;
   events: Event[];
 }
@@ -108,15 +108,15 @@ const initialTrackerState: Immutable<TrackerState> = {
   events: [],
 } as const;
 
-export class Tracker<State> {
+export class Tracker<AppState> {
   readonly trackerStore = new BasicStore(initialTrackerState);
   constructor(
-    readonly planStore: Store<State>,
+    readonly planStore: Store<AppState>,
     readonly performer: Performer = ACTOR
   ) {
     const recordState = () => {
       this.trackerStore.edit((state) => {
-        state.events = [...state.events, new StoreEvent(planStore)];
+        state.events.push(new StoreEvent(planStore));
       });
     };
     recordState(); //record initial state
@@ -184,7 +184,7 @@ export class Tracker<State> {
   ) {
     const actionEvent = new ActionEvent(action, forkHandle);
     this.trackerStore.edit((state) => {
-      state.events = [...state.events, actionEvent];
+      state.events.push(actionEvent);
     });
     return actionEvent;
   }
@@ -196,7 +196,7 @@ export class Tracker<State> {
   ) {
     const reactionEvent = new ReactionEvent(reaction, actionEvent, forkHandle);
     this.trackerStore.edit((state) => {
-      state.events = [...state.events, reactionEvent];
+      state.events.push(reactionEvent);
     });
   }
 
