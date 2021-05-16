@@ -4,7 +4,7 @@ import CSS from "csstype";
 import { BasicStore } from "@lauf/lauf-store";
 import { Tracker } from "@lauf/lauf-runner-track";
 
-import { initialState, countPlan } from "../counterPlan";
+import { initialState, countPlan, forkingCountPlan } from "../counterPlan";
 import { Counter } from "../components/Counter";
 import { TrackLanes } from "../components/TrackLanes";
 
@@ -20,7 +20,9 @@ const splitStyle: CSS.Properties = {
 export function App() {
   const [store] = useState(() => new BasicStore(initialState));
   const [tracker] = useState(() => new Tracker(store));
-  const [awaited] = useState(() => tracker.performPlan(countPlan, store));
+  const [awaited] = useState(() =>
+    tracker.performPlan(forkingCountPlan, store)
+  );
 
   return (
     <>

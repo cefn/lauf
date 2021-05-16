@@ -8,7 +8,7 @@ export interface State {
 export const initialState: State = { counter: 0 } as const;
 
 export function* countPlan(store: Store<State>): ActionSequence<void, any> {
-  for (const i of [3, 4, 5]) {
+  for (const i of [3, 4, 5, 6, 7, 8, 9, 10, 11, 12]) {
     yield* call(store.edit, (state) => {
       state.counter = i;
     });

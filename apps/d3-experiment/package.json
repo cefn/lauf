@@ -7,7 +7,7 @@
     "start": "webpack serve --mode=development --open --hot",
     "build": "webpack --mode=production",
     "check": "tsc --noEmit",
-    "test": "jest --passWithNoTests"
+    "test": "jest"
   },
   "devDependencies": {
     "@babel/core": "^7.13.8",
@@ -37,7 +37,11 @@
     ]
   },
   "dependencies": {
+    "@types/d3-scale": "^3.2.2",
+    "@types/d3-scale-chromatic": "^2.0.0",
     "@types/d3-selection": "^2.0.0",
+    "d3-scale": "^3.3.0",
+    "d3-scale-chromatic": "^2.0.0",
     "d3-selection": "^2.0.0"
   }
 }
