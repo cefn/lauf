@@ -6,16 +6,22 @@ import { mainPlan, _test_game } from "../src/game";
 import { Game } from "../src/view";
 import { SPRITE_SHEET } from "../src/components/graphics";
 import { posToStyle } from "../src/components/sprite";
-import { createAppModel, Direction } from "../src/domain";
+import { Direction, GameState, INITIAL_STATE } from "../src/domain";
+import { BasicStore } from "@lauf/lauf-store/src";
+import { BasicMessageQueue } from "@lauf/lauf-queue/src";
 
 const { resetGame, eatFruit } = _test_game;
 
 describe.skip("Passing test case  - incompatible jsx config", () => {
   test("Selector tracks fruitPos after replacement", async () => {
     //launch app
-    const appModel = createAppModel();
+    const gameStore = new BasicStore(INITIAL_STATE);
+    const inputQueue = new BasicMessageQueue<[Direction, boolean]>();
+    const appModel = {
+      gameStore,
+      inputQueue,
+    };
     await performSequence(mainPlan(appModel));
-    const { gameStore, inputQueue } = appModel;
     const { container } = render(<Game {...appModel} />);
 
     //define routine to validate style-rendered position

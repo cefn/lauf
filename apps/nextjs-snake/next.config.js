@@ -14,16 +14,16 @@ module.exports = () => {
         },
       ];
 
-      const packageNames = ["lauf-runner-planview"];
-      const packageSrc = "src";
-      const packageRoot = path.join(__dirname, "../../modules");
+      const repoModuleNames = ["lauf-runner-planview"];
+      const repoModuleRoot = path.join(__dirname, "../../modules");
+      const repoSrcFolder = "src";
 
       for (const rule of config.module.rules) {
         if (rule.test && rule.test.toString().includes("tsx|ts")) {
           rule.include = [
             ...rule.include,
-            ...packageNames.map(
-              (packageName) => `${packageRoot}/${packageName}/${packageSrc}`
+            ...repoModuleNames.map(
+              (moduleName) => `${repoModuleRoot}/${moduleName}/${repoSrcFolder}`
             ),
           ];
         }
