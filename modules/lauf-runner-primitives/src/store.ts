@@ -75,33 +75,3 @@ export class Edit<State> implements Action<Immutable<State>> {
   }
 }
 export const edit = planOfAction(Edit);
-
-export class Select<State, Selected> implements Action<Immutable<Selected>> {
-  constructor(
-    readonly store: Store<State>,
-    readonly selector: Selector<State, Selected>
-  ) {}
-  act() {
-    return this.store.select(this.selector);
-  }
-}
-export const select = planOfAction(Select);
-
-export class StorePlans<State> {
-  constructor(readonly store: Store<State>) {}
-
-  edit = (editor: Editor<State>) => edit(this.store, editor);
-
-  select = <Selected>(selector: Selector<State, Selected>) =>
-    select(this.store, selector);
-
-  follow = <Selected, Ending, Reaction>(
-    selector: Selector<State, Selected>,
-    follower: Follower<Selected, Ending, Reaction>
-  ) => follow(this.store, selector, follower);
-
-  withQueue = <Selected, Ending, Reaction>(
-    selector: Selector<State, Selected>,
-    handleQueue: QueueHandler<Selected, Ending, Reaction>
-  ) => withQueue(this.store, selector, handleQueue);
-}

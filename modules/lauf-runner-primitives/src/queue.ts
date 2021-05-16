@@ -17,9 +17,3 @@ export class Send<T> implements Action<boolean> {
 
 export const receive = planOfAction(Receive);
 export const send = planOfAction(Send);
-
-export class QueuePlans<T> {
-  constructor(readonly queue: MessageQueue<T>) {}
-  send = (item: T) => send(this.queue, item);
-  receive = () => receive(this.queue);
-}
