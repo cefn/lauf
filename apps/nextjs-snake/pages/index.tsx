@@ -19,7 +19,7 @@ export default function render() {
         gameStore: new BasicStore<GameState>(INITIAL_STATE),
         inputQueue: new BasicMessageQueue<[Direction, boolean]>(),
       };
-      const tracker = new Tracker(appModel.gameStore);
+      const tracker = new Tracker<GameState>(appModel.gameStore);
       setAppModel(appModel);
       setTracker(tracker);
       tracker.performPlan(mainPlan, appModel);
@@ -29,7 +29,7 @@ export default function render() {
   return appModel && tracker ? (
     <>
       <Game {...appModel} />
-      <PlanView trackerStore={tracker.trackerStore} />
+      <PlanView tracker={tracker} />
     </>
   ) : (
     <p>Loading...</p>
