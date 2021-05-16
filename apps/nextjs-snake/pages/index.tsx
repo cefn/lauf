@@ -18,7 +18,7 @@ export default function render() {
       const appModel = {
         gameStore: new BasicStore<GameState>(INITIAL_STATE),
         inputQueue: new BasicMessageQueue<[Direction, boolean]>(),
-      };
+      } as const;
       const tracker = new Tracker<GameState>(appModel.gameStore);
       setAppModel(appModel);
       setTracker(tracker);
