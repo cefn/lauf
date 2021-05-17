@@ -55,6 +55,8 @@ describe("Track actions and reactions from running sequences", () => {
     expect(nextEventOrdinal).toBe(14);
   });
 
+  //TODO re-write remainder of this test
+
   test("Actions, Reactions, State changes are recorded in tracker", async () => {
     //Configure, track and run plan
     const store = new BasicStore<State>({ counter: 0 });
@@ -64,44 +66,52 @@ describe("Track actions and reactions from running sequences", () => {
     const state = tracker.trackerStore.read();
 
     //Check basic number of events is as expected
-    const { nextEventOrdinal } = state;
+    const { nextEventOrdinal, storeEvents } = state;
     expect(nextEventOrdinal).toBe(10);
 
-    // let pos = 0,
-    //   event;
+    const forkHandle = state.forkHandles["0-countPlan"]!;
+    const { actionEvents, reactionEvents } = forkHandle;
 
-    // /** First event records initial state */
-    // event = events[pos++] as StoreEvent<State>;
-    // expect(event.store).toBe(store);
-    // expect(event.state).toEqual({
-    //   counter: 0,
-    // });
+    let sPos = 0,
+      storeEvent;
+    let aPos = 0,
+      actionEvent;
+    let rPos = 0,
+      reactionEvent;
 
-    // //Each edit triggers a sequence of events:
-    // for (const newValue of [3, 4, 5]) {
-    //   /** First the edit is instructed. */
-    //   event = events[pos++] as ActionEvent<any, any, any>;
-    //   assert(event.action instanceof Call);
-    //   expect(event.action.fn).toBe(store.edit);
-    //   const actionEvent = event;
+    /** First event records initial state */
+    storeEvent = storeEvents[sPos++] as StoreEvent<State>;
+    expect(storeEvent.store).toBe(store);
+    expect(storeEvent.state).toEqual({
+      counter: 0,
+    });
 
-    //   /** As part of edit operation the new state is notified  */
-    //   event = events[pos++] as StoreEvent<State>;
-    //   expect(event.store).toBe(store);
-    //   expect(event.state).toEqual({
-    //     counter: newValue,
-    //   });
+    //Each edit triggers a sequence of events:
+    for (const newValue of [3, 4, 5]) {
+      /** First the edit is instructed. */
+      actionEvent = actionEvents[aPos++] as ActionEvent<any, any, any>;
+      assert(actionEvent.action instanceof Call);
+      expect(actionEvent.action.fn).toBe(store.edit);
 
-    //   /** Finally the edit instruction returns */
-    //   event = events[pos++] as ReactionEvent<any, any, any>;
-    //   expect(event.actionEvent).toBe(actionEvent); //the previous action event
-    //   expect(event.reaction).toEqual({
-    //     counter: newValue,
-    //   });
-    // }
+      /** As part of edit operation the new state is notified  */
+      storeEvent = storeEvents[sPos++] as StoreEvent<State>;
+      expect(storeEvent.store).toBe(store);
+      expect(storeEvent.state).toEqual({
+        counter: newValue,
+      });
+
+      /** Finally the edit instruction returns */
+      reactionEvent = reactionEvents[rPos++] as ReactionEvent<any, any, any>;
+      expect(reactionEvent.actionEvent).toBe(actionEvent); //the previous action event
+      expect(reactionEvent.reaction).toEqual({
+        counter: newValue,
+      });
+    }
 
     // //Events end
-    // expect(pos).toBe(events.length);
+    expect(sPos).toBe(storeEvents.length);
+    expect(aPos).toBe(actionEvents.length);
+    expect(rPos).toBe(reactionEvents.length);
   });
 
   // test("", () => {});
