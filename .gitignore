@@ -1,5 +1,8 @@
-#Cefn
+#CEFN : Tooling compatibility
 .vscode
+# CEFN : Don't version build products
+apps/*/dist
+modules/*/dist
 # Logs
 logs
 *.log
