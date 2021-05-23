@@ -1,11 +1,17 @@
 {
   "name": "@lauf/lauf-store-react",
-  "version": "0.1.0",
-  "main": "index.js",
+  "version": "0.1.0-beta.1",
+  "main": "dist/index.js",
+  "files": [
+    "README.md",
+    "dist"
+  ],
   "license": "MIT",
   "scripts": {
     "test": "jest",
-    "check": "tsc --noEmit"
+    "check": "tsc --noEmit",
+    "build": "tsc --build ./tsconfig.build.json",
+    "beta": "yarn run test && yarn run build && yarn publish --tag=beta --access=public"
   },
   "peerDependencies": {
     "react": "^17.0.1"

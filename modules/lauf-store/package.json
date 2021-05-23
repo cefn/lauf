@@ -1,11 +1,17 @@
 {
   "name": "@lauf/lauf-store",
-  "version": "0.1.0",
-  "main": "index.js",
+  "version": "0.1.0-beta.2",
+  "files": [
+    "README.md",
+    "dist"
+  ],
+  "main": "dist/index.js",
   "license": "MIT",
   "scripts": {
     "test": "jest",
-    "check": "tsc --noEmit"
+    "check": "tsc --noEmit",
+    "build": "tsc",
+    "beta": "yarn run test && yarn run build && yarn publish --tag=beta --access=public"
   },
   "dependencies": {
     "immer": "^8.0.1",
