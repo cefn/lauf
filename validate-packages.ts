@@ -21,24 +21,49 @@ const RULES: ReadonlyArray<PackageJsonRule> = [
     status: "error",
   },
   {
+    path: "scripts.build",
+    expected: "tsc --build ./tsconfig.build.json",
+    packagePaths: "modules/**",
+    status: "error",
+  },
+  {
+    path: "scripts.beta",
+    expected:
+      "yarn run test && yarn run build && yarn publish --tag=beta --access=public",
+    packagePaths: "modules/**",
+    status: "error",
+  },
+  {
+    path: "main",
+    expected: "dist/index.js",
+    packagePaths: "modules/**",
+    status: "error",
+  },
+  {
+    path: "files",
+    expected: ["README.md", "dist"],
+    packagePaths: "modules/**",
+    status: "error",
+  },
+  {
     path: "devDependencies.typescript",
     expected: "^4.2.2",
     status: "error",
   },
 ] as const;
 
-const { strategy, filterPackages, filterPaths } = yargs
+const { strategy, filterPackagePaths, filterPropertyPaths } = yargs
   .option("strategy", {
     description: "Select alignment strategy",
     type: "string",
     default: "dryRun",
     choices: ["dryRun", "fixErrors", "fixWarnings"],
   })
-  .option("filterPackages", {
-    description: "Filter pattern for package names",
+  .option("filterPackagePaths", {
+    description: "Filter pattern for package paths",
     type: "string",
   })
-  .option("filterPaths", {
+  .option("filterPropertyPaths", {
     description: "Filter pattern for property names",
     type: "string",
   })
@@ -57,7 +82,10 @@ interface PackageJsonRule {
   /** The path to get/set within package.json (lodash) */
   path: string;
   /** The value or pattern expected at that path */
-  expected: string | RegExp;
+  expected: string | object | RegExp;
+  /** A minimatch filter limiting this rule to certain packages */
+  packagePaths?: string;
+  /** Whether this should count as a warning, error */
   status: Status;
 }
 
@@ -70,8 +98,8 @@ let failed = false;
 for (const packageJsonPath of packageJsonPaths) {
   const packageJson = JSON.parse(fs.readFileSync(packageJsonPath).toString());
 
-  if (filterPackages) {
-    if (!minimatch(packageJson.name, filterPackages)) {
+  if (filterPackagePaths) {
+    if (!minimatch(packageJsonPath, filterPackagePaths)) {
       continue;
     }
   }
@@ -85,15 +113,21 @@ for (const packageJsonPath of packageJsonPaths) {
 
   //traverse package json tree, checking and (optionally) fixing
   type Violation = {
-    actual: string;
-    expected: string | RegExp;
+    actual: any;
+    expected: string | object | RegExp;
     fixed: boolean;
   };
   const found: Record<Rule["path"], Violation> = {};
   let rewritePackageJson = false;
-  for (const { path, expected, status } of RULES) {
-    if (filterPaths) {
-      if (!minimatch(path, filterPaths)) {
+  for (const { path, expected, status, packagePaths } of RULES) {
+    if (filterPropertyPaths) {
+      if (!minimatch(path, filterPropertyPaths)) {
+        continue;
+      }
+    }
+
+    if (packagePaths) {
+      if (!minimatch(packageJsonPath, packagePaths)) {
         continue;
       }
     }
