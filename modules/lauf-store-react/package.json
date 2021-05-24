@@ -13,6 +13,9 @@
     "build": "tsc --build ./tsconfig.build.json",
     "beta": "yarn run test && yarn run build && yarn publish --tag=beta --access=public"
   },
+  "dependencies": {
+    "@lauf/lauf-store": "^0.1.0-beta.1"
+  },
   "peerDependencies": {
     "react": "^17.0.1"
   },

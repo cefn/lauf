@@ -10,7 +10,7 @@
   "scripts": {
     "test": "jest",
     "check": "tsc --noEmit",
-    "build": "tsc",
+    "build": "tsc --build ./tsconfig.build.json",
     "beta": "yarn run test && yarn run build && yarn publish --tag=beta --access=public"
   },
   "dependencies": {

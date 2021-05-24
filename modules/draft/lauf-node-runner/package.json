@@ -1,13 +1,19 @@
 {
   "name": "@lauf/lauf-node-runner",
   "version": "0.1.0",
-  "main": "index.js",
+  "main": "dist/index.js",
   "license": "MIT",
   "scripts": {
     "test": "jest",
-    "check": "tsc --noEmit"
+    "check": "tsc --noEmit",
+    "build": "tsc --build ./tsconfig.build.json",
+    "beta": "yarn run test && yarn run build && yarn publish --tag=beta --access=public"
   },
   "devDependencies": {
     "typescript": "^4.2.2"
-  }
+  },
+  "files": [
+    "README.md",
+    "dist"
+  ]
 }
