@@ -1,6 +1,8 @@
 import { promiseExpiry, Expiry, EXPIRY } from "./delay";
-import { Action, ActionPlan, ActionSequence } from "../types";
-import { planOfAction, performPlan } from "./util";
+import { Action, ActionPlan, ActionSequence, Performer } from "../types";
+import { planOfAction, directPlan, ACTOR } from "./util";
+
+type BackgroundEnding<T> = readonly [Promise<T>];
 
 // type Mapped<Ending, T extends ActionSequence<Ending>[]> = {
 //   [K in keyof T]: Promise<Ending>;
@@ -8,15 +10,13 @@ import { planOfAction, performPlan } from "./util";
 
 export class BackgroundPlan<Args extends any[], Ending, Reaction>
   implements Action<readonly [Promise<Ending>]> {
-  readonly args: Args;
   constructor(
     readonly plan: ActionPlan<Args, Ending, Reaction>,
-    ...args: Args
-  ) {
-    this.args = args;
-  }
+    readonly args: Args,
+    readonly performer: Performer = ACTOR
+  ) {}
   act() {
-    return [performPlan(this.plan, ...this.args)] as const;
+    return [directPlan(this.plan, this.args, this.performer)] as const;
   }
 }
 
@@ -81,7 +81,12 @@ export function* backgroundAllPlans<Ending, Reaction>(
 }
 
 /** Background sequences returning promises */
-export const backgroundPlan = planOfAction(BackgroundPlan);
+export const backgroundPlan = function* <Args extends any[], Ending, Reaction>(
+  plan: ActionPlan<Args, Ending, Reaction>,
+  ...args: Args
+): ActionSequence<BackgroundEnding<Ending>, BackgroundEnding<Ending>> {
+  return yield new BackgroundPlan(plan, args);
+};
 
 /** Block on promises. */
 export const wait = planOfAction(Wait);

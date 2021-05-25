@@ -28,11 +28,15 @@ export const call = planOfAction(Call);
 export function planOfAction<Args extends any[], Ending>(
   actionClass: ActionClass<Args, Ending>
 ): ActionPlan<Args, Ending, Ending> {
-  return function* (...actionParams: Args) {
-    const action = new actionClass(...actionParams);
-    const result: Ending = yield action;
-    return result;
-  };
+  const planName = `plan${actionClass.name}`;
+  const nameWrapper = {
+    [planName]: function* (...actionParams: Args) {
+      const action = new actionClass(...actionParams);
+      const result: Ending = yield action;
+      return result;
+    },
+  } as const;
+  return nameWrapper[planName]!;
 }
 
 export function planOfFunction<Args extends any[], Reaction>(

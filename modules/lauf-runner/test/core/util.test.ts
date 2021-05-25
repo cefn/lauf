@@ -8,6 +8,7 @@ import {
   Call,
   call,
   planOfFunction,
+  EXPIRY,
 } from "@lauf/lauf-runner";
 
 describe("Define, run and regression test simple plan", () => {
@@ -22,31 +23,33 @@ describe("Define, run and regression test simple plan", () => {
 
   test("Run plan", async () => {
     const totalMs = await performPlan(plan);
-    expect(totalMs).toBeGreaterThan(3);
+    expect(totalMs).toBeGreaterThan(2); //explicit delays are 0, 1, 2
   });
 
-  test("Regression-test plan", async () => {
+  test("Regression-test plan, mocking delays", async () => {
     let step;
     const sequence = plan();
 
     step = sequence.next();
     assert(step.done === false);
-    expect(step.value).toBeInstanceOf(Expire);
+    assert(step.value instanceof Expire);
     expect((step.value as Expire).ms).toBe(0);
 
-    step = sequence.next();
+    step = sequence.next(EXPIRY);
     assert(step.done === false);
     expect(step.value).toBeInstanceOf(Expire);
     expect((step.value as Expire).ms).toBe(1);
 
-    step = sequence.next();
+    step = sequence.next(EXPIRY);
     assert(step.done === false);
     expect(step.value).toBeInstanceOf(Expire);
     expect((step.value as Expire).ms).toBe(2);
 
-    step = sequence.next();
+    step = sequence.next(EXPIRY);
     assert(step.done === true);
     expect(typeof step.value).toBe("number");
+    //accelerated run with no delays
+    expect(step.value).toBeLessThan(3);
   });
 });
 

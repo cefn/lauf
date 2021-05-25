@@ -1,5 +1,4 @@
 import { BasicMessageQueue, MessageQueue } from "@lauf/lauf-queue";
-import { StorePlans, QueuePlans } from "@lauf/lauf-runner-primitives";
 import { BasicStore, Immutable, Selector, Store } from "@lauf/lauf-store";
 
 /** GAME STATE */
@@ -7,8 +6,7 @@ import { BasicStore, Immutable, Selector, Store } from "@lauf/lauf-store";
 export type AppModel = {
   gameStore: Store<GameState>;
   inputQueue: MessageQueue<DirectionInput>;
-} & StorePlans<GameState> &
-  QueuePlans<DirectionInput>;
+};
 
 export interface GameState {
   length: number;
@@ -21,21 +19,6 @@ export interface GameState {
 export interface Segment {
   pos: Vector;
   direction: Direction;
-}
-
-export function createAppModel(): AppModel {
-  const gameStore = new BasicStore<GameState>(INITIAL_STATE);
-  const inputQueue = new BasicMessageQueue<[Direction, boolean]>();
-
-  const storePlans = new StorePlans<GameState>(gameStore);
-  const queuePlans = new QueuePlans<[Direction, boolean]>(inputQueue);
-
-  return {
-    inputQueue,
-    gameStore,
-    ...storePlans,
-    ...queuePlans,
-  };
 }
 
 export const INITIAL_STATE: Immutable<GameState> = {
@@ -85,8 +68,7 @@ export const GRID_DIGITS = Array.from(
 ) as ReadonlyArray<number>;
 
 /** DIRECTION VECTORS */
-//TODO make readonly
-export type Vector = readonly [number, number];
+export type Vector = [number, number];
 
 export const LEFT = [-1, 0] as const;
 export const UP = [0, 1] as const;
