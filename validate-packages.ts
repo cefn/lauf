@@ -1,4 +1,12 @@
 #!/usr/bin/env -S npx ts-node
+/**
+ * An example of running this script surgically to fix just one property...
+ * npx ./validate-packages.ts
+ * ...will report on all errors and warnings...
+ * npx ./validate-packages.ts --filterPropertyPaths=publishConfig --strategy=dryRun
+ * ...to report errors for a specific property before force-fixing, then use the fixErrors strategy
+ * npx ./validate-packages.ts --filterPropertyPaths=publishConfig --strategy=fixErrors
+ */
 import assert from "assert";
 import fs from "fs";
 import glob from "glob";
@@ -70,6 +78,14 @@ const RULES: ReadonlyArray<PackageJsonRule> = [
   {
     path: "private",
     expected: undefined,
+    packagePaths: "modules/*/package.json",
+    status: "error",
+  },
+  {
+    path: "publishConfig",
+    expected: {
+      access: "public",
+    },
     packagePaths: "modules/*/package.json",
     status: "error",
   },
@@ -172,7 +188,9 @@ for (const packageJsonPath of packageJsonPaths) {
       }
       const message = `${violationColor(
         status.toUpperCase()
-      )} ${path} was '${chalk.red(actual)}' not '${chalk.green(expected)}'`;
+      )} ${path} was '${chalk.red(actual)}' not '${chalk.green(
+        JSON.stringify(expected)
+      )}'`;
       //check strategy, possibly skip fix depending on rule status
       if (
         (status === "error" && ["dryRun"].includes(strategy)) ||
@@ -197,7 +215,7 @@ for (const packageJsonPath of packageJsonPaths) {
       console.log(
         `${chalk.yellow(path)} ${chalk.red(actual)}${chalk.yellow(
           " not "
-        )}${chalk.green(expected)} (${
+        )}${chalk.green(JSON.stringify(expected))} (${
           fixed ? "FIXED" : `NOT FIXED (${strategy})`
         })`
       );
