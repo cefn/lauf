@@ -11,6 +11,11 @@ import chalk from "chalk";
 
 const RULES: ReadonlyArray<PackageJsonRule> = [
   {
+    path: "devDependencies.typescript",
+    expected: "^4.2.2",
+    status: "error",
+  },
+  {
     path: "scripts.test",
     expected: "jest",
     status: "warning",
@@ -51,8 +56,21 @@ const RULES: ReadonlyArray<PackageJsonRule> = [
     status: "error",
   },
   {
-    path: "devDependencies.typescript",
-    expected: "^4.2.2",
+    path: "private",
+    expected: true,
+    packagePaths: "apps/**",
+    status: "error",
+  },
+  {
+    path: "private",
+    expected: true,
+    packagePaths: "modules/draft/*/package.json",
+    status: "error",
+  },
+  {
+    path: "private",
+    expected: undefined,
+    packagePaths: "modules/*/package.json",
     status: "error",
   },
 ] as const;
@@ -82,21 +100,24 @@ const STATUSES = [
 
 type Status = typeof STATUSES[number];
 type Rule = typeof RULES[number];
+type Expected = true | string | object | RegExp | undefined;
 
 interface PackageJsonRule {
   /** The path to get/set within package.json (lodash) */
   path: string;
   /** The value or pattern expected at that path */
-  expected: string | object | RegExp | undefined;
+  expected: Expected;
   /** A minimatch filter limiting this rule to certain packages */
   packagePaths?: string;
   /** Whether this should count as a warning, error */
   status: Status;
 }
 
-const packageJsonPaths = glob.sync("**/package.json", {
-  ignore: "**/node_modules/**/package.json",
-});
+const packageJsonPaths = glob
+  .sync("**/package.json", {
+    ignore: "**/node_modules/**/package.json",
+  })
+  .sort();
 
 let failed = false;
 
@@ -119,7 +140,7 @@ for (const packageJsonPath of packageJsonPaths) {
   //traverse package json tree, checking and (optionally) fixing
   type Violation = {
     actual: any;
-    expected: string | object | RegExp | undefined;
+    expected: Expected;
     fixed: boolean;
   };
   const found: Record<Rule["path"], Violation> = {};
@@ -182,6 +203,11 @@ for (const packageJsonPath of packageJsonPaths) {
       );
     }
   }
+
+  // const packageDir = dirname(packageJsonPath);
+  // const tsconfigBuildPath = `${packageDir}/tsconfig.build.json`;
+  // const tsconfigBuild = JSON.parse(fs.readFileSync(packageJsonPath).toString());
+  //Implement this using a `skel` folder instead
 
   if (rewritePackageJson) {
     fs.writeFileSync(packageJsonPath, JSON.stringify(packageJson, null, "  "));
