@@ -19,5 +19,10 @@
   "devDependencies": {
     "@types/styled-components": "^5.1.7",
     "typescript": "^4.2.2"
+  },
+  "homepage": "https://github.com/cefn/lauf#readme",
+  "bugs": {
+    "url": "https://github.com/cefn/lauf/issues",
+    "email": "lauf@cefn.com"
   }
 }

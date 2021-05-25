@@ -36,5 +36,10 @@
       "last 1 safari version"
     ]
   },
-  "private": true
+  "private": true,
+  "homepage": "https://github.com/cefn/lauf#readme",
+  "bugs": {
+    "url": "https://github.com/cefn/lauf/issues",
+    "email": "lauf@cefn.com"
+  }
 }

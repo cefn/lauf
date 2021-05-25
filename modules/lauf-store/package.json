@@ -24,5 +24,10 @@
   "gitHead": "03bd2f443dd739f47240c303214f24d611aa4ddc",
   "publishConfig": {
     "access": "public"
+  },
+  "homepage": "https://github.com/cefn/lauf#readme",
+  "bugs": {
+    "url": "https://github.com/cefn/lauf/issues",
+    "email": "lauf@cefn.com"
   }
 }

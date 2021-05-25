@@ -19,6 +19,19 @@ import chalk from "chalk";
 
 const RULES: ReadonlyArray<PackageJsonRule> = [
   {
+    path: "homepage",
+    expected: "https://github.com/cefn/lauf#readme",
+    status: "error",
+  },
+  {
+    path: "bugs",
+    expected: {
+      url: "https://github.com/cefn/lauf/issues",
+      email: "lauf@cefn.com",
+    },
+    status: "error",
+  },
+  {
     path: "devDependencies.typescript",
     expected: "^4.2.2",
     status: "error",

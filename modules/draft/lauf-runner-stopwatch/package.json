@@ -16,5 +16,10 @@
   "files": [
     "README.md",
     "dist"
-  ]
+  ],
+  "homepage": "https://github.com/cefn/lauf#readme",
+  "bugs": {
+    "url": "https://github.com/cefn/lauf/issues",
+    "email": "lauf@cefn.com"
+  }
 }
