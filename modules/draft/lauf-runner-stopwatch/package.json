@@ -1,6 +1,7 @@
 {
   "name": "@lauf/lauf-runner-stopwatch",
   "version": "0.1.0",
+  "private": true,
   "main": "dist/index.js",
   "license": "MIT",
   "scripts": {
