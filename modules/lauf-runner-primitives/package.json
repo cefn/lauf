@@ -1,6 +1,6 @@
 {
   "name": "@lauf/lauf-runner-primitives",
-  "version": "0.1.0-beta.4",
+  "version": "0.1.0-beta.5",
   "main": "dist/index.js",
   "license": "MIT",
   "scripts": {
@@ -17,9 +17,9 @@
     "dist"
   ],
   "dependencies": {
-    "@lauf/lauf-queue": "^0.1.0-beta.4",
-    "@lauf/lauf-runner": "^0.1.0-beta.3",
-    "@lauf/lauf-store": "^0.1.0-beta.4"
+    "@lauf/lauf-queue": "^0.1.0-beta.5",
+    "@lauf/lauf-runner": "^0.1.0-beta.5",
+    "@lauf/lauf-store": "^0.1.0-beta.5"
   },
   "gitHead": "03bd2f443dd739f47240c303214f24d611aa4ddc",
   "publishConfig": {
