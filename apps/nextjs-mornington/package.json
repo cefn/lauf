@@ -6,7 +6,7 @@
     "dev": "NODE_OPTIONS='--inspect' next dev",
     "build": "next build",
     "start": "next start",
-    "test": "jest --passWithNoTests",
+    "test": "jest",
     "check": "tsc --noEmit"
   },
   "dependencies": {
@@ -26,5 +26,7 @@
   "bugs": {
     "url": "https://github.com/cefn/lauf/issues",
     "email": "lauf@cefn.com"
-  }
+  },
+  "author": "Cefn Hoile <github.com@cefn.com> (https://cefn.com)",
+  "repository": "github:cefn/lauf"
 }

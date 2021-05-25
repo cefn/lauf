@@ -29,5 +29,7 @@
   "bugs": {
     "url": "https://github.com/cefn/lauf/issues",
     "email": "lauf@cefn.com"
-  }
+  },
+  "author": "Cefn Hoile <github.com@cefn.com> (https://cefn.com)",
+  "repository": "github:cefn/lauf"
 }

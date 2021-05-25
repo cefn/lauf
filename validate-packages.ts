@@ -24,6 +24,16 @@ const RULES: ReadonlyArray<PackageJsonRule> = [
     status: "error",
   },
   {
+    path: "author",
+    expected: "Cefn Hoile <github.com@cefn.com> (https://cefn.com)",
+    status: "error",
+  },
+  {
+    path: "repository",
+    expected: "github:cefn/lauf",
+    status: "error",
+  },
+  {
     path: "bugs",
     expected: {
       url: "https://github.com/cefn/lauf/issues",
@@ -49,6 +59,12 @@ const RULES: ReadonlyArray<PackageJsonRule> = [
   {
     path: "scripts.prepare",
     expected: "yarn run test && yarn run build",
+    packagePaths: "modules/**",
+    status: "error",
+  },
+  {
+    path: "license",
+    expected: "MIT",
     packagePaths: "modules/**",
     status: "error",
   },
