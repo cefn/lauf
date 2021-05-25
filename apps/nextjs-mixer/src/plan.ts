@@ -1,7 +1,7 @@
-import { BasicMessageQueue } from "@lauf/lauf-queue/src";
+import { BasicMessageQueue } from "@lauf/lauf-queue";
 import { edit, Receive, receive } from "@lauf/lauf-runner-primitives";
-import { ActionSequence, backgroundPlan } from "@lauf/lauf-runner/src";
-import { BasicStore, Immutable } from "@lauf/lauf-store/src";
+import { ActionSequence, backgroundPlan } from "@lauf/lauf-runner";
+import { BasicStore, Immutable } from "@lauf/lauf-store";
 
 import {
   AppModel,
