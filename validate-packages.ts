@@ -21,15 +21,20 @@ const RULES: ReadonlyArray<PackageJsonRule> = [
     status: "error",
   },
   {
-    path: "scripts.build",
-    expected: "tsc --build ./tsconfig.build.json",
+    path: "scripts.prepare",
+    expected: "yarn run test && yarn run build",
     packagePaths: "modules/**",
     status: "error",
   },
   {
     path: "scripts.beta",
-    expected:
-      "yarn run test && yarn run build && yarn publish --tag=beta --access=public",
+    expected: undefined,
+    packagePaths: "modules/**",
+    status: "error",
+  },
+  {
+    path: "scripts.build",
+    expected: "tsc --build ./tsconfig.build.json",
     packagePaths: "modules/**",
     status: "error",
   },
@@ -82,7 +87,7 @@ interface PackageJsonRule {
   /** The path to get/set within package.json (lodash) */
   path: string;
   /** The value or pattern expected at that path */
-  expected: string | object | RegExp;
+  expected: string | object | RegExp | undefined;
   /** A minimatch filter limiting this rule to certain packages */
   packagePaths?: string;
   /** Whether this should count as a warning, error */
@@ -114,7 +119,7 @@ for (const packageJsonPath of packageJsonPaths) {
   //traverse package json tree, checking and (optionally) fixing
   type Violation = {
     actual: any;
-    expected: string | object | RegExp;
+    expected: string | object | RegExp | undefined;
     fixed: boolean;
   };
   const found: Record<Rule["path"], Violation> = {};
