@@ -7,7 +7,7 @@
     "test": "jest",
     "check": "tsc --noEmit",
     "build": "tsc --build ./tsconfig.build.json",
-    "beta": "yarn run test && yarn run build && yarn publish --tag=beta --access=public"
+    "prepare": "yarn run test && yarn run build"
   },
   "devDependencies": {
     "typescript": "^4.2.2"
@@ -15,5 +15,10 @@
   "files": [
     "README.md",
     "dist"
-  ]
+  ],
+  "dependencies": {
+    "@lauf/lauf-queue": "^0.1.0-beta.1",
+    "@lauf/lauf-runner": "^0.1.0-beta.3",
+    "@lauf/lauf-store": "^0.1.0-beta.1"
+  }
 }
