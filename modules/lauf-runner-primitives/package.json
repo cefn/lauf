@@ -1,6 +1,6 @@
 {
   "name": "@lauf/lauf-runner-primitives",
-  "version": "0.1.0-beta.1",
+  "version": "0.1.0-beta.4",
   "main": "dist/index.js",
   "license": "MIT",
   "scripts": {
@@ -17,8 +17,8 @@
     "dist"
   ],
   "dependencies": {
-    "@lauf/lauf-queue": "^0.1.0-beta.1",
+    "@lauf/lauf-queue": "^0.1.0-beta.4",
     "@lauf/lauf-runner": "^0.1.0-beta.3",
-    "@lauf/lauf-store": "^0.1.0-beta.1"
+    "@lauf/lauf-store": "^0.1.0-beta.4"
   }
 }
