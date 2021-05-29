@@ -3,7 +3,7 @@ import Head from "next/head";
 import { useSelected } from "@lauf/lauf-store-react";
 
 import { AppModel, selectColor } from "./domain";
-import { performSequence } from "@lauf/lauf-runner/src";
+import { performSequence } from "@lauf/lauf-runner";
 import { mainPlan } from "./plan";
 
 export function ColorApp() {
