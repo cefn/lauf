@@ -7,12 +7,12 @@ export type ImmutableObject<T> = Readonly<
 >;
 
 export type Immutable<T> = T extends
-  | ((...args: any[]) => any)
   | string
   | number
   | boolean
   | null
   | undefined
+  | ((...args: any[]) => any)
   ? T
   : T extends any[] | object
   ? ImmutableObject<T>
