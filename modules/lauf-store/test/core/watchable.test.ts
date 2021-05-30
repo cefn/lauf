@@ -12,20 +12,22 @@ describe("BasicWatchable behaviour", () => {
     }
   }
 
-  test("Can watch BasicWatchable", () => {
+  test("Can watch BasicWatchable", async () => {
     const notifiable = new Notifiable<string>();
     const watcher = jest.fn();
     notifiable.watch(watcher);
     notifiable.doNotify("foo");
+    await Promise.resolve(); //wait one tick for notifications
     expect(watcher).toHaveBeenCalledWith("foo");
   });
 
-  test("Can unwatch BasicWatchable", () => {
+  test("Can unwatch BasicWatchable", async () => {
     const notifiable = new Notifiable<string>();
     const watcher = jest.fn();
     const unwatch = notifiable.watch(watcher);
     unwatch();
     notifiable.doNotify("foo");
+    await Promise.resolve(); //wait one tick for notifications
     expect(watcher).not.toHaveBeenCalled();
   });
 });
@@ -39,21 +41,24 @@ describe("BasicWatchableValue behaviour", () => {
     new BasicWatchableValue<Record<string, any>>({});
   });
 
-  test("Can watch BasicWatchableValue", () => {
+  test("Can watch BasicWatchableValue", async () => {
     const watchableValue = new BasicWatchableValue<string>("foo");
     const watcher = jest.fn();
     watchableValue.watch(watcher);
     watchableValue.write("bar");
+    await Promise.resolve(); //wait one tick for notifications
     expect(watcher).toHaveBeenCalledWith("bar");
   });
 
-  test("Can watch BasicWatchableValue from moment of construction", () => {
+  test("Can watch BasicWatchableValue from moment of construction", async () => {
     const watcher = jest.fn();
     const watchers = [watcher];
     const watchableValue = new BasicWatchableValue<string>("foo", watchers);
+    await Promise.resolve(); //wait one tick for notifications
     expect(watcher).toHaveBeenCalledWith("foo");
     watcher.mockClear();
     watchableValue.write("bar");
+    await Promise.resolve(); //wait one tick for notifications
     expect(watcher).toHaveBeenCalledWith("bar");
   });
 

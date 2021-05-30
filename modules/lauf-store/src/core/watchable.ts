@@ -5,8 +5,10 @@ export class BasicWatchable<Value> implements Watchable<Value> {
   constructor(watchers: ReadonlyArray<Watcher<Value>> = []) {
     this.watchers = watchers;
   }
-  protected notify = (item: Value) => {
-    for (const watcher of this.watchers) {
+  protected notify = async (item: Value) => {
+    const watchers = this.watchers;
+    await Promise.resolve();
+    for (const watcher of watchers) {
       watcher(item);
     }
   };
