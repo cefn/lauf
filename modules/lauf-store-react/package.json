@@ -1,6 +1,6 @@
 {
   "name": "@lauf/lauf-store-react",
-  "version": "0.1.0-beta.8",
+  "version": "0.1.0-beta.9",
   "main": "dist/index.js",
   "files": [
     "README.md",
@@ -14,7 +14,7 @@
     "prepare": "yarn run test && yarn run build"
   },
   "dependencies": {
-    "@lauf/lauf-store": "^0.1.0-beta.8"
+    "@lauf/lauf-store": "^0.1.0-beta.9"
   },
   "peerDependencies": {
     "react": "^17.0.1"
