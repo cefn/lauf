@@ -13,7 +13,7 @@ import {
 describe("Define, run and regression test simple plan", () => {
   const plan: ActionPlan<[], number, Expiry> = function* () {
     const beforeMs = new Date().getTime();
-    for (let i = 0; i < 3; i++) {
+    for (let i = 0; i < 4; i++) {
       yield* expire(i);
     }
     const afterMs = new Date().getTime();
@@ -43,6 +43,11 @@ describe("Define, run and regression test simple plan", () => {
     assert(step.done === false);
     expect(step.value).toBeInstanceOf(Expire);
     expect((step.value as Expire).ms).toBe(2);
+
+    step = sequence.next();
+    assert(step.done === false);
+    expect(step.value).toBeInstanceOf(Expire);
+    expect((step.value as Expire).ms).toBe(3);
 
     step = sequence.next();
     assert(step.done === true);

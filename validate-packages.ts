@@ -17,10 +17,25 @@ import lodashGet from "lodash/get";
 import lodashSet from "lodash/set";
 import chalk from "chalk";
 
+type ExpectedValueFactory = (options: {
+  packageJsonPath: string;
+  packageJson: { name: string };
+}) => string;
+
 const RULES: ReadonlyArray<PackageJsonRule> = [
   {
     path: "homepage",
+    expected: ({ packageJson: { name } }) => {
+      const moduleName = name.replace("@lauf/", "");
+      return `https://github.com/cefn/lauf/tree/main/modules/${moduleName}#readme`;
+    },
+    packagePaths: "modules/**",
+    status: "error",
+  },
+  {
+    path: "homepage",
     expected: "https://github.com/cefn/lauf#readme",
+    packagePaths: "apps/**",
     status: "error",
   },
   {
@@ -145,7 +160,13 @@ const STATUSES = [
 
 type Status = typeof STATUSES[number];
 type Rule = typeof RULES[number];
-type Expected = true | string | object | RegExp | undefined;
+type Expected =
+  | true
+  | string
+  | object
+  | RegExp
+  | ExpectedValueFactory
+  | undefined;
 
 interface PackageJsonRule {
   /** The path to get/set within package.json (lodash) */
@@ -184,8 +205,8 @@ for (const packageJsonPath of packageJsonPaths) {
 
   //traverse package json tree, checking and (optionally) fixing
   type Violation = {
-    actual: any;
-    expected: Expected;
+    actualValue: any;
+    expectedValue: Expected;
     fixed: boolean;
   };
   const found: Record<Rule["path"], Violation> = {};
@@ -203,8 +224,13 @@ for (const packageJsonPath of packageJsonPaths) {
       }
     }
 
-    const actual = lodashGet(packageJson, path) as string;
-    if (!isDeepStrictEqual(actual, expected)) {
+    const expectedValue =
+      typeof expected === "function"
+        ? expected({ packageJson, packageJsonPath })
+        : expected;
+
+    const actualValue = lodashGet(packageJson, path) as string;
+    if (!isDeepStrictEqual(actualValue, expectedValue)) {
       //record violation
       let violationColor: typeof chalk.redBright = chalk.redBright;
       if (status === "error") {
@@ -217,8 +243,8 @@ for (const packageJsonPath of packageJsonPaths) {
       }
       const message = `${violationColor(
         status.toUpperCase()
-      )} ${path} was '${chalk.red(actual)}' not '${chalk.green(
-        JSON.stringify(expected)
+      )} ${path} was '${chalk.red(actualValue)}' not '${chalk.green(
+        JSON.stringify(expectedValue)
       )}'`;
       //check strategy, possibly skip fix depending on rule status
       if (
@@ -226,13 +252,13 @@ for (const packageJsonPath of packageJsonPaths) {
         (status === "warning" && ["dryRun", "fixWarnings"].includes(strategy))
       ) {
         //skip the fix
-        found[path] = { actual, expected, fixed: false };
+        found[path] = { actualValue, expectedValue, fixed: false };
         continue;
       } else {
         //proceed with fix
-        found[path] = { actual, expected, fixed: true };
+        found[path] = { actualValue, expectedValue, fixed: true };
         console.log(`${message} FIXED`);
-        lodashSet(packageJson, path, expected);
+        lodashSet(packageJson, path, expectedValue);
         rewritePackageJson = true;
       }
     }
@@ -240,11 +266,14 @@ for (const packageJsonPath of packageJsonPaths) {
 
   if (Object.entries(found).length > 0) {
     console.log(`${packageJson.name} (${chalk.gray(packageJsonPath)})`);
-    for (const [path, { actual, expected, fixed }] of Object.entries(found)) {
+    for (const [
+      path,
+      { actualValue: actual, expectedValue, fixed },
+    ] of Object.entries(found)) {
       console.log(
         `${chalk.yellow(path)} ${chalk.red(actual)}${chalk.yellow(
           " not "
-        )}${chalk.green(JSON.stringify(expected))} (${
+        )}${chalk.green(JSON.stringify(expectedValue))} (${
           fixed ? "FIXED" : `NOT FIXED (${strategy})`
         })`
       );
