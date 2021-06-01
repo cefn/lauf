@@ -17,7 +17,8 @@
     "check": "lerna run check",
     "check:changed": "lerna run --since origin/main --include-dependents check",
     "check:lauf": "lerna run --scope '@lauf/*' check",
-    "validate": "npx ts-node ./validate-packages.ts"
+    "validate": "ts-node ./validate-packages.ts",
+    "release": "lerna publish"
   },
   "devDependencies": {
     "@babel/core": "^7.13.8",

@@ -7,7 +7,7 @@ export class BasicWatchable<Value> implements Watchable<Value> {
   }
   protected notify = async (item: Value) => {
     const watchers = this.watchers;
-    await Promise.resolve();
+    await Promise.resolve(); //equivalent to queueMicrotask()
     for (const watcher of watchers) {
       watcher(item);
     }
