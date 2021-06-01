@@ -5,15 +5,6 @@ import { useSelected } from "@lauf/lauf-store-react";
 import { AppState, INITIAL_STATE, RED, GREEN, BLUE } from "./state";
 import { decreaseColor, increaseColor } from "./change";
 
-export function ColorApp() {
-  const [colorStore] = useState(() => new BasicStore<AppState>(INITIAL_STATE));
-  return process.browser ? (
-    <ColorMixer {...{ colorStore }} />
-  ) : (
-    <p>Loading...</p>
-  );
-}
-
 export const ColorMixer: FC<{ colorStore: Store<AppState> }> = ({
   colorStore
 }) => {
@@ -48,7 +39,8 @@ export const ColorMixer: FC<{ colorStore: Store<AppState> }> = ({
       document.addEventListener("keydown", keyListener);
       return () => document.removeEventListener("keydown", keyListener);
     }
-  }, []);
+    return undefined;
+  }, [colorStore]);
 
   return (
     <>
@@ -85,3 +77,12 @@ export const ColorMixer: FC<{ colorStore: Store<AppState> }> = ({
     </>
   );
 };
+
+export function ColorApp() {
+  const [colorStore] = useState(() => new BasicStore<AppState>(INITIAL_STATE));
+  return process.browser ? (
+    <ColorMixer {...{ colorStore }} />
+  ) : (
+    <p>Loading...</p>
+  );
+}

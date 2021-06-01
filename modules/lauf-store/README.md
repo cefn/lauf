@@ -23,7 +23,7 @@ const store = new BasicStore<AppState>({
 });
 
 //watch for changes
-store.watch(console.log);
+store.watch((state) => console.log(state));
 
 //Make the color red - this will automatically call console.log with your updated app state
 store.edit((draft) => {
@@ -31,6 +31,6 @@ store.edit((draft) => {
 });
 ```
 
-Visit [@lauf/lauf-store-react](https://github.com/cefn/lauf/tree/main/modules/lauf-store-react) to see how to refresh React components when only a selected part of your state changes.
+Visit [@lauf/lauf-store-react](https://github.com/cefn/lauf/tree/main/modules/lauf-store-react) to learn about useSelected() which can refresh React components when only a selected part of your state changes.
 
 For example, an RGB color state like the one shown above is demonstrated in our Reactive NextJS [ColorMixer](../../apps/nextjs-mixer) Single Page App.

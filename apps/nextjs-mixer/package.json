@@ -25,7 +25,8 @@
   "eslintConfig": {
     "rules": {
       "@typescript-eslint/explicit-module-boundary-types": "off",
-      "no-param-reassign": "off"
+      "no-param-reassign": "off",
+      "react/prop-types": "off"
     }
   },
   "homepage": "https://github.com/cefn/lauf#readme",
