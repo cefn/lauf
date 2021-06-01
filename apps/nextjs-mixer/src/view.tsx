@@ -1,54 +1,47 @@
-import React, { useEffect, useState } from "react";
+import React, { FC, useEffect, useState } from "react";
 import Head from "next/head";
+import { BasicStore, Store } from "@lauf/lauf-store/src";
 import { useSelected } from "@lauf/lauf-store-react";
-
-import { AppModel, selectColor } from "./domain";
-import { performSequence } from "@lauf/lauf-runner";
-import { mainPlan } from "./plan";
+import { AppState, INITIAL_STATE, RED, GREEN, BLUE } from "./state";
+import { decreaseColor, increaseColor } from "./change";
 
 export function ColorApp() {
-  const [appModel, setAppModel] = useState<AppModel>();
-  useEffect(() => {
-    //only launch when client-side
-    if (process.browser) {
-      (async () => {
-        //launch then bind model
-        const appModel = await performSequence(mainPlan());
-        setAppModel(appModel);
-      })();
-    }
-  }, []);
-  return appModel ? <ColorMixer {...appModel} /> : <p>Loading...</p>;
+  const [colorStore] = useState(() => new BasicStore<AppState>(INITIAL_STATE));
+  return process.browser ? (
+    <ColorMixer {...{ colorStore }} />
+  ) : (
+    <p>Loading...</p>
+  );
 }
 
-export function ColorMixer({
-  colorStore,
-  increaseColor,
-  decreaseColor,
-}: AppModel) {
-  const [red, green, blue] = useSelected(colorStore, selectColor);
+export const ColorMixer: FC<{ colorStore: Store<AppState> }> = ({
+  colorStore
+}) => {
+  const [red, green, blue] = useSelected(colorStore, (state) => state.color);
 
   useEffect(() => {
     if (process.browser) {
       const keyListener = ({ code }: KeyboardEvent) => {
         switch (code) {
           case "KeyR":
-            increaseColor("RED");
+            increaseColor(colorStore, RED);
             break;
           case "KeyG":
-            increaseColor("GREEN");
+            increaseColor(colorStore, GREEN);
             break;
           case "KeyB":
-            increaseColor("BLUE");
+            increaseColor(colorStore, BLUE);
             break;
           case "KeyE":
-            decreaseColor("RED");
+            decreaseColor(colorStore, RED);
             break;
           case "KeyF":
-            decreaseColor("GREEN");
+            decreaseColor(colorStore, GREEN);
             break;
           case "KeyV":
-            decreaseColor("BLUE");
+            decreaseColor(colorStore, BLUE);
+            break;
+          default:
             break;
         }
       };
@@ -79,7 +72,7 @@ export function ColorMixer({
       <div
         style={{
           fontFamily: "sans-serif",
-          color: `rgb(${255 - red},${255 - green},${255 - blue})`,
+          color: `rgb(${255 - red},${255 - green},${255 - blue})`
         }}
       >
         <h1>Keyboard Shortcuts</h1>
@@ -91,4 +84,4 @@ export function ColorMixer({
       </div>
     </>
   );
-}
+};
