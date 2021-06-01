@@ -20,7 +20,7 @@
   "publishConfig": {
     "access": "public"
   },
-  "homepage": "https://github.com/cefn/lauf#readme",
+  "homepage": "https://github.com/cefn/lauf/tree/main/modules/lauf-lock#readme",
   "bugs": {
     "url": "https://github.com/cefn/lauf/issues",
     "email": "lauf@cefn.com"
