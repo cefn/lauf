@@ -39,6 +39,44 @@ const RULES: ReadonlyArray<PackageJsonRule> = [
     status: "error",
   },
   {
+    path: "eslintConfig",
+    expected: {
+      ignorePatterns: ["dist/**"],
+      rules: {
+        "no-param-reassign": [
+          "error",
+          {
+            props: true,
+            ignorePropertyModificationsFor: ["draft"],
+          },
+        ],
+        "no-restricted-syntax": [
+          "error",
+          "ForInStatement",
+          "LabeledStatement",
+          "WithStatement",
+        ],
+        "no-void": [
+          "error",
+          {
+            allowAsStatement: true,
+          },
+        ],
+        "@typescript-eslint/no-unused-vars": [
+          "error",
+          {
+            varsIgnorePattern: "^_",
+          },
+        ],
+        "import/prefer-default-export": "off",
+        "@typescript-eslint/explicit-module-boundary-types": "off",
+        "@typescript-eslint/explicit-function-return-type": "off",
+        "react/prop-types": "off",
+      },
+    },
+    status: "error",
+  },
+  {
     path: "author",
     expected: "Cefn Hoile <github.com@cefn.com> (https://cefn.com)",
     status: "error",
@@ -154,8 +192,8 @@ const { strategy, filterPackagePaths, filterPropertyPaths } = yargs
   .alias("help", "h").argv;
 
 const STATUSES = [
-  "warning", //report violation
-  "error", //fail on violation
+  "warning", // report violation
+  "error", // fail on violation
 ] as const;
 
 type Status = typeof STATUSES[number];
@@ -163,6 +201,7 @@ type Rule = typeof RULES[number];
 type Expected =
   | true
   | string
+  // eslint-disable-next-line @typescript-eslint/ban-types
   | object
   | RegExp
   | ExpectedValueFactory
