@@ -23,5 +23,43 @@
     "email": "lauf@cefn.com"
   },
   "author": "Cefn Hoile <github.com@cefn.com> (https://cefn.com)",
-  "repository": "github:cefn/lauf"
+  "repository": "github:cefn/lauf",
+  "eslintConfig": {
+    "ignorePatterns": [
+      "dist/**"
+    ],
+    "rules": {
+      "no-param-reassign": [
+        "error",
+        {
+          "props": true,
+          "ignorePropertyModificationsFor": [
+            "draft"
+          ]
+        }
+      ],
+      "no-restricted-syntax": [
+        "error",
+        "ForInStatement",
+        "LabeledStatement",
+        "WithStatement"
+      ],
+      "no-void": [
+        "error",
+        {
+          "allowAsStatement": true
+        }
+      ],
+      "@typescript-eslint/no-unused-vars": [
+        "error",
+        {
+          "varsIgnorePattern": "^_"
+        }
+      ],
+      "import/prefer-default-export": "off",
+      "@typescript-eslint/explicit-module-boundary-types": "off",
+      "@typescript-eslint/explicit-function-return-type": "off",
+      "react/prop-types": "off"
+    }
+  }
 }
