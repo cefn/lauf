@@ -1,4 +1,4 @@
-export type Watcher<T> = (item: T) => any;
+export type Watcher<T> = (item: T) => unknown;
 
 export type Unwatch = () => void;
 

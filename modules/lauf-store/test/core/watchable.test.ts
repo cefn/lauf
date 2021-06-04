@@ -3,13 +3,13 @@ import { BasicWatchableValue } from "../../src/core/watchableValue";
 
 describe("BasicWatchable behaviour", () => {
   test("Can create BasicWatchable", () => {
-    new BasicWatchable();
+    expect(new BasicWatchable()).toBeDefined();
   });
 
   /** Expose protected notify() for testing */
   class Notifiable<T> extends BasicWatchable<T> {
-    public doNotify(item: T) {
-      return this.notify(item);
+    public async doNotify(item: T) {
+      return await this.notify(item);
     }
   }
 
@@ -17,8 +17,8 @@ describe("BasicWatchable behaviour", () => {
     const notifiable = new Notifiable<string>();
     const watcher = jest.fn();
     notifiable.watch(watcher);
-    notifiable.doNotify("foo");
-    await Promise.resolve(); //wait one tick for notifications
+    void notifiable.doNotify("foo");
+    await Promise.resolve(); // wait one tick for notifications
     expect(watcher).toHaveBeenCalledWith("foo");
   });
 
@@ -27,19 +27,19 @@ describe("BasicWatchable behaviour", () => {
     const watcher = jest.fn();
     const unwatch = notifiable.watch(watcher);
     unwatch();
-    notifiable.doNotify("foo");
-    await Promise.resolve(); //wait one tick for notifications
+    void notifiable.doNotify("foo");
+    await Promise.resolve(); // wait one tick for notifications
     expect(watcher).not.toHaveBeenCalled();
   });
 });
 
 describe("BasicWatchableValue behaviour", () => {
   test("Can create BasicWatchableValue", () => {
-    new BasicWatchableValue<string>("foo");
-    new BasicWatchableValue<number>(3);
-    new BasicWatchableValue<boolean>(true);
-    new BasicWatchableValue<Array<any>>([]);
-    new BasicWatchableValue<Record<string, any>>({});
+    expect(new BasicWatchableValue<string>("foo")).toBeDefined();
+    expect(new BasicWatchableValue<number>(3)).toBeDefined();
+    expect(new BasicWatchableValue<boolean>(true)).toBeDefined();
+    expect(new BasicWatchableValue<unknown[]>([])).toBeDefined();
+    expect(new BasicWatchableValue<Record<string, unknown>>({})).toBeDefined();
   });
 
   test("Can watch BasicWatchableValue", async () => {
@@ -47,7 +47,7 @@ describe("BasicWatchableValue behaviour", () => {
     const watcher = jest.fn();
     watchableValue.watch(watcher);
     watchableValue.write("bar");
-    await Promise.resolve(); //wait one tick for notifications
+    await Promise.resolve(); // wait one tick for notifications
     expect(watcher).toHaveBeenCalledWith("bar");
   });
 
@@ -55,11 +55,11 @@ describe("BasicWatchableValue behaviour", () => {
     const watcher = jest.fn();
     const watchers = [watcher];
     const watchableValue = new BasicWatchableValue<string>("foo", watchers);
-    await Promise.resolve(); //wait one tick for notifications
+    await Promise.resolve(); // wait one tick for notifications
     expect(watcher).toHaveBeenCalledWith("foo");
     watcher.mockClear();
     watchableValue.write("bar");
-    await Promise.resolve(); //wait one tick for notifications
+    await Promise.resolve(); // wait one tick for notifications
     expect(watcher).toHaveBeenCalledWith("bar");
   });
 

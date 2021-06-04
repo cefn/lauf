@@ -50,15 +50,21 @@
         "LabeledStatement",
         "WithStatement"
       ],
-      "@typescript-eslint/ban-types": [
+      "no-void": [
         "error",
         {
-          "types": {},
-          "extendDefaults": true
+          "allowAsStatement": true
+        }
+      ],
+      "@typescript-eslint/no-unused-vars": [
+        "error",
+        {
+          "varsIgnorePattern": "^_"
         }
       ],
       "import/prefer-default-export": "off",
       "@typescript-eslint/explicit-module-boundary-types": "off",
+      "@typescript-eslint/explicit-function-return-type": "off",
       "react/prop-types": "off"
     }
   }

@@ -5,13 +5,15 @@ export class BasicWatchable<Value> implements Watchable<Value> {
   constructor(watchers: ReadonlyArray<Watcher<Value>> = []) {
     this.watchers = watchers;
   }
+
   protected notify = async (item: Value) => {
     const watchers = this.watchers;
-    await Promise.resolve(); //equivalent to queueMicrotask()
+    await Promise.resolve(); // equivalent to queueMicrotask()
     for (const watcher of watchers) {
       watcher(item);
     }
   };
+
   watch = (watcher: Watcher<Value>) => {
     this.watchers = [...this.watchers, watcher];
     return () => {

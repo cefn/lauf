@@ -6,15 +6,16 @@ export type ImmutableObject<T> = Readonly<
   }
 >;
 
+/* eslint-disable @typescript-eslint/ban-types */
 export type Immutable<T> = T extends
   | string
   | number
   | boolean
   | null
   | undefined
-  | ((...args: any[]) => any)
+  | ((...args: unknown[]) => unknown)
   ? T
-  : T extends any[] | object
+  : T extends unknown[] | object
   ? ImmutableObject<T>
   : never;
 
