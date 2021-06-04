@@ -14,9 +14,7 @@
     "prepare": "yarn run test && yarn run build"
   },
   "dependencies": {
-    "immer": "^8.0.1",
-    "lodash.get": "^4.4.2",
-    "lodash.set": "^4.3.2"
+    "immer": "^8.0.1"
   },
   "devDependencies": {
     "typescript": "^4.2.2"
@@ -31,5 +29,37 @@
     "email": "lauf@cefn.com"
   },
   "author": "Cefn Hoile <github.com@cefn.com> (https://cefn.com)",
-  "repository": "github:cefn/lauf"
+  "repository": "github:cefn/lauf",
+  "eslintConfig": {
+    "ignorePatterns": [
+      "dist/**"
+    ],
+    "rules": {
+      "no-param-reassign": [
+        "error",
+        {
+          "props": true,
+          "ignorePropertyModificationsFor": [
+            "draft"
+          ]
+        }
+      ],
+      "no-restricted-syntax": [
+        "error",
+        "ForInStatement",
+        "LabeledStatement",
+        "WithStatement"
+      ],
+      "@typescript-eslint/ban-types": [
+        "error",
+        {
+          "types": {},
+          "extendDefaults": true
+        }
+      ],
+      "import/prefer-default-export": "off",
+      "@typescript-eslint/explicit-module-boundary-types": "off",
+      "react/prop-types": "off"
+    }
+  }
 }

@@ -1,4 +1,5 @@
-import { BasicWatchable, BasicWatchableValue } from "@lauf/lauf-store";
+import { BasicWatchable } from "../../src/core/watchable";
+import { BasicWatchableValue } from "../../src/core/watchableValue";
 
 describe("BasicWatchable behaviour", () => {
   test("Can create BasicWatchable", () => {

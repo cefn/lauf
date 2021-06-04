@@ -1,23 +1,6 @@
-import type { Selector, Store } from "../types";
-import type { Editor, Immutable } from "../types/immutable";
-import { BasicWatchable, BasicWatchableValue } from "./watchable";
-import { castDraft, Draft, produce } from "immer";
-
-export class BasicStore<State extends object>
-  extends BasicWatchableValue<Immutable<State>>
-  implements Store<State> {
-  edit = (editor: Editor<State>) => {
-    const nextState = (produce<Immutable<State>>(
-      this.read(),
-      editor
-    ) as unknown) as Immutable<State>;
-    return this.write(nextState);
-  };
-  select = <Selected>(selector: Selector<State, Selected>) => {
-    return selector(this.read());
-  };
-  partition = (key: keyof State) => new BasicStorePartition(this, key);
-}
+import { castDraft, Draft } from "immer";
+import { Editor, Immutable, Selector, Store } from "../types";
+import { BasicWatchable } from "./watchable";
 
 export class BasicStorePartition<
     State extends object,
