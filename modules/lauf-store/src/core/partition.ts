@@ -1,6 +1,5 @@
 import { castDraft, Draft } from "immer";
-import { RootState } from ".";
-import { Editor, Immutable, Selector, Store } from "../types";
+import { Editor, Immutable, RootState, Selector, Store } from "../types";
 import { BasicWatchable } from "./watchable";
 
 export class BasicStorePartition<

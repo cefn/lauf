@@ -1,12 +1,10 @@
 import { produce } from "immer";
 import type { Selector, Store } from "../types";
-import type { Editor, Immutable } from "../types/immutable";
+import type { Editor, Immutable, RootState } from "../types/immutable";
 import { BasicStorePartition } from "./partition";
 import { BasicWatchableValue } from "./watchableValue";
 
 export { castDraft } from "immer";
-
-export type RootState = Record<string | number | symbol, unknown> | unknown[];
 
 export class BasicStore<State extends RootState>
   extends BasicWatchableValue<Immutable<State>>
