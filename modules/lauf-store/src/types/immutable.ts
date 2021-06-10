@@ -25,12 +25,10 @@ export type Immutable<T> = T extends
   ? ImmutableIndex<T>
   : never;
 
-/** Suitable state containers for a [[Store]],
- * for example Arrays, Tuples, Objects */
-export type RootState =
-  | unknown[]
-  | Record<string | number | symbol, unknown>
-  | ((...args: unknown[]) => unknown);
+/** Suitable state container for a [[Store]],
+ * Includes for example Arrays, Tuples, Objects, Functions */
+// eslint-disable-next-line @typescript-eslint/ban-types
+export type RootState = object;
 
 /** A [[RootState]] which can be partitioned into a child [[RootState]] by
  * `Key`.
