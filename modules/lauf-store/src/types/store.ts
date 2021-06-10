@@ -5,6 +5,19 @@ import { WatchableState } from "./watchable";
  * changed and monitored for changes to drive an app. Make a new `Store` by
  * calling [[createStore]] with an `initialState`.
  *
+ * ## Immutable State
+ *
+ * Never modifying the state tree
+ * means when the state or a [[Selector|selected]] branch of the state is the
+ * same ***item*** as before, it is guaranteed to contain all the same
+ * ***values*** as before.
+ *
+ * This guarantee enables Watchers, renderers like
+ * [[https://reactjs.org/|React]] and memoizers like
+ * [[https://github.com/reduxjs/reselect|Reselect]] to efficiently re-render or
+ * recompute ***only*** when changes to an item make it necessary - that is,
+ * when `Object.is(prevItem,nextItem)===false`.
+ *
  * ## Watching State
  *
  * Assigning a new `RootState` using [[Store.write]] notifies
@@ -14,29 +27,11 @@ import { WatchableState } from "./watchable";
  * ## Editing State
  *
  * Changes to state are normally 'drafted' by calling [[Store.edit]] and passing an
- * callback [[Editor]] function. The editor is passed a `draft` - a mutable
- * proxy of the Store's current `Immutable` `RootState`. Changes made to the
- * `draft` proxy within the editor are tracked. When it returns,
- * {@link https://immerjs.github.io/immer/ | Immer} efficiently composes a new [[Immutable]]
- * state to reflect the drafted changes, leaving the old state intact. The new
- * state is passed to [[Store.write]]. See [[Editor]] for more about
+ * callback [[Editor]] function. See [[Editor]] for more about
  * drafting.
  *
  * Alternatively you can construct a new `Immutable` value yourself, then
  * explicitly call [[Store.write]] to update the state.
- *
- * ## Immutable State
- *
- * Never modifying the state tree
- * means if the if the root or a [[Selector|selected]] branch of the tree is the
- * same ***item*** as before, it is guaranteed to contain all the same
- * ***values*** as before.
- *
- * This guarantee enables Watchers, renderers like
- * [[https://reactjs.org/|React]] and memoizers like
- * [[https://github.com/reduxjs/reselect|Reselect]] to efficiently re-render or
- * recompute ***only*** when changes to an item make it necessary - that is,
- * when `Object.is(prevItem,nextItem)===false`.
  *
  */
 export interface Store<State extends RootState>

@@ -1,8 +1,15 @@
 import { castDraft, Draft } from "immer";
-import { Editor, Immutable, RootState, Selector, Store } from "../types";
+import {
+  Editor,
+  Immutable,
+  PartitionableState,
+  RootState,
+  Selector,
+  Store,
+} from "../types";
 import { DefaultWatchable } from "./watchable";
 
-export class DefaultStorePartition<
+class DefaultStorePartition<
     State extends RootState,
     Key extends keyof State,
     SubState extends State[Key] & RootState
@@ -49,6 +56,15 @@ export class DefaultStorePartition<
   select = <Selected>(selector: Selector<SubState, Selected>) => {
     return selector(this.read());
   };
+}
 
-  partition = (key: keyof SubState) => new DefaultStorePartition(this, key);
+/** Provides a [[Store]] by tracking a child property of another store's
+ * [[RootState]]. See [[PartitionableState]] for more details.
+ *
+ */
+export function createStorePartition<
+  State extends PartitionableState<Key>,
+  Key extends keyof State
+>(store: Store<State>, key: Key): Store<State[Key]> {
+  return new DefaultStorePartition(store, key);
 }

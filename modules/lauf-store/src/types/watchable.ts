@@ -7,9 +7,10 @@ export type Unwatch = () => void;
 /** A subscribable object, accepts [[Watcher]] callbacks, sends notifications of
  * type T . */
 export interface Watchable<T> {
-  /** Subscribes `watcher` to receive notifications
+  /** Subscribes `watcher` to receive notifications.
    * @typeParam T The type of value notified.
    * @param watcher - The subscribed function.
+   * @returns - a callback for unsubscribing
    */
   watch: (watcher: Watcher<T>) => Unwatch;
 }
