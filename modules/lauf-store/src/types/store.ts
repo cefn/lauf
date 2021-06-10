@@ -1,5 +1,10 @@
-import type { Immutable, RootState, Editor } from "./immutable";
+/* eslint-disable @typescript-eslint/ban-types */
+import type { Immutable, Editor } from "./immutable";
 import { WatchableState } from "./watchable";
+
+/** Suitable state container for a [[Store]],
+ * Includes for example Arrays, Tuples, Objects, Functions */
+export type RootState = object;
 
 /** A `Store` keeps an Immutable [[RootState]] - any array, tuple or object - which can be
  * changed and monitored for changes to drive an app. Make a new `Store` by

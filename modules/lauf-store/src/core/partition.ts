@@ -3,57 +3,58 @@ import {
   Editor,
   Immutable,
   PartitionableState,
-  RootState,
   Selector,
   Store,
 } from "../types";
 import { DefaultWatchable } from "./watchable";
 
 class DefaultStorePartition<
-    State extends RootState,
-    Key extends keyof State,
-    SubState extends State[Key] & RootState
+    ParentState extends PartitionableState<Key>,
+    Key extends keyof ParentState
   >
-  extends DefaultWatchable<Immutable<SubState>>
-  implements Store<SubState> {
-  constructor(readonly store: Store<State>, readonly key: keyof State) {
+  extends DefaultWatchable<Immutable<ParentState[Key]>>
+  implements Store<ParentState[Key]> {
+  constructor(
+    readonly store: Store<ParentState>,
+    readonly key: keyof ParentState
+  ) {
     super();
     this.track();
   }
 
   private readonly track = () => {
-    let lastSubState: SubState | undefined;
+    let lastSubState: ParentState[Key] | undefined;
     this.store.watch((state) => {
       const subState = state[this.key];
       if (Object.is(subState, lastSubState)) {
         return;
       }
-      void this.notify(subState as Immutable<SubState>);
+      void this.notify(subState as Immutable<ParentState[Key]>);
     });
   };
 
   read = () => {
-    return (this.store.read()[this.key] as unknown) as Immutable<SubState>;
+    return this.store.read()[this.key] as Immutable<ParentState[Key]>;
   };
 
-  write = (state: Immutable<State[Key]>) => {
-    this.store.edit((draft: Draft<Immutable<State>>) => {
-      draft[this.key as keyof Draft<Immutable<State>>] = castDraft(state);
+  write = (state: Immutable<ParentState[Key]>) => {
+    this.store.edit((draft: Draft<Immutable<ParentState>>) => {
+      draft[this.key as keyof Draft<Immutable<ParentState>>] = castDraft(state);
     });
     return this.read();
   };
 
-  edit = (editor: Editor<SubState>) => {
+  edit = (editor: Editor<ParentState[Key]>) => {
     this.store.edit(
-      (draft: Draft<Immutable<State>>, toDraft: typeof castDraft) => {
-        const substate = draft[this.key as keyof Draft<Immutable<State>>];
-        editor(substate as Draft<Immutable<SubState>>, toDraft);
+      (draft: Draft<Immutable<ParentState>>, toDraft: typeof castDraft) => {
+        const substate = draft[this.key as keyof Draft<Immutable<ParentState>>];
+        editor(substate as Draft<Immutable<ParentState[Key]>>, toDraft);
       }
     );
     return this.read();
   };
 
-  select = <Selected>(selector: Selector<SubState, Selected>) => {
+  select = <Selected>(selector: Selector<ParentState[Key], Selected>) => {
     return selector(this.read());
   };
 }

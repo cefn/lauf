@@ -1,4 +1,6 @@
+/* eslint-disable @typescript-eslint/ban-types */
 import type { castDraft, Draft } from "immer";
+import { RootState } from "./store";
 
 /** Recursive implementation of `Readonly<T>`.
  *
@@ -13,22 +15,7 @@ import type { castDraft, Draft } from "immer";
  * `T`are omitted.
  *
  */
-export type Immutable<T> = T extends
-  | string
-  | number
-  | symbol
-  | boolean
-  | null
-  | undefined
-  ? T
-  : T extends RootState
-  ? ImmutableIndex<T>
-  : never;
-
-/** Suitable state container for a [[Store]],
- * Includes for example Arrays, Tuples, Objects, Functions */
-// eslint-disable-next-line @typescript-eslint/ban-types
-export type RootState = object;
+export type Immutable<T> = T extends object ? ImmutableIndex<T> : T;
 
 /** A [[RootState]] which can be partitioned into a child [[RootState]] by
  * `Key`.
@@ -48,7 +35,7 @@ export type PartitionableState<
 > = RootState & { [k in Key]: RootState };
 
 /** Recursive Readonly implementation for any [[RootState]] */
-type ImmutableIndex<T extends RootState> = Readonly<
+type ImmutableIndex<T> = Readonly<
   {
     [K in keyof T]: Immutable<T[K]>;
   }

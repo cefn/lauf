@@ -1,6 +1,6 @@
 import { castDraft, produce } from "immer";
-import type { Selector, Store } from "../types";
-import type { Editor, Immutable, RootState } from "../types/immutable";
+import type { RootState, Selector, Store } from "../types";
+import type { Editor, Immutable } from "../types/immutable";
 import { DefaultWatchableState } from "./watchableState";
 
 /** Reference implementation of Lauf [[Store]]  */
