@@ -1,42 +1,63 @@
 import type { Immutable, RootState, Editor } from "./immutable";
-import { WatchableValue } from "./watchable";
+import { WatchableState } from "./watchable";
 
-/** A `Store` keeps a [[RootState]] - any array, tuple or object- which can be
- * updated and monitored for updates to drive an app.
+/** A `Store` keeps an Immutable [[RootState]] - any array, tuple or object - which can be
+ * changed and monitored for changes to drive an app. Make a new `Store` by
+ * calling [[createStore]] with an `initialState`.
  *
- * The RootState is an [[Immutable]]. Instead of changing it, we always replace
- * it by a new state which includes the changes.
+ * ## Watching State
  *
- * For convenience, changes can be made to the state by calling [[Store.edit]]
- * and passing an [[Editor]] function. This function is called with a [[Draft]]
- * of the current state, and can use everyday 'mutable' javascript operations to
- * change it.
+ * Assigning a new `RootState` using [[Store.write]] notifies
+ * [[Watcher|Watchers]] previously subscribed using [[Store.watch]]. This
+ * mechanism ensures that app logic and renderers can track the latest state.
  *
- * When your Editor function returns,
- * {@link https://immerjs.github.io/immer/ | Immer}) [[Store.write|writes]]
- * a new Immutable state that incorporates only your newly changed values, with
- * replacements of any parent objects or arrays which referenced the previous
- * values them. Everything else is left alone.
+ * ## Editing State
  *
- * Every new state will be notified to the callbacks subscribed using
- * [[Store.watch]]). (see [[WatchableValue]] and [[Watcher]])
+ * Changes to state are normally 'drafted' by calling [[Store.edit]] and passing an
+ * callback [[Editor]] function. The editor is passed a `draft` - a mutable
+ * proxy of the Store's current `Immutable` `RootState`. Changes made to the
+ * `draft` proxy within the editor are tracked. When it returns,
+ * {@link https://immerjs.github.io/immer/ | Immer} efficiently composes a new [[Immutable]]
+ * state to reflect the drafted changes, leaving the old state intact. The new
+ * state is passed to [[Store.write]]. See [[Editor]] for more about
+ * drafting.
  *
- * Immutable state means references represent a permanent record of app state
- * transitions. If the new RootState or a [[Selector|selected]] part of the
- * state has the same identity as before, it therefore has the same value as
- * before. This enables renderers like [[https://reactjs.org/|React]] and
- * memoizers like [[https://github.com/reduxjs/reselect|Reselect]] to only
- * re-render or recompute when necessary.
+ * Alternatively you can construct a new `Immutable` value yourself, then
+ * explicitly call [[Store.write]] to update the state.
+ *
+ * ## Immutable State
+ *
+ * Never modifying the state tree
+ * means if the if the root or a [[Selector|selected]] branch of the tree is the
+ * same ***item*** as before, it is guaranteed to contain all the same
+ * ***values*** as before.
+ *
+ * This guarantee enables Watchers, renderers like
+ * [[https://reactjs.org/|React]] and memoizers like
+ * [[https://github.com/reduxjs/reselect|Reselect]] to efficiently re-render or
+ * recompute ***only*** when changes to an item make it necessary - that is,
+ * when `Object.is(prevItem,nextItem)===false`.
+ *
  */
 export interface Store<State extends RootState>
-  extends WatchableValue<Immutable<State>> {
-  /** Hello */
+  extends WatchableState<Immutable<State>> {
+  /** Accepts an [[Editor]] function which will be passed a `draft` of the
+   * current state. The function can manipulate the draft state using normal
+   * javascript assignments and operations. When it returns, a new Immutable
+   * state is passed to [[write]] which matches those changes.
+   * @param editor A function to draft the next state
+   * @returns The resulting new [[Immutable]] state. */
   edit: (editor: Editor<State>) => Immutable<State>;
-  /** Hmmm */
+
+  /** Derive some sub-part or computed value from the current state using a
+   * [[Selector]]. A bound method for convenience that is equivalent to
+   * `selector(store.read())`.
+   * @param selector A [[Selector]] which will be passed the current state.
+   * @returns The value extracted or computed by the selector.
+   */
   select: <Selected>(
     selector: Selector<State, Selected>
   ) => Immutable<Selected>;
-  // partition: (key: keyof State) => Store<State[typeof key]>;
 }
 
 /** Function deriving some sub-part or computed value from a [[RootState]]. */

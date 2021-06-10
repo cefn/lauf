@@ -1,6 +1,6 @@
 import { Watchable, Watcher } from "../types/watchable";
 
-export class BasicWatchable<Value> implements Watchable<Value> {
+export class DefaultWatchable<Value> implements Watchable<Value> {
   protected watchers: ReadonlyArray<Watcher<Value>>;
   constructor(watchers: ReadonlyArray<Watcher<Value>> = []) {
     this.watchers = watchers;

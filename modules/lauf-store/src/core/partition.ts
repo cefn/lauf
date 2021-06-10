@@ -1,13 +1,13 @@
 import { castDraft, Draft } from "immer";
 import { Editor, Immutable, RootState, Selector, Store } from "../types";
-import { BasicWatchable } from "./watchable";
+import { DefaultWatchable } from "./watchable";
 
-export class BasicStorePartition<
+export class DefaultStorePartition<
     State extends RootState,
     Key extends keyof State,
     SubState extends State[Key] & RootState
   >
-  extends BasicWatchable<Immutable<SubState>>
+  extends DefaultWatchable<Immutable<SubState>>
   implements Store<SubState> {
   constructor(readonly store: Store<State>, readonly key: keyof State) {
     super();
@@ -37,10 +37,12 @@ export class BasicStorePartition<
   };
 
   edit = (editor: Editor<SubState>) => {
-    this.store.edit((draft: Draft<Immutable<State>>) => {
-      const substate = draft[this.key as keyof Draft<Immutable<State>>];
-      editor(substate as Draft<Immutable<SubState>>);
-    });
+    this.store.edit(
+      (draft: Draft<Immutable<State>>, toDraft: typeof castDraft) => {
+        const substate = draft[this.key as keyof Draft<Immutable<State>>];
+        editor(substate as Draft<Immutable<SubState>>, toDraft);
+      }
+    );
     return this.read();
   };
 
@@ -48,5 +50,5 @@ export class BasicStorePartition<
     return selector(this.read());
   };
 
-  partition = (key: keyof SubState) => new BasicStorePartition(this, key);
+  partition = (key: keyof SubState) => new DefaultStorePartition(this, key);
 }

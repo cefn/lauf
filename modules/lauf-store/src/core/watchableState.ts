@@ -1,9 +1,9 @@
-import { WatchableValue, Watcher } from "../types";
-import { BasicWatchable } from "./watchable";
+import { WatchableState, Watcher } from "../types";
+import { DefaultWatchable } from "./watchable";
 
-export class BasicWatchableValue<Value>
-  extends BasicWatchable<Value>
-  implements WatchableValue<Value> {
+export class DefaultWatchableState<Value>
+  extends DefaultWatchable<Value>
+  implements WatchableState<Value> {
   protected value!: Value;
   constructor(value: Value, watchers?: ReadonlyArray<Watcher<Value>>) {
     super(watchers);
