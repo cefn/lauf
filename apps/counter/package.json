@@ -1,6 +1,6 @@
 {
   "name": "counter",
-  "version": "0.1.0-beta.12",
+  "version": "0.1.0-beta.13",
   "main": "index.js",
   "license": "MIT",
   "scripts": {
@@ -83,7 +83,7 @@
   "author": "Cefn Hoile <github.com@cefn.com> (https://cefn.com)",
   "repository": "github:cefn/lauf",
   "dependencies": {
-    "@lauf/lauf-store": "^0.1.0-beta.12",
-    "@lauf/lauf-store-react": "^0.1.0-beta.12"
+    "@lauf/lauf-store": "^0.1.0-beta.13",
+    "@lauf/lauf-store-react": "^0.1.0-beta.13"
   }
 }
