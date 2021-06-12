@@ -12,20 +12,25 @@ It is incredibly lightweight and suitable for adoption with almost any server-si
 A React binding is provided by the [@lauf/lauf-store-react](https://github.com/cefn/lauf/tree/main/modules/lauf-store-react) package, but in the simplest case you can define a new application state, track changes and make edits as below...
 
 ```typescript
-//Optionally use typescript to define a type for your Store
+import { createStore, Immutable } from "@lauf/lauf-store";
+
+// Define a type for your Store state
 export interface AppState {
   color: [number, number, number];
 }
 
-//Create the store
-const store = new BasicStore<AppState>({
+// Define a constant for the initial state
+const INITIAL_STATE: Immutable<AppState> = {
   color: [0, 0, 0],
-});
+} as const;
 
-//watch for changes
-store.watch((state) => console.log(state));
+// Create and initialize a store
+const store = createStore(INITIAL_STATE);
 
-//Change the color - this will automatically call console.log with your updated app state
+// Watch for changes
+store.watch(console.log);
+
+// Change the color - this will automatically call console.log and print the modified app state
 store.edit((draft) => {
   draft.color = [255, 0, 0];
 });

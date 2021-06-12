@@ -8,6 +8,7 @@ import {
 } from "../types";
 import { DefaultWatchable } from "./watchable";
 
+/** Utility class for partitioning of a Store. See [[createStorePartition]]. */
 class DefaultStorePartition<
     ParentState extends PartitionableState<Key>,
     Key extends keyof ParentState
