@@ -5,7 +5,7 @@ import {
   cutAfterReaction,
   ReactionCut,
 } from "@lauf/lauf-runner-trial";
-import { BasicStore, Immutable } from "@lauf/lauf-store";
+import { createStore, Immutable } from "@lauf/lauf-store";
 
 import {
   mainPlan,
@@ -23,18 +23,18 @@ describe("Plans", () => {
     }
 
     test("Posts retrieved, stored for initially-focused subreddit: ", async () => {
-      const store = new BasicStore<AppState>(initialAppState);
+      const store = createStore<AppState>(initialAppState);
       const { focus: initialFocus } = initialAppState;
       const focusedPostsSelector = createPostsSelector(initialFocus);
 
       let testPerformer = ACTOR;
-      //mock the fetch
+      // mock the fetch
       testPerformer = mockReaction(
         new FetchSubreddit(initialFocus),
         [{ title: "About React" }],
         testPerformer
       );
-      //cut when condition reached
+      // cut when condition reached
       testPerformer = cutAfterReaction(
         () =>
           isDeepStrictEqual(store.select(focusedPostsSelector), [
@@ -57,12 +57,12 @@ describe("Plans", () => {
     }, 30000);
 
     test("Posts retrieved, stored when focused subreddit changes", async () => {
-      const store = new BasicStore<AppState>(initialAppState);
+      const store = createStore<AppState>(initialAppState);
       const newFocus = "frontend";
       const newFocusPostsSelector = createPostsSelector(newFocus);
 
       let testPerformer: Performer = ACTOR;
-      //mock certain actions
+      // mock certain actions
       testPerformer = mockReaction(
         new FetchSubreddit("reactjs"),
         [{ title: "About React" }],
@@ -73,7 +73,7 @@ describe("Plans", () => {
         [{ title: "About Frontend" }],
         testPerformer
       );
-      //cut when condition reached
+      // cut when condition reached
       testPerformer = cutAfterReaction(
         () =>
           isDeepStrictEqual(store.select(newFocusPostsSelector), [
@@ -82,15 +82,15 @@ describe("Plans", () => {
         testPerformer
       );
 
-      //begin performing
+      // begin performing
       const testEndingPromise = directSequence(mainPlan(store), testPerformer);
 
-      //trigger change to focused subreddit
+      // trigger change to focused subreddit
       store.edit((state) => {
         state.focus = newFocus;
       });
 
-      //performer should cut after editing the store so it fulfils the check
+      // performer should cut after editing the store so it fulfils the check
       try {
         await testEndingPromise;
       } catch (thrown) {

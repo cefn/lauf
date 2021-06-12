@@ -1,49 +1,51 @@
-import React, { useState } from "react";
+import React from "react";
 import ReactDOM from "react-dom";
-import { Store, BasicStore, Immutable } from "@lauf/lauf-store";
-import { useSelected } from "@lauf/lauf-store-react";
+import { Store } from "@lauf/lauf-store";
+import { useSelected, useStore } from "@lauf/lauf-store-react";
 
 interface AppState {
   counter: number;
 }
 
-const INITIAL_STATE: Immutable<AppState> = {
+const INITIAL_STATE: AppState = {
   counter: 0
 } as const;
 
-type StoreComponent = (props: { store: Store<AppState> }) => React.ReactElement;
+interface StoreProps {
+  store: Store<AppState>;
+}
 
-const Display: StoreComponent = ({ store }) => {
+const Display = ({ store }: StoreProps) => {
   const counter = useSelected(store, (state) => state.counter);
   return <h1>{counter}</h1>;
 };
 
-const Increment: StoreComponent = ({ store }) => (
-  <input
-    value="Increase"
-    type="button"
+const Increment = ({ store }: StoreProps) => (
+  <button
     onClick={() =>
       store.edit((draft) => {
         draft.counter += 1;
       })
     }
-  />
+  >
+    Increase
+  </button>
 );
 
-const Decrement: StoreComponent = ({ store }) => (
-  <input
-    value="Decrease"
-    type="button"
+const Decrement = ({ store }: StoreProps) => (
+  <button
     onClick={() =>
       store.edit((draft) => {
         draft.counter -= 1;
       })
     }
-  />
+  >
+    Decrease
+  </button>
 );
 
 const App = () => {
-  const [store] = useState(() => new BasicStore(INITIAL_STATE));
+  const store = useStore(INITIAL_STATE);
   return (
     <>
       <Display store={store} />

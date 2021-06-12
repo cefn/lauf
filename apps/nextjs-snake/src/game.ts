@@ -6,7 +6,6 @@ import {
   raceWait,
   backgroundPlan,
 } from "@lauf/lauf-runner";
-import { Draft } from "@lauf/lauf-store";
 import { MessageQueue } from "@lauf/lauf-queue";
 import { receive } from "@lauf/lauf-runner-primitives";
 import {
@@ -15,7 +14,6 @@ import {
   Segment,
   Direction,
   Motion,
-  Vector,
   selectHead,
   selectMotion,
   selectSegments,
@@ -127,13 +125,13 @@ function* inputDirectionRoutine({
 }
 
 function* eatFruit({ edit }: AppModel) {
-  yield* edit((state) => {
+  yield* edit((state, castDraft) => {
     state.score += 1;
     state.length += 1;
     //place new fruit outside snake
     let nextPos = null;
     while (nextPos === null) {
-      nextPos = randomSquare() as Draft<Vector>;
+      nextPos = castDraft(randomSquare());
       for (const segment of state.segments) {
         if (isVectorEqual(nextPos, segment.pos)) {
           nextPos = null; //try again
@@ -167,15 +165,15 @@ function* moveSnake(appModel: AppModel, direction: Direction) {
 }
 
 function* addHead({ edit }: AppModel, head: Segment) {
-  yield* edit((draftState) => {
+  yield* edit((draftState, castDraft) => {
     const { segments } = draftState;
     //add head
-    let newSegments = [head, ...segments] as Draft<Segment[]>;
-    //remove tail (unless snake is growing)
+    let newSegments = castDraft([head, ...segments]);
+    // remove tail (unless snake is growing)
     if (draftState.length < newSegments.length) {
       newSegments = newSegments.slice(0, draftState.length);
     }
-    //castDraft workaround (allows mutable widening of readonly Vector)
+    // castDraft workaround (allows mutable widening of readonly Vector)
     draftState.segments = newSegments;
   });
 }
