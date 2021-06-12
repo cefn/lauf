@@ -17,8 +17,8 @@ and how controls can change the state.
 
 - `AppState` defines the state structure to be managed by the Store.
 - `StoreProps` defines how to pass the `Store` to React components.
-- The `Display` React component calls `useSelected` to re-render on changes to the `counter` in the `Store`
-- The `Increment` and `Decrement` buttons don't track any changes, but they do trigger an `edit` to the `AppState` when clicked.
+- The `Display` React component has a `useSelected` hook to re-render when `counter` changes.
+- The `Increment` and `Decrement` buttons don't track any changes, but they do trigger an `edit` to the `counter` when clicked.
 - `App` creates the `Store` with `useStore` passing in an `INITIAL_STATE`.
 - `App` inserts the three components, passing each one the store to do its work.
 
