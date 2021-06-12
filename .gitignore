@@ -3,6 +3,7 @@
 # CEFN : Don't version build products
 apps/*/dist
 modules/*/dist
+modules/*/api
 # Logs
 logs
 *.log

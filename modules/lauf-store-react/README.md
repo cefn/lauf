@@ -9,10 +9,11 @@
 for state-management, providing a simple substitute for Flux/Redux based on
 [Immer](https://immerjs.github.io/immer/).
 
-The simple Typescript example below from our [Counter
-Example](https://github.com/cefn/lauf/tree/main/apps/counter) shows how
-`useSelected` can bind part of a `Store`'s state to a component, and how to
-provide controls that change the state.
+Browse the [API](https://cefn.com/lauf/api) or the Typescript example inlined below from our [Counter
+App](https://github.com/cefn/lauf/tree/main/apps/counter).
+
+The example shows how `useSelected` can bind part of a `Store`'s state to a component,
+and how controls can change the state.
 
 - `AppState` defines the state structure to be managed by the Store.
 - `StoreProps` defines how to pass the `Store` to React components.
