@@ -1,3 +1,2 @@
-export * from "./path";
-export * from "./store";
-export * from "./watchable";
+export { createStore } from "./store";
+export { createStorePartition } from "./partition";

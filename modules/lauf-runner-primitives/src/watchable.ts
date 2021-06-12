@@ -1,17 +1,17 @@
 import { Action, planOfAction } from "@lauf/lauf-runner";
-import { WatchableValue } from "@lauf/lauf-store";
+import { WatchableState } from "@lauf/lauf-store";
 
 class GetValue<T> implements Action<T> {
-  constructor(readonly watchableValue: WatchableValue<T>) {}
+  constructor(readonly watchableState: WatchableState<T>) {}
   act() {
-    return this.watchableValue.read();
+    return this.watchableState.read();
   }
 }
 
 class SetValue<T> implements Action<T> {
-  constructor(readonly watchableValue: WatchableValue<T>, readonly value: T) {}
+  constructor(readonly watchableState: WatchableState<T>, readonly value: T) {}
   act() {
-    return this.watchableValue.write(this.value);
+    return this.watchableState.write(this.value);
   }
 }
 

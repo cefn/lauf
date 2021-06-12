@@ -1,12 +1,12 @@
 import { follow, edit, receive } from "@lauf/lauf-runner-primitives";
 import { ActionSequence, backgroundPlan } from "@lauf/lauf-runner";
-import { BasicStore } from "@lauf/lauf-store";
+import { createStore } from "@lauf/lauf-store";
 import { BasicMessageQueue } from "@lauf/lauf-queue";
 import { Game, GameState, Player, Station } from "./types";
 import { alert, lookupStationData, prompt } from "./action";
 
 function createGame(): Game {
-  const store = new BasicStore<GameState>({
+  const store = createStore<GameState>({
     players: [],
     turn: 0,
     moves: [],

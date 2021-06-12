@@ -6,6 +6,7 @@
     "paths": {
       "@lauf/*": ["modules/*/src"]
     },
+    "declaration": false,
     "noEmit": true /* Do not emit outputs. */
   }
 }

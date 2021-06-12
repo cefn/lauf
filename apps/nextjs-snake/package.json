@@ -1,6 +1,6 @@
 {
   "name": "next-snake",
-  "version": "0.1.0",
+  "version": "0.1.0-beta.7",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -34,5 +34,50 @@
     "ts-loader": "^8.0.17",
     "typescript": "^4.2.2",
     "webpack": "^5.24.2"
+  },
+  "homepage": "https://github.com/cefn/lauf#readme",
+  "bugs": {
+    "url": "https://github.com/cefn/lauf/issues",
+    "email": "lauf@cefn.com"
+  },
+  "author": "Cefn Hoile <github.com@cefn.com> (https://cefn.com)",
+  "repository": "github:cefn/lauf",
+  "eslintConfig": {
+    "ignorePatterns": [
+      "dist/**"
+    ],
+    "rules": {
+      "no-param-reassign": [
+        "error",
+        {
+          "props": true,
+          "ignorePropertyModificationsFor": [
+            "draft"
+          ]
+        }
+      ],
+      "no-restricted-syntax": [
+        "error",
+        "ForInStatement",
+        "LabeledStatement",
+        "WithStatement"
+      ],
+      "no-void": [
+        "error",
+        {
+          "allowAsStatement": true
+        }
+      ],
+      "@typescript-eslint/no-unused-vars": [
+        "error",
+        {
+          "varsIgnorePattern": "^_"
+        }
+      ],
+      "import/prefer-default-export": "off",
+      "@typescript-eslint/explicit-module-boundary-types": "off",
+      "@typescript-eslint/explicit-function-return-type": "off",
+      "react/prop-types": "off"
+    }
   }
 }

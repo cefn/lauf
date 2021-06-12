@@ -14,7 +14,7 @@ import {
 } from "@lauf/lauf-runner";
 
 describe("Foreground and Background operations", () => {
-  const delayMs = 10;
+  const delayMs = 15;
   const simplePlan: ActionPlan<[], Expiry, Expiry> = function* () {
     return yield* expire(delayMs);
   };

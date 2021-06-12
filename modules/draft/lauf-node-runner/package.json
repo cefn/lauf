@@ -1,13 +1,66 @@
 {
   "name": "@lauf/lauf-node-runner",
   "version": "0.1.0",
-  "main": "index.js",
+  "private": true,
+  "main": "dist/index.js",
   "license": "MIT",
   "scripts": {
     "test": "jest",
-    "check": "tsc --noEmit"
+    "check": "tsc --noEmit",
+    "build": "tsc --build ./tsconfig.build.json",
+    "prepare": "yarn run test && yarn run build",
+    "typedoc": "typedoc --out api ./src/index.ts"
   },
   "devDependencies": {
     "typescript": "^4.2.2"
+  },
+  "files": [
+    "README.md",
+    "dist"
+  ],
+  "homepage": "https://github.com/cefn/lauf/tree/main/modules/lauf-node-runner#readme",
+  "bugs": {
+    "url": "https://github.com/cefn/lauf/issues",
+    "email": "lauf@cefn.com"
+  },
+  "author": "Cefn Hoile <github.com@cefn.com> (https://cefn.com)",
+  "repository": "github:cefn/lauf",
+  "eslintConfig": {
+    "ignorePatterns": [
+      "dist/**"
+    ],
+    "rules": {
+      "no-param-reassign": [
+        "error",
+        {
+          "props": true,
+          "ignorePropertyModificationsFor": [
+            "draft"
+          ]
+        }
+      ],
+      "no-restricted-syntax": [
+        "error",
+        "ForInStatement",
+        "LabeledStatement",
+        "WithStatement"
+      ],
+      "no-void": [
+        "error",
+        {
+          "allowAsStatement": true
+        }
+      ],
+      "@typescript-eslint/no-unused-vars": [
+        "error",
+        {
+          "varsIgnorePattern": "^_"
+        }
+      ],
+      "import/prefer-default-export": "off",
+      "@typescript-eslint/explicit-module-boundary-types": "off",
+      "@typescript-eslint/explicit-function-return-type": "off",
+      "react/prop-types": "off"
+    }
   }
 }

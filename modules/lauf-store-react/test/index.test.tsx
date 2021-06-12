@@ -4,19 +4,19 @@
 
 import React from "react";
 import { useSelected, useStore } from "../src";
-import { render, fireEvent, waitFor, screen } from "@testing-library/react";
-import { BasicStore, Immutable, Selector, Store } from "@lauf/lauf-store";
+import { render, waitFor, screen } from "@testing-library/react";
+import { createStore, Selector, Store } from "@lauf/lauf-store";
 import { act } from "react-dom/test-utils";
 
 const planets = ["earth", "mars"] as const;
 type Planet = typeof planets[number];
-type State = {
+interface State {
   planet: Planet;
   haveAmulet?: boolean;
-};
-type StoreProps = {
+}
+interface StoreProps {
   store: Store<State>;
-};
+}
 
 const planetSelector: Selector<State, Planet> = (state) => state.planet;
 
@@ -33,9 +33,9 @@ function secureAmulet(store: Store<State>) {
   store.edit((draft) => (draft.haveAmulet = true));
 }
 
-function loseAmulet(store: Store<State>) {
-  store.edit((draft) => (draft.haveAmulet = false));
-}
+// function loseAmulet(store: Store<State>) {
+//   store.edit((draft) => (draft.haveAmulet = false));
+// }
 
 const PlanetLabel = ({ planet }: { planet: string }) => (
   <p>This is planet {planet}</p>
@@ -49,12 +49,14 @@ describe("useStore : initialises, resolves a store", () => {
       return <PlanetLabel planet={planet} />;
     };
     render(<StoreRoot />);
-    await waitFor(() => screen.getByText(/This is planet mars/));
+    expect(
+      await waitFor(() => screen.getByText(/This is planet mars/))
+    ).toBeDefined();
   });
 });
 
 describe("useSelected : (re)render using subset of store", () => {
-  test("Render count as expected before and after store edits", async () => {
+  test("Render count as expected before and after store edits", () => {
     const rootSpy = jest.fn();
     const branchSpy = jest.fn();
 
@@ -70,8 +72,8 @@ describe("useSelected : (re)render using subset of store", () => {
       const planetClick = () => chooseNextPlanet(store);
       const planet = useSelected(store, planetSelector);
       return (
-        //planet value is rendered
-        //amulet value is not rendered
+        // planet value is rendered
+        // amulet value is not rendered
         <>
           <p>This is planet {planet}</p>
           <button onClick={planetClick}>Change Planet</button>
@@ -89,7 +91,7 @@ describe("useSelected : (re)render using subset of store", () => {
     rootSpy.mockClear();
     branchSpy.mockClear();
 
-    await act(async () => {
+    act(() => {
       expect(rootSpy).toHaveBeenCalledTimes(0);
       expect(branchSpy).toHaveBeenCalledTimes(0);
       rootSpy.mockClear();
@@ -114,14 +116,14 @@ describe("Component state follows selector", () => {
   };
 
   test("Rendered Store tracks selector after replacement of state", async () => {
-    const store = new BasicStore<TestState>({
-      coord: [0, 0],
+    const store = createStore<TestState>({
+      coord: [0, 0]
     } as const);
     render(<Component store={store} />);
     expect((await screen.findByTestId("component")).textContent).toBe("[0,0]");
-    await act(async () => {
+    act(() => {
       store.write({
-        coord: [1, 1],
+        coord: [1, 1]
       } as const);
     });
     expect((await screen.findByTestId("component")).textContent).toBe("[1,1]");

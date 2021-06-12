@@ -1,4 +1,4 @@
-import { BasicStore } from "@lauf/lauf-store";
+import { createStore } from "@lauf/lauf-store";
 
 describe("BasicStore behaviour", () => {
   // test("Can create BasicStore with primitive root", () => {
@@ -8,15 +8,19 @@ describe("BasicStore behaviour", () => {
   // });
 
   test("Can create BasicStore with list root", () => {
-    new BasicStore<Array<number>>([3, 4, 5]);
+    expect(
+      createStore<number[]>([3, 4, 5])
+    ).toBeDefined();
   });
 
   test("Can create BasicStore with map root", () => {
-    new BasicStore<Record<string, number>>({ pi: 3.1415926 });
+    expect(
+      createStore<Record<string, number>>({ pi: 3.1415926 })
+    ).toBeDefined();
   });
 
   test("Can edit BasicStore", () => {
-    const store = new BasicStore<Record<string, string[]>>({
+    const store = createStore<Record<string, string[]>>({
       ancient: ["Roses are red", "Violets are blue"],
     });
     const state = store.edit((draft) => {
@@ -29,13 +33,12 @@ describe("BasicStore behaviour", () => {
   });
 
   test("Editing BasicStore replaces items iff on path to change", () => {
-    const store = new BasicStore<Record<string, string[]>>({
+    const store = createStore({
       ancient: ["Roses are red", "Violets are blue"],
       modern: ["Sugar is sweet", "So are you"],
     });
     const stateBefore = store.read();
     store.edit((draft) => {
-      draft.ancient = draft.ancient || [];
       draft.ancient[0] = "Roses are white";
     });
     const stateAfter = store.read();

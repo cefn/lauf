@@ -1,6 +1,6 @@
 {
   "name": "@lauf/lauf-store-react",
-  "version": "0.1.0-beta.1",
+  "version": "0.1.0-beta.11",
   "main": "dist/index.js",
   "files": [
     "README.md",
@@ -11,13 +11,67 @@
     "test": "jest",
     "check": "tsc --noEmit",
     "build": "tsc --build ./tsconfig.build.json",
-    "beta": "yarn run test && yarn run build && yarn publish --tag=beta --access=public"
+    "prepare": "yarn run test && yarn run build",
+    "typedoc": "typedoc --out api ./src/index.ts"
+  },
+  "dependencies": {
+    "@lauf/lauf-store": "^0.1.0-beta.11"
   },
   "peerDependencies": {
     "react": "^17.0.1"
   },
   "devDependencies": {
     "@testing-library/react": "^11.2.5",
+    "typedoc": "^0.20.36",
     "typescript": "^4.2.2"
+  },
+  "gitHead": "03bd2f443dd739f47240c303214f24d611aa4ddc",
+  "publishConfig": {
+    "access": "public"
+  },
+  "homepage": "https://github.com/cefn/lauf/tree/main/modules/lauf-store-react#readme",
+  "bugs": {
+    "url": "https://github.com/cefn/lauf/issues",
+    "email": "lauf@cefn.com"
+  },
+  "author": "Cefn Hoile <github.com@cefn.com> (https://cefn.com)",
+  "repository": "github:cefn/lauf",
+  "eslintConfig": {
+    "ignorePatterns": [
+      "dist/**"
+    ],
+    "rules": {
+      "no-param-reassign": [
+        "error",
+        {
+          "props": true,
+          "ignorePropertyModificationsFor": [
+            "draft"
+          ]
+        }
+      ],
+      "no-restricted-syntax": [
+        "error",
+        "ForInStatement",
+        "LabeledStatement",
+        "WithStatement"
+      ],
+      "no-void": [
+        "error",
+        {
+          "allowAsStatement": true
+        }
+      ],
+      "@typescript-eslint/no-unused-vars": [
+        "error",
+        {
+          "varsIgnorePattern": "^_"
+        }
+      ],
+      "import/prefer-default-export": "off",
+      "@typescript-eslint/explicit-module-boundary-types": "off",
+      "@typescript-eslint/explicit-function-return-type": "off",
+      "react/prop-types": "off"
+    }
   }
 }

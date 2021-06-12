@@ -1,10 +1,10 @@
 {
   "name": "noredux-async",
-  "version": "0.1.0",
+  "version": "0.1.0-beta.7",
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "start": "webpack serve --mode=development --open --hot",
+    "start": "webpack serve --mode=development --hot",
     "build": "webpack --mode=production",
     "check": "tsc --noEmit",
     "test": "jest"
@@ -19,10 +19,10 @@
     "style-loader": "^2.0.0",
     "ts-loader": "^8.0.17",
     "tsconfig-paths-webpack-plugin": "^3.3.0",
+    "typescript": "^4.2.2",
     "webpack": "^5.24.3",
     "webpack-cli": "^4.5.0",
-    "webpack-dev-server": "^3.11.2",
-    "typescript": "^4.2.2"
+    "webpack-dev-server": "^3.11.2"
   },
   "browserslist": {
     "production": [
@@ -36,5 +36,50 @@
       "last 1 safari version"
     ]
   },
-  "dependencies": {}
+  "private": true,
+  "homepage": "https://github.com/cefn/lauf#readme",
+  "bugs": {
+    "url": "https://github.com/cefn/lauf/issues",
+    "email": "lauf@cefn.com"
+  },
+  "author": "Cefn Hoile <github.com@cefn.com> (https://cefn.com)",
+  "repository": "github:cefn/lauf",
+  "eslintConfig": {
+    "ignorePatterns": [
+      "dist/**"
+    ],
+    "rules": {
+      "no-param-reassign": [
+        "error",
+        {
+          "props": true,
+          "ignorePropertyModificationsFor": [
+            "draft"
+          ]
+        }
+      ],
+      "no-restricted-syntax": [
+        "error",
+        "ForInStatement",
+        "LabeledStatement",
+        "WithStatement"
+      ],
+      "no-void": [
+        "error",
+        {
+          "allowAsStatement": true
+        }
+      ],
+      "@typescript-eslint/no-unused-vars": [
+        "error",
+        {
+          "varsIgnorePattern": "^_"
+        }
+      ],
+      "import/prefer-default-export": "off",
+      "@typescript-eslint/explicit-module-boundary-types": "off",
+      "@typescript-eslint/explicit-function-return-type": "off",
+      "react/prop-types": "off"
+    }
+  }
 }

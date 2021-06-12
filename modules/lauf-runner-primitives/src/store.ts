@@ -4,7 +4,13 @@ import {
   ActionPlan,
   ActionSequence,
 } from "@lauf/lauf-runner";
-import { Editor, Immutable, Selector, Store } from "@lauf/lauf-store";
+import {
+  Editor,
+  Immutable,
+  RootState,
+  Selector,
+  Store,
+} from "@lauf/lauf-store";
 import { BasicMessageQueue, MessageQueue } from "@lauf/lauf-queue";
 
 import { receive } from "./queue";
@@ -16,22 +22,22 @@ type QueueHandler<Selected, Ending, Reaction> = ActionPlan<
   Reaction
 >;
 
-export function* withQueue<Value, Selected, Ending, Reaction>(
-  store: Store<Value>,
-  selector: Selector<Value, Selected>,
+export function* withQueue<State extends RootState, Selected, Ending, Reaction>(
+  store: Store<State>,
+  selector: Selector<State, Selected>,
   handleQueue: QueueHandler<Selected, Ending, any>
 ): ActionSequence<Ending, any> {
   const queue = new BasicMessageQueue<Selected>();
   let prevSelected: Selected = selector(store.read());
-  const selectedNotifier = (value: Immutable<Value>) => {
+  const selectedNotifier = (value: Immutable<State>) => {
     const nextSelected = selector(value);
     if (!Object.is(nextSelected, prevSelected)) {
       prevSelected = nextSelected;
       queue.send(nextSelected);
     }
   };
-  const unwatch = store.watch(selectedNotifier); //subscribe future states
-  selectedNotifier(store.read()); //notify the initial state
+  const unwatch = store.watch(selectedNotifier); // subscribe future states
+  selectedNotifier(store.read()); // notify the initial state
   try {
     return yield* handleQueue(queue, prevSelected);
   } finally {
@@ -39,7 +45,7 @@ export function* withQueue<Value, Selected, Ending, Reaction>(
   }
 }
 
-export function* follow<State, Selected, Ending, Reaction>(
+export function* follow<State extends RootState, Selected, Ending, Reaction>(
   store: Store<State>,
   selector: Selector<State, Selected>,
   follower: Follower<Selected, Ending, Reaction>
@@ -68,7 +74,7 @@ export function* follow<State, Selected, Ending, Reaction>(
   });
 }
 
-export class Edit<State> implements Action<Immutable<State>> {
+export class Edit<State extends RootState> implements Action<Immutable<State>> {
   constructor(readonly store: Store<State>, readonly operator: Editor<State>) {}
   act() {
     return this.store.edit(this.operator);
@@ -76,7 +82,8 @@ export class Edit<State> implements Action<Immutable<State>> {
 }
 export const edit = planOfAction(Edit);
 
-export class Select<State, Selected> implements Action<Immutable<Selected>> {
+export class Select<State extends RootState, Selected>
+  implements Action<Immutable<Selected>> {
   constructor(
     readonly store: Store<State>,
     readonly selector: Selector<State, Selected>
@@ -87,7 +94,7 @@ export class Select<State, Selected> implements Action<Immutable<Selected>> {
 }
 export const select = planOfAction(Select);
 
-export class StorePlans<State> {
+export class StorePlans<State extends RootState> {
   constructor(readonly store: Store<State>) {}
 
   edit = (editor: Editor<State>) => edit(this.store, editor);
