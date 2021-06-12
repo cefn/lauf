@@ -22,7 +22,7 @@ type ExpectedValueFactory = (options: {
   packageJson: { name: string };
 }) => string;
 
-const RULES: ReadonlyArray<PackageJsonRule> = [
+const RULES: readonly PackageJsonRule[] = [
   {
     path: "homepage",
     expected: ({ packageJson: { name } }) => {
@@ -124,6 +124,12 @@ const RULES: ReadonlyArray<PackageJsonRule> = [
   {
     path: "scripts.beta",
     expected: undefined,
+    packagePaths: "modules/**",
+    status: "error",
+  },
+  {
+    path: "scripts.typedoc",
+    expected: "typedoc --out api ./src/index.ts",
     packagePaths: "modules/**",
     status: "error",
   },
@@ -296,7 +302,7 @@ for (const packageJsonPath of packageJsonPaths) {
       } else {
         //proceed with fix
         found[path] = { actualValue, expectedValue, fixed: true };
-        console.log(`${message} FIXED`);
+        console.log(`${message} FIXING`);
         lodashSet(packageJson, path, expectedValue);
         rewritePackageJson = true;
       }

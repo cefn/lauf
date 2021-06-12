@@ -11,7 +11,8 @@
     "test": "jest",
     "check": "tsc --noEmit",
     "build": "tsc --build ./tsconfig.build.json",
-    "prepare": "yarn run test && yarn run build"
+    "prepare": "yarn run test && yarn run build",
+    "typedoc": "typedoc --out api ./src/index.ts"
   },
   "dependencies": {
     "@lauf/lauf-store": "^0.1.0-beta.11"
@@ -21,6 +22,7 @@
   },
   "devDependencies": {
     "@testing-library/react": "^11.2.5",
+    "typedoc": "^0.20.36",
     "typescript": "^4.2.2"
   },
   "gitHead": "03bd2f443dd739f47240c303214f24d611aa4ddc",
