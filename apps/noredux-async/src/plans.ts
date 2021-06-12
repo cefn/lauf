@@ -1,4 +1,4 @@
-import { Store, BasicStore, Selector, Immutable } from "@lauf/lauf-store";
+import { createStore, Store, Selector, Immutable } from "@lauf/lauf-store";
 import { edit, follow } from "@lauf/lauf-runner-primitives";
 import {
   Action,
@@ -37,10 +37,6 @@ export const initialCache: Immutable<Cache> = {
   isFetching: false,
   posts: [],
 } as const;
-
-export function createStore(): Store<AppState> {
-  return new BasicStore<AppState>(initialAppState);
-}
 
 /** SELECTORS */
 

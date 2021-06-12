@@ -4,7 +4,7 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "start": "webpack serve --mode=development --open --hot",
+    "start": "webpack serve --mode=development --hot",
     "build": "webpack --mode=production",
     "check": "tsc --noEmit",
     "test": "jest"
@@ -37,9 +37,40 @@
     ]
   },
   "eslintConfig": {
+    "ignorePatterns": [
+      "dist/**"
+    ],
     "rules": {
+      "no-param-reassign": [
+        "error",
+        {
+          "props": true,
+          "ignorePropertyModificationsFor": [
+            "draft"
+          ]
+        }
+      ],
+      "no-restricted-syntax": [
+        "error",
+        "ForInStatement",
+        "LabeledStatement",
+        "WithStatement"
+      ],
+      "no-void": [
+        "error",
+        {
+          "allowAsStatement": true
+        }
+      ],
+      "@typescript-eslint/no-unused-vars": [
+        "error",
+        {
+          "varsIgnorePattern": "^_"
+        }
+      ],
+      "import/prefer-default-export": "off",
       "@typescript-eslint/explicit-module-boundary-types": "off",
-      "no-param-reassign": "off",
+      "@typescript-eslint/explicit-function-return-type": "off",
       "react/prop-types": "off"
     }
   },

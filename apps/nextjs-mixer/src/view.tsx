@@ -1,6 +1,6 @@
 import React, { FC, useEffect, useState } from "react";
 import Head from "next/head";
-import { BasicStore, Store } from "@lauf/lauf-store/src";
+import { createStore, Store } from "@lauf/lauf-store/src";
 import { useSelected } from "@lauf/lauf-store-react";
 import { AppState, INITIAL_STATE, RED, GREEN, BLUE } from "./state";
 import { decreaseColor, increaseColor } from "./change";
@@ -79,7 +79,7 @@ export const ColorMixer: FC<{ colorStore: Store<AppState> }> = ({
 };
 
 export function ColorApp() {
-  const [colorStore] = useState(() => new BasicStore<AppState>(INITIAL_STATE));
+  const [colorStore] = useState(() => createStore(INITIAL_STATE));
   return process.browser ? (
     <ColorMixer {...{ colorStore }} />
   ) : (

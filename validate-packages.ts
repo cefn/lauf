@@ -22,7 +22,7 @@ type ExpectedValueFactory = (options: {
   packageJson: { name: string };
 }) => string;
 
-const RULES: ReadonlyArray<PackageJsonRule> = [
+const RULES: readonly PackageJsonRule[] = [
   {
     path: "homepage",
     expected: ({ packageJson: { name } }) => {
@@ -36,6 +36,44 @@ const RULES: ReadonlyArray<PackageJsonRule> = [
     path: "homepage",
     expected: "https://github.com/cefn/lauf#readme",
     packagePaths: "apps/**",
+    status: "error",
+  },
+  {
+    path: "eslintConfig",
+    expected: {
+      ignorePatterns: ["dist/**"],
+      rules: {
+        "no-param-reassign": [
+          "error",
+          {
+            props: true,
+            ignorePropertyModificationsFor: ["draft"],
+          },
+        ],
+        "no-restricted-syntax": [
+          "error",
+          "ForInStatement",
+          "LabeledStatement",
+          "WithStatement",
+        ],
+        "no-void": [
+          "error",
+          {
+            allowAsStatement: true,
+          },
+        ],
+        "@typescript-eslint/no-unused-vars": [
+          "error",
+          {
+            varsIgnorePattern: "^_",
+          },
+        ],
+        "import/prefer-default-export": "off",
+        "@typescript-eslint/explicit-module-boundary-types": "off",
+        "@typescript-eslint/explicit-function-return-type": "off",
+        "react/prop-types": "off",
+      },
+    },
     status: "error",
   },
   {
@@ -86,6 +124,12 @@ const RULES: ReadonlyArray<PackageJsonRule> = [
   {
     path: "scripts.beta",
     expected: undefined,
+    packagePaths: "modules/**",
+    status: "error",
+  },
+  {
+    path: "scripts.typedoc",
+    expected: "typedoc --out api ./src/index.ts",
     packagePaths: "modules/**",
     status: "error",
   },
@@ -154,8 +198,8 @@ const { strategy, filterPackagePaths, filterPropertyPaths } = yargs
   .alias("help", "h").argv;
 
 const STATUSES = [
-  "warning", //report violation
-  "error", //fail on violation
+  "warning", // report violation
+  "error", // fail on violation
 ] as const;
 
 type Status = typeof STATUSES[number];
@@ -163,6 +207,7 @@ type Rule = typeof RULES[number];
 type Expected =
   | true
   | string
+  // eslint-disable-next-line @typescript-eslint/ban-types
   | object
   | RegExp
   | ExpectedValueFactory
@@ -257,7 +302,7 @@ for (const packageJsonPath of packageJsonPaths) {
       } else {
         //proceed with fix
         found[path] = { actualValue, expectedValue, fixed: true };
-        console.log(`${message} FIXED`);
+        console.log(`${message} FIXING`);
         lodashSet(packageJson, path, expectedValue);
         rewritePackageJson = true;
       }
