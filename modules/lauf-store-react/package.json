@@ -22,6 +22,7 @@
   },
   "devDependencies": {
     "@testing-library/react": "^11.2.5",
+    "@testing-library/user-event": "^13.1.9",
     "typedoc": "^0.20.36",
     "typescript": "^4.2.2"
   },

@@ -3,10 +3,13 @@
  */
 
 import React from "react";
-import { useSelected, useStore } from "../src";
+import { useRootState, useSelected, useStore } from "../src";
 import { render, waitFor, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { createStore, Selector, Store } from "@lauf/lauf-store";
 import { act } from "react-dom/test-utils";
+
+/** IMAGINARY APPLICATION-SPECIFIC DATA, COMPONENTS, SELECTORS */
 
 const planets = ["earth", "mars"] as const;
 type Planet = typeof planets[number];
@@ -14,24 +17,12 @@ interface State {
   planet: Planet;
   haveAmulet?: boolean;
 }
+
 interface StoreProps {
   store: Store<State>;
 }
 
 const planetSelector: Selector<State, Planet> = (state) => state.planet;
-
-function chooseNextPlanet(store: Store<State>) {
-  store.edit((draft) => {
-    let planetIndex = planets.indexOf(draft.planet);
-    planetIndex += 1;
-    planetIndex %= planets.length;
-    draft.planet = planets[planetIndex] as Planet;
-  });
-}
-
-function secureAmulet(store: Store<State>) {
-  store.edit((draft) => (draft.haveAmulet = true));
-}
 
 // function loseAmulet(store: Store<State>) {
 //   store.edit((draft) => (draft.haveAmulet = false));
@@ -41,14 +32,18 @@ const PlanetLabel = ({ planet }: { planet: string }) => (
   <p>This is planet {planet}</p>
 );
 
-describe("useStore : initialises, resolves a store", () => {
-  test("Store data can be used", async () => {
-    const StoreRoot = () => {
-      const store = useStore<State>({ planet: "mars" });
-      const planet = planetSelector(store.read());
+describe("useRootState behaviour", () => {
+  test("Bind with useRootState", async () => {
+    const store = createStore<State>({ planet: "earth" });
+    const Component = ({ store }: StoreProps) => {
+      const { planet } = useRootState(store);
       return <PlanetLabel planet={planet} />;
     };
-    render(<StoreRoot />);
+    render(<Component store={store} />);
+    expect(
+      await waitFor(() => screen.getByText(/This is planet earth/))
+    ).toBeDefined();
+    store.edit((draft) => (draft.planet = "mars"));
     expect(
       await waitFor(() => screen.getByText(/This is planet mars/))
     ).toBeDefined();
@@ -56,66 +51,21 @@ describe("useStore : initialises, resolves a store", () => {
 });
 
 describe("useSelected : (re)render using subset of store", () => {
-  test("Render count as expected before and after store edits", () => {
-    const rootSpy = jest.fn();
-    const branchSpy = jest.fn();
+  test("Component state follows selector", async () => {
+    /** DEFINE STATE, STORE, UI */
 
-    const Root = () => {
-      rootSpy();
-      const store = useStore<State>({ planet: "earth" });
-      return <Branch store={store} />;
+    type Coord = [number, number];
+    interface TestState {
+      readonly coord: Coord;
+    }
+
+    const selectCoord: Selector<TestState, Coord> = (state) => state.coord;
+
+    const Component = ({ store }: { store: Store<TestState> }) => {
+      const coord = useSelected(store, selectCoord);
+      return <div data-testid="component">{JSON.stringify(coord)}</div>;
     };
 
-    const Branch = ({ store }: StoreProps) => {
-      branchSpy();
-      const amuletClick = () => secureAmulet(store);
-      const planetClick = () => chooseNextPlanet(store);
-      const planet = useSelected(store, planetSelector);
-      return (
-        // planet value is rendered
-        // amulet value is not rendered
-        <>
-          <p>This is planet {planet}</p>
-          <button onClick={planetClick}>Change Planet</button>
-          <button onClick={amuletClick}>Ensure Amulet</button>
-        </>
-      );
-    };
-
-    const treeToRender = <Root />;
-    render(treeToRender);
-
-    expect(rootSpy).toHaveBeenCalledTimes(1);
-    expect(branchSpy).toHaveBeenCalledTimes(1);
-
-    rootSpy.mockClear();
-    branchSpy.mockClear();
-
-    act(() => {
-      expect(rootSpy).toHaveBeenCalledTimes(0);
-      expect(branchSpy).toHaveBeenCalledTimes(0);
-      rootSpy.mockClear();
-      branchSpy.mockClear();
-    });
-  });
-});
-
-describe("Component state follows selector", () => {
-  /** DEFINE STATE, STORE, UI */
-
-  type Coord = [number, number];
-  interface TestState {
-    readonly coord: Coord;
-  }
-
-  const selectCoord: Selector<TestState, Coord> = (state) => state.coord;
-
-  const Component = ({ store }: { store: Store<TestState> }) => {
-    const coord = useSelected(store, selectCoord);
-    return <div data-testid="component">{JSON.stringify(coord)}</div>;
-  };
-
-  test("Rendered Store tracks selector after replacement of state", async () => {
     const store = createStore<TestState>({
       coord: [0, 0]
     } as const);
@@ -127,5 +77,68 @@ describe("Component state follows selector", () => {
       } as const);
     });
     expect((await screen.findByTestId("component")).textContent).toBe("[1,1]");
+  });
+
+  test("Render count as expected before and after store edits", async () => {
+    const rootSpy = jest.fn();
+    const branchSpy = jest.fn();
+
+    const Root = () => {
+      rootSpy();
+      const store = useStore<State>({ planet: "earth" });
+      return <Branch store={store} />;
+    };
+
+    const Branch = ({ store }: StoreProps) => {
+      branchSpy();
+      const planet = useSelected(store, planetSelector);
+      return (
+        // planet value is rendered
+        // amulet value is not rendered
+        <>
+          <p>This is planet {planet}</p>
+          <button
+            onClick={() =>
+              store.edit((draft) => {
+                draft.planet = "mars";
+              })
+            }
+          >
+            Set Mars
+          </button>
+          <button
+            onClick={() =>
+              store.edit((draft) => {
+                draft.haveAmulet = true;
+              })
+            }
+          >
+            Secure Amulet
+          </button>
+        </>
+      );
+    };
+
+    // mount component
+    const treeToRender = <Root />;
+    render(treeToRender);
+    expect(rootSpy).toHaveBeenCalledTimes(1); // root rendered
+    expect(branchSpy).toHaveBeenCalledTimes(1); // branch rendered
+
+    // edit some state rendered in Branch
+    rootSpy.mockClear();
+    branchSpy.mockClear();
+    userEvent.click(screen.getByText("Set Mars"));
+    await screen.findByText("This is planet mars");
+    expect(rootSpy).toHaveBeenCalledTimes(0); // root not re-rendered
+    expect(branchSpy).toHaveBeenCalledTimes(1); // branch is re-rendered
+
+    // edit some state not rendered Anywhere
+    rootSpy.mockClear();
+    branchSpy.mockClear();
+    userEvent.click(screen.getByText("Secure Amulet"));
+    await new Promise((resolve) => setTimeout(resolve, 50));
+    expect(rootSpy).toHaveBeenCalledTimes(0); // root not re-rendered
+    expect(branchSpy).toHaveBeenCalledTimes(0); // branch not re-rendered
   });
 });

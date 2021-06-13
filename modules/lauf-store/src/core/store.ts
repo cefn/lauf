@@ -8,9 +8,9 @@ class DefaultStore<State extends RootState>
   extends DefaultWatchableState<Immutable<State>>
   implements Store<State> {
   edit = (editor: Editor<State>) => {
-    const nextState = (produce<Immutable<State>>(this.read(), (draft) =>
-      editor(draft, castDraft)
-    ) as unknown) as Immutable<State>;
+    const nextState = (produce<Immutable<State>>(this.read(), (draft) => {
+      editor(draft, castDraft);
+    }) as unknown) as Immutable<State>;
     return this.write(nextState);
   };
 
@@ -23,6 +23,7 @@ class DefaultStore<State extends RootState>
  * array, tuple or object. This state can be updated and monitored for updates
  * to drive an app.
  * @param initialState - The initial [[RootState]] stored
+ * @param watchers - A list of [[Watcher|Watchers]] to be notified once and permanently subscribed
  * @category
  */
 export function createStore<State extends RootState>(

@@ -5,7 +5,7 @@ import {
   RootState,
   Watcher,
 } from "@lauf/lauf-store/src";
-import { createDeferred } from "../util";
+import { createDeferredMock } from "../util";
 import { createStoreSuite, StoreFactory } from "./storeSuite";
 
 /** TEST PARTITIONS AS A GENERAL STORE */
@@ -67,7 +67,7 @@ describe("Parent Stores and Child Store Partitions", () => {
     };
   }
   test("Child watchers notified of parent store assignments inside partition", async () => {
-    const { deferred, deferredResolve } = createDeferred<ChildState>();
+    const { deferred, deferredResolve } = createDeferredMock<ChildState>();
     const { parentStore, childStore } = createPartitionedStores();
     childStore.watch(deferredResolve);
     parentStore.edit((draft) => {
@@ -88,7 +88,7 @@ describe("Parent Stores and Child Store Partitions", () => {
   });
 
   test("Parent watchers notified of child store assignments inside partition", async () => {
-    const { deferred, deferredResolve } = createDeferred<ParentState>();
+    const { deferred, deferredResolve } = createDeferredMock<ParentState>();
     const { parentStore, childStore } = createPartitionedStores();
     parentStore.watch(deferredResolve);
     childStore.edit((draft) => (draft.roses = "white"));
@@ -96,7 +96,7 @@ describe("Parent Stores and Child Store Partitions", () => {
   });
 
   test("Parent watchers notified if child store overwrites partition", async () => {
-    const { deferred, deferredResolve } = createDeferred<ParentState>();
+    const { deferred, deferredResolve } = createDeferredMock<ParentState>();
     const { parentStore, childStore } = createPartitionedStores();
     parentStore.watch(deferredResolve);
     childStore.write({ roses: "white" });

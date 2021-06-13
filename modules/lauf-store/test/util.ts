@@ -1,4 +1,4 @@
-export function createDeferred<Result>() {
+export function createDeferredMock<Result>() {
   type Resolve = (result: Result) => void;
   let deferredResolve: Resolve | null = null;
   const deferred = new Promise<Result>((resolve) => {
