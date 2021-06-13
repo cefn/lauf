@@ -24,9 +24,9 @@ jobs:
       - run: yarn run check:lauf
       - run: yarn run check
       - run: yarn run docs
-          - name: Deploy to Server
-      uses: easingthemes/ssh-deploy@v2
-      env:
+      - name: Deploy to Server
+        uses: easingthemes/ssh-deploy@v2
+        env:
           REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
           REMOTE_USER: ${{ secrets.REMOTE_USER }}
           SSH_PRIVATE_KEY: ${{ secrets.SERVER_SSH_KEY }}
