@@ -2,10 +2,6 @@
 import type { Immutable, Editor } from "./immutable";
 import { WatchableState } from "./watchable";
 
-/** Suitable state container for a [[Store]],
- * Includes for example Arrays, Tuples, Objects, Functions */
-export type RootState = object;
-
 /** A `Store` keeps an Immutable [[RootState]] - any array, tuple or object - which can be
  * changed and monitored for changes to drive an app. Make a new `Store` by
  * calling [[createStore]] with an `initialState`.
@@ -64,3 +60,24 @@ export interface Store<State extends RootState>
 export type Selector<State extends RootState, Selected> = (
   state: Immutable<State>
 ) => Immutable<Selected>;
+
+/** Suitable state container for a [[Store]],
+ * Includes for example Arrays, Tuples, Objects, Functions */
+export type RootState = object;
+
+/** A [[RootState]] which can be partitioned into a child [[RootState]] by
+ * `Key`.
+ *
+ * Partitioning enables hierarchy and logical isolation of a [[Store]], so that
+ * higher-level stores can be composed of multiple lower-level stores. Logic
+ * relying on some `Store<T>` need not know whether `<T>` is the whole app state
+ * or just some part of it.
+ *
+ * Partitioning can also make eventing more efficient. When a parent Store's
+ * `RootState` changes, implementations can omit notifications for all
+ * [[Watcher|Watchers]] of a child partition if the child [[RootState]] has not
+ * changed, meaning no value within the child partition has changed. See
+ */
+export type PartitionableState<
+  Key extends string | number | symbol
+> = RootState & { [k in Key]: RootState };

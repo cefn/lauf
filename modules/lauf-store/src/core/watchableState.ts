@@ -1,16 +1,16 @@
 import { WatchableState, Watcher } from "../types";
 import { DefaultWatchable } from "./watchable";
 
-export class DefaultWatchableState<Value>
-  extends DefaultWatchable<Value>
-  implements WatchableState<Value> {
-  protected value!: Value;
-  constructor(value: Value, watchers?: ReadonlyArray<Watcher<Value>>) {
+export class DefaultWatchableState<State>
+  extends DefaultWatchable<State>
+  implements WatchableState<State> {
+  protected value!: State;
+  constructor(value: State, watchers?: ReadonlyArray<Watcher<State>>) {
     super(watchers);
     this.write(value);
   }
 
-  write = (value: Value) => {
+  write = (value: State) => {
     this.value = value;
     void this.notify(value);
     return value;

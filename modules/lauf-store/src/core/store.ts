@@ -1,5 +1,5 @@
 import { castDraft, produce } from "immer";
-import type { RootState, Selector, Store } from "../types";
+import type { RootState, Selector, Store, Watcher } from "../types";
 import type { Editor, Immutable } from "../types/immutable";
 import { DefaultWatchableState } from "./watchableState";
 
@@ -26,7 +26,8 @@ class DefaultStore<State extends RootState>
  * @category
  */
 export function createStore<State extends RootState>(
-  initialState: Immutable<State>
+  initialState: Immutable<State>,
+  watchers?: ReadonlyArray<Watcher<State>>
 ): Store<State> {
-  return new DefaultStore(initialState);
+  return new DefaultStore(initialState, watchers);
 }
