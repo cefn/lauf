@@ -1,5 +1,5 @@
 import { Immutable, RootState, Store, Watcher } from "@lauf/lauf-store/src";
-import { createDeferred } from "../util";
+import { createDeferredMock } from "../util";
 
 /** Defining a factory allows us to run the same test suite across stores and  partitioned stores. */
 // eslint-disable-next-line jest/no-export
@@ -27,13 +27,13 @@ export function createStoreSuite(
     test("Create Store and pass watchers who are notified", async () => {
       type State = Record<string, number>;
       const state: State = { pi: 3.1415926 };
-      const { deferredResolve, deferred } = createDeferred<typeof state>();
+      const { deferredResolve, deferred } = createDeferredMock<State>();
       const watchers = [deferredResolve] as const;
       storeFactory(state, watchers);
       expect(await deferred).toBe(state);
     });
 
-    test("Can edit BasicStore", () => {
+    test("Can edit Store state", () => {
       const store = storeFactory<Record<string, string[]>>({
         ancient: ["Roses are red", "Violets are blue"],
       });
@@ -46,7 +46,26 @@ export function createStoreSuite(
       });
     });
 
-    test("Editing BasicStore replaces items iff on path to change", () => {
+    test("Watchers notified of edits", async () => {
+      type State = Record<string, string[]>;
+      const { deferred, deferredResolve } = createDeferredMock<
+        Immutable<State>
+      >();
+      const store = storeFactory<State>({
+        ancient: ["Roses are red", "Violets are blue"],
+      });
+      store.watch(deferredResolve);
+      const nextState = store.edit((draft) => {
+        draft.modern = ["Sugar is sweet", "So are you"];
+      });
+      expect(nextState).toEqual({
+        ancient: ["Roses are red", "Violets are blue"],
+        modern: ["Sugar is sweet", "So are you"],
+      });
+      expect(await deferred).toBe(nextState);
+    });
+
+    test("Editing replaces only ancestor objects containing a change", () => {
       const store = storeFactory({
         ancient: ["Roses are red", "Violets are blue"],
         modern: ["Sugar is sweet", "So are you"],
