@@ -1,13 +1,13 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { Store } from "@lauf/lauf-store";
+import { Immutable, Store } from "@lauf/lauf-store";
 import { useSelected, useStore } from "@lauf/lauf-store-react";
 
 interface AppState {
   counter: number;
 }
 
-const INITIAL_STATE: AppState = {
+const INITIAL_STATE: Immutable<AppState> = {
   counter: 0
 } as const;
 

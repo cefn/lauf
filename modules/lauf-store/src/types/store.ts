@@ -2,16 +2,15 @@
 import type { Immutable, Editor } from "./immutable";
 import { WatchableState } from "./watchable";
 
-/** A `Store` keeps an Immutable [[RootState]] - any array, tuple or object - which can be
- * changed and monitored for changes to drive an app. Make a new `Store` by
- * calling [[createStore]] with an `initialState`.
+/** A `Store` keeps an Immutable [[RootState]] - any array, tuple or object -
+ * which can be changed and monitored for changes to drive an app. Make a new
+ * `Store` by calling [[createStore]] with an `initialState`.
  *
  * ## Immutable State
  *
- * Never modifying the state tree
- * means when the state or a [[Selector|selected]] branch of the state is the
- * same ***item*** as before, it is guaranteed to contain all the same
- * ***values*** as before.
+ * Never modifying the state tree means when the state or a
+ * [[Selector|selected]] branch of the state is the same ***item*** as before,
+ * it is guaranteed to contain all the same ***values*** as before.
  *
  * This guarantee enables Watchers, renderers like
  * [[https://reactjs.org/|React]] and memoizers like
@@ -21,15 +20,17 @@ import { WatchableState } from "./watchable";
  *
  * ## Watching State
  *
- * Assigning a new `RootState` using [[Store.write]] notifies
+ * Assigning a new [[Immutable]] `RootState` using [[Store.write]] notifies
  * [[Watcher|Watchers]] previously subscribed using [[Store.watch]]. This
  * mechanism ensures that app logic and renderers can track the latest state.
  *
  * ## Editing State
  *
- * Changes to state are normally 'drafted' by calling [[Store.edit]] and passing an
- * callback [[Editor]] function. See [[Editor]] for more about
- * drafting.
+ * Changes to state are normally 'drafted' by calling [[Store.edit]] and passing
+ * an editor callback function. In this function you can make changes to state
+ * as if it ***wasn't*** [[Immutable]], then [[write]] will be called on your
+ * behalf with the equivalent [[Immutable]] result. See [[Editor]] for more
+ * about drafting.
  *
  * Alternatively you can construct a new `Immutable` value yourself, then
  * explicitly call [[Store.write]] to update the state.
