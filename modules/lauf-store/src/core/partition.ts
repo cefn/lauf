@@ -5,6 +5,7 @@ import {
   PartitionableState,
   Selector,
   Store,
+  Watcher,
 } from "../types";
 import { DefaultWatchable } from "./watchable";
 
@@ -17,19 +18,22 @@ class DefaultStorePartition<
   implements Store<ParentState[Key]> {
   constructor(
     readonly store: Store<ParentState>,
-    readonly key: keyof ParentState
+    readonly key: Key,
+    watchers?: ReadonlyArray<Watcher<ParentState[Key]>>
   ) {
-    super();
+    super(watchers);
+    void this.notify(this.read());
     this.track();
   }
 
   private readonly track = () => {
-    let lastSubState: ParentState[Key] | undefined;
+    let lastSubState: Immutable<ParentState>[Key] = this.store.read()[this.key];
     this.store.watch((state) => {
       const subState = state[this.key];
       if (Object.is(subState, lastSubState)) {
         return;
       }
+      lastSubState = subState;
       void this.notify(subState as Immutable<ParentState[Key]>);
     });
   };
@@ -67,6 +71,10 @@ class DefaultStorePartition<
 export function createStorePartition<
   State extends PartitionableState<Key>,
   Key extends keyof State
->(store: Store<State>, key: Key): Store<State[Key]> {
-  return new DefaultStorePartition(store, key);
+>(
+  store: Store<State>,
+  key: Key,
+  watchers?: ReadonlyArray<Watcher<State[Key]>>
+): Store<State[Key]> {
+  return new DefaultStorePartition(store, key, watchers);
 }

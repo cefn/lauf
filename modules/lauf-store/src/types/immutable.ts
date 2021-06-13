@@ -17,24 +17,8 @@ import { RootState } from "./store";
  */
 export type Immutable<T> = T extends object ? ImmutableIndex<T> : T;
 
-/** A [[RootState]] which can be partitioned into a child [[RootState]] by
- * `Key`.
- *
- * Partitioning enables hierarchy and logical isolation of a [[Store]], so that
- * higher-level stores can be composed of multiple lower-level stores. Logic
- * relying on some `Store<T>` need not know whether `<T>` is the whole app state
- * or just some part of it.
- *
- * Partitioning can also make eventing more efficient. When a parent Store's
- * `RootState` changes, implementations can omit notifications for all
- * [[Watcher|Watchers]] of a child partition if the child [[RootState]] has not
- * changed, meaning no value within the child partition has changed. See
- */
-export type PartitionableState<
-  Key extends string | number | symbol
-> = RootState & { [k in Key]: RootState };
-
-/** Recursive Readonly implementation for any [[RootState]] */
+/** Recursive Readonly implementation for any (indexable) [[RootState]] such as
+ * an array or object */
 type ImmutableIndex<T> = Readonly<
   {
     [K in keyof T]: Immutable<T[K]>;
