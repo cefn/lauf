@@ -1,0 +1,32 @@
+name: Coverage
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [14.x]
+        module-name: [lauf-store, lauf-store-react]
+
+    steps:
+      - uses: actions/checkout@master
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - run: yarn
+      - run: cd modules/${{matrix.module-name}} && yarn run test
+      - uses: codecov/codecov-action@v1
+        with:
+          directory: modules/${{matrix.module-name}}/coverage
+          flags: ${{matrix.module-name}}
+          # name: ${{matrix.module-name}}
+          fail_ci_if_error: true
+          verbose: true
