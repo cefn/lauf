@@ -64,9 +64,14 @@ class DefaultStorePartition<
   };
 }
 
-/** Provides a [[Store]] by tracking a child property of another store's
+/**
+ * Constructs a [[Store]] that tracks a child property of another store's
  * [[RootState]]. See [[PartitionableState]] for more details.
  *
+ * @param store The parent store containing the partition
+ * @param key The child key to partition the parent's state.
+ * @param watchers - A list of [[Watcher|Watchers]] to be notified once and permanently subscribed
+ * @returns The partitioned store.
  */
 export function createStorePartition<
   State extends PartitionableState<Key>,
