@@ -1,3 +1,5 @@
+## State Management for Javascript with Typescript support.
+
 <img src="https://github.com/cefn/lauf/raw/main/vector/logo.png" alt="Logo - Image of Runner" align="left"><br></br>
 
 # Lauf Store
