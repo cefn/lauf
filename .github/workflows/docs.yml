@@ -1,0 +1,35 @@
+name: Node.js Test CI
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [14.x]
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - run: yarn
+      - run: yarn run validate
+      - run: lerna bootstrap
+      - run: yarn run check:lauf
+      - run: yarn run check
+      - run: yarn run docs
+          - name: Deploy to Server
+      uses: easingthemes/ssh-deploy@v2
+      env:
+          REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
+          REMOTE_USER: ${{ secrets.REMOTE_USER }}
+          SSH_PRIVATE_KEY: ${{ secrets.SERVER_SSH_KEY }}
+          ARGS: "--recursive --whole-file --delete --verbose"
+          SOURCE: "api/"
+          TARGET: "/var/www/html/cefn.com/lauf/api/"

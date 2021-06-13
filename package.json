@@ -18,8 +18,8 @@
     "check:changed": "lerna run --since origin/main --include-dependents check",
     "check:lauf": "lerna run --scope '@lauf/*' check",
     "validate": "ts-node ./validate-packages.ts",
-    "release": "lerna publish && yarn run docs",
-    "docs": "cd modules/lauf-store-react && yarn run typedoc && echo 'Now upload the docs'"
+    "release": "lerna publish",
+    "docs": "cd modules/lauf-store-react && yarn run typedoc && cp -rf api ../../api"
   },
   "devDependencies": {
     "@babel/core": "^7.13.8",

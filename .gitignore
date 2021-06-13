@@ -4,6 +4,7 @@
 apps/*/dist
 modules/*/dist
 modules/*/api
+/api
 # Logs
 logs
 *.log
