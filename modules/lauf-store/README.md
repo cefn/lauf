@@ -7,6 +7,8 @@
 <sub><sup>Logo - Diego Naive, Noun Project.</sup></sub>
 <br></br>
 
+[![codecov](https://codecov.io/gh/cefn/lauf/branch/main/graph/badge.svg?token=H4O0Wmvho5&flag=lauf-store)](https://codecov.io/gh/cefn/lauf)
+
 `@lauf/lauf-store` provides a minimal reactive state-management solution, a simple substitute for Flux/Redux based on [Immer](https://immerjs.github.io/immer/).
 
 It is incredibly lightweight and suitable for adoption with almost any server-side or client-side framework in Typescript or Javascript.

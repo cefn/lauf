@@ -7,6 +7,8 @@
 <sub><sup>Logo - Diego Naive, Noun Project.</sup></sub>
 <br></br>
 
+[![codecov](https://codecov.io/gh/cefn/lauf/branch/main/graph/badge.svg?token=H4O0Wmvho5&flag=lauf-store-react)](https://codecov.io/gh/cefn/lauf)
+
 `@lauf/lauf-store-react` enables React apps to use [@lauf/lauf-store](https://github.com/cefn/lauf/tree/main/modules/lauf-store)
 for state-management, providing a simple substitute for Flux/Redux based on
 [Immer](https://immerjs.github.io/immer/).
