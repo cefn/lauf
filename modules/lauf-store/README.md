@@ -1,13 +1,13 @@
 ## State Management for Javascript with Typescript support.
 
+[![codecov](https://codecov.io/gh/cefn/lauf/branch/main/graph/badge.svg?token=H4O0Wmvho5&flag=lauf-store)](https://codecov.io/gh/cefn/lauf)
+
 <img src="https://github.com/cefn/lauf/raw/main/vector/logo.png" alt="Logo - Image of Runner" align="left"><br></br>
 
 # Lauf Store
 
 <sub><sup>Logo - Diego Naive, Noun Project.</sup></sub>
 <br></br>
-
-[![codecov](https://codecov.io/gh/cefn/lauf/branch/main/graph/badge.svg?token=H4O0Wmvho5&flag=lauf-store)](https://codecov.io/gh/cefn/lauf)
 
 `@lauf/lauf-store` provides a minimal reactive state-management solution, a simple substitute for Flux/Redux based on [Immer](https://immerjs.github.io/immer/).
 
