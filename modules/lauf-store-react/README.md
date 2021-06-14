@@ -9,6 +9,12 @@
 <sub><sup>Logo - Diego Naive, Noun Project.</sup></sub>
 <br></br>
 
+### Install
+
+```
+npm install @lauf/lauf-store-react --save
+```
+
 `@lauf/lauf-store-react` enables React apps to use [@lauf/lauf-store](https://github.com/cefn/lauf/tree/main/modules/lauf-store)
 for state-management, providing a simple substitute for Flux/Redux based on
 [Immer](https://immerjs.github.io/immer/).

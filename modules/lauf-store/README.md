@@ -9,6 +9,12 @@
 <sub><sup>Logo - Diego Naive, Noun Project.</sup></sub>
 <br></br>
 
+### Install
+
+```
+npm install @lauf/lauf-store --save
+```
+
 `@lauf/lauf-store` provides a minimal reactive state-management solution, a simple substitute for Flux/Redux based on [Immer](https://immerjs.github.io/immer/).
 
 It is incredibly lightweight and suitable for adoption with almost any server-side or client-side framework in Typescript or Javascript.
