@@ -1,4 +1,4 @@
-name: Node.js Test CI
+name: Generate and Publish Docs
 
 on:
   push:
