@@ -1,6 +1,6 @@
 {
   "name": "@lauf/store-react",
-  "version": "0.1.0-beta.15",
+  "version": "0.1.0",
   "main": "dist/index.js",
   "files": [
     "README.md",
@@ -15,7 +15,7 @@
     "typedoc": "typedoc --out api ./src/index.ts ../store/src/index.ts --readme none --includes ../../"
   },
   "dependencies": {
-    "@lauf/store": "^0.1.0-beta.15"
+    "@lauf/store": "^0.1.0"
   },
   "peerDependencies": {
     "react": "^17.0.1"
