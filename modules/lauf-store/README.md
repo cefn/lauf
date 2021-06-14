@@ -19,21 +19,43 @@ npm install @lauf/lauf-store --save
 
 It is incredibly lightweight and suitable for adoption with almost any server-side or client-side framework in Typescript or Javascript.
 
-Browse the [API](https://cefn.com/lauf/api) or see the minimal Typescript example inlined below **_without_** React, showing how to define a new application state, track changes and make edits.
-
 A React binding of `@lauf/lauf-store` is provided by the [@lauf/lauf-store-react](https://www.npmjs.com/package/@lauf/lauf-store-react) package.
+
+Browse the [API](https://cefn.com/lauf/api) or see the minimal JS and TS examples inlined below **_without_** React, showing how to define a new application state, track changes and make edits.
+
+### In Javascript
+
+```javascript
+const { createStore } = require("@lauf/lauf-store");
+
+// Create and initialize a store
+const store = createStore({
+  roses: "red",
+  violets: "blue",
+});
+
+// Watch for changes
+store.watch(console.log);
+
+// Change the color - this change will automatically call console.log in the next tick, producing
+// { roses: 'white', violets: 'blue' }
+store.edit((draft) => {
+  draft.roses = "white";
+});
+```
+
+### In Typescript
 
 ```typescript
 import { createStore, Immutable } from "@lauf/lauf-store";
 
 // Define a type for Store state
-export interface AppState {
-  color: [number, number, number];
-}
+export type AppState = Record<string,string>;
 
 // Define the initial Store state
 const INITIAL_STATE: Immutable<AppState> = {
-  color: [0, 0, 0],
+  roses: "red",
+  violets: "blue",
 } as const;
 
 // Create and initialize a store
@@ -42,9 +64,10 @@ const store = createStore(INITIAL_STATE);
 // Watch for changes
 store.watch(console.log);
 
-// Change the color - this will automatically call console.log and print the modified app state
+// Change the color - this change will automatically call console.log in the next tick, producing
+// { roses: 'white', violets: 'blue' }
 store.edit((draft) => {
-  draft.color = [255, 0, 0];
+  draft.roses = "white";
 });
 ```
 
