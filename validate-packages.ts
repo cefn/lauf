@@ -128,12 +128,6 @@ const RULES: readonly PackageJsonRule[] = [
     status: "error",
   },
   {
-    path: "scripts.typedoc",
-    expected: "typedoc --out api ./src/index.ts",
-    packagePaths: "modules/**",
-    status: "warning",
-  },
-  {
     path: "scripts.build",
     expected: "tsc --build ./tsconfig.build.json",
     packagePaths: "modules/**",

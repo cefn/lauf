@@ -8,8 +8,7 @@
     "test": "jest",
     "check": "tsc --noEmit",
     "build": "tsc --build ./tsconfig.build.json",
-    "prepare": "yarn run test && yarn run build",
-    "typedoc": "typedoc --out api ./src/index.ts"
+    "prepare": "yarn run test && yarn run build"
   },
   "devDependencies": {
     "typescript": "^4.2.2"

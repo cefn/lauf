@@ -19,7 +19,7 @@
     "check:lauf": "lerna run --scope '@lauf/*' check",
     "validate": "ts-node ./validate-packages.ts",
     "release": "lerna publish",
-    "docs": "cd modules/store-react && yarn run typedoc && cp -rf api ../../api"
+    "docs": "typedoc --tsconfig tsconfig.typedoc.json --includes ./ --readme none"
   },
   "devDependencies": {
     "@babel/core": "^7.13.8",
