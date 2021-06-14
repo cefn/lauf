@@ -1,0 +1,7 @@
+{
+  "entryPoints": [
+    "modules/store/src/index.ts",
+    "modules/store-react/src/index.ts"
+  ],
+  "out": "api"
+}

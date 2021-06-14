@@ -11,8 +11,7 @@
     "test": "jest",
     "check": "tsc --noEmit",
     "build": "tsc --build ./tsconfig.build.json",
-    "prepare": "yarn run test && yarn run build",
-    "typedoc": "typedoc --out api ./src/index.ts ../store/src/index.ts --readme none --includes ../../"
+    "prepare": "yarn run test && yarn run build"
   },
   "dependencies": {
     "@lauf/store": "^0.1.0"
