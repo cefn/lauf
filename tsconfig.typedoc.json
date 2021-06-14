@@ -1,0 +1,18 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    /** CEFN: Monorepo config **/
+    "baseUrl": ".",
+    "paths": {
+      "@lauf/*": ["modules/*/src"]
+    },
+    "declaration": false,
+    "noEmit": true /* Do not emit outputs. */
+  },
+  "include": [
+    "modules/lock/src/**/*",
+    "modules/queue/src/**/*",
+    "modules/store/src/**/*",
+    "modules/store-react/src/**/*"
+  ]
+}
