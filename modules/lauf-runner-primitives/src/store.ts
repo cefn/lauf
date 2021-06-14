@@ -4,13 +4,7 @@ import {
   ActionPlan,
   ActionSequence,
 } from "@lauf/lauf-runner";
-import {
-  Editor,
-  Immutable,
-  RootState,
-  Selector,
-  Store,
-} from "@lauf/lauf-store";
+import { Editor, Immutable, RootState, Selector, Store } from "@lauf/store";
 import { BasicMessageQueue, MessageQueue } from "@lauf/lauf-queue";
 
 import { receive } from "./queue";

@@ -1,6 +1,6 @@
 import { BasicMessageQueue, MessageQueue } from "@lauf/lauf-queue";
 import { StorePlans, QueuePlans } from "@lauf/lauf-runner-primitives";
-import { Immutable, Selector, Store, createStore } from "@lauf/lauf-store";
+import { Immutable, Selector, Store, createStore } from "@lauf/store";
 
 /** GAME STATE */
 

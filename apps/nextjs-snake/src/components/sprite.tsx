@@ -1,5 +1,5 @@
 import React from "react";
-import { Immutable } from "@lauf/lauf-store";
+import { Immutable } from "@lauf/store";
 import { GRID_MAX, GRID_SPAN } from "../domain";
 
 export type SpriteSheet<TileName extends string> = Immutable<{
@@ -11,12 +11,12 @@ export type SpriteSheet<TileName extends string> = Immutable<{
   };
 }>;
 
-type SpriteProps<SpriteName extends string> = {
+interface SpriteProps<SpriteName extends string> {
   spriteSheet: SpriteSheet<SpriteName>;
   spriteName: SpriteName;
   gridX: number;
   gridY: number;
-};
+}
 
 export function posToStyle<SpriteName extends string>(
   spriteProps: SpriteProps<SpriteName>
@@ -24,11 +24,11 @@ export function posToStyle<SpriteName extends string>(
   const {
     gridX,
     gridY,
-    spriteSheet: { spriteWidth, spriteHeight },
+    spriteSheet: { spriteWidth, spriteHeight }
   } = spriteProps;
   return {
     left: `${(gridX + GRID_MAX) * spriteWidth}px`,
-    top: `${(GRID_SPAN - (gridY + GRID_MAX + 1)) * spriteHeight}px`, //vertical axis is inverted in browser
+    top: `${(GRID_SPAN - (gridY + GRID_MAX + 1)) * spriteHeight}px` // vertical axis is inverted in browser
   };
 }
 
@@ -60,7 +60,7 @@ export function Sprite<SpriteName extends string>(
         left,
         top,
         backgroundImage,
-        backgroundPosition,
+        backgroundPosition
       }}
     />
   );

@@ -1,4 +1,4 @@
-import { createStore, Immutable, RootState, Watcher } from "@lauf/lauf-store";
+import { createStore, Immutable, RootState, Watcher } from "@lauf/store/src";
 import { StoreFactory, createStoreSuite } from "./storeSuite";
 
 const rootStoreFactory: StoreFactory = <State extends RootState>(

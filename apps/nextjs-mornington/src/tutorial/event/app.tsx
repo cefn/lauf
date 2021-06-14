@@ -1,5 +1,5 @@
 import { ChangeEvent, FormEvent, useState, useEffect } from "react";
-import { useSelected } from "@lauf/lauf-store-react";
+import { useSelected } from "@lauf/store-react";
 import { performSequence } from "@lauf/lauf-runner";
 import { Game, selectWinner, selectMoves, selectTurn } from "./types";
 import { launchPlan } from "./plan";
@@ -17,7 +17,7 @@ export function GameRoot() {
     launch();
   }, []);
 
-  return game ? <SimpleGame {...game} /> : <p>Launching...</p>;
+  return (game != null) ? <SimpleGame {...game} /> : <p>Launching...</p>;
 }
 
 function Summary({ store }: Game) {

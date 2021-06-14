@@ -1,6 +1,6 @@
 ## State Management for Javascript with Typescript support.
 
-[![codecov](https://codecov.io/gh/cefn/lauf/branch/main/graph/badge.svg?token=H4O0Wmvho5&flag=lauf-store)](https://codecov.io/gh/cefn/lauf)
+[![codecov](https://codecov.io/gh/cefn/lauf/branch/main/graph/badge.svg?token=H4O0Wmvho5&flag=store)](https://codecov.io/gh/cefn/lauf)
 
 <img src="https://github.com/cefn/lauf/raw/main/vector/logo.png" alt="Logo - Image of Runner" align="left"><br></br>
 
@@ -12,21 +12,21 @@
 ### Install
 
 ```
-npm install @lauf/lauf-store --save
+npm install @lauf/store --save
 ```
 
-`@lauf/lauf-store` provides a minimal reactive state-management solution, a simple substitute for Flux/Redux based on [Immer](https://immerjs.github.io/immer/).
+`@lauf/store` provides a minimal reactive state-management solution, a simple substitute for Flux/Redux based on [Immer](https://immerjs.github.io/immer/).
 
 It is incredibly lightweight and suitable for adoption with almost any server-side or client-side framework in Typescript or Javascript.
 
-A React binding of `@lauf/lauf-store` is provided by the [@lauf/lauf-store-react](https://www.npmjs.com/package/@lauf/lauf-store-react) package.
+A React binding of `@lauf/store` is provided by the [@lauf/store-react](https://www.npmjs.com/package/@lauf/store-react) package.
 
 Browse the [API](https://cefn.com/lauf/api) or see the minimal JS and TS examples inlined below **_without_** React, showing how to define a new application state, track changes and make edits.
 
 ### In Javascript
 
 ```javascript
-const { createStore } = require("@lauf/lauf-store");
+const { createStore } = require("@lauf/store");
 
 // Create and initialize a store
 const store = createStore({
@@ -47,10 +47,10 @@ store.edit((draft) => {
 ### In Typescript
 
 ```typescript
-import { createStore, Immutable } from "@lauf/lauf-store";
+import { createStore, Immutable } from "@lauf/store";
 
 // Define a type for Store state
-export type AppState = Record<string,string>;
+export type AppState = Record<string, string>;
 
 // Define the initial Store state
 const INITIAL_STATE: Immutable<AppState> = {
@@ -71,4 +71,4 @@ store.edit((draft) => {
 });
 ```
 
-Visit [@lauf/lauf-store-react](https://www.npmjs.com/package/@lauf/lauf-store-react) to learn about `useSelected()` which can refresh React components when only a selected part of your state changes.
+Visit [@lauf/store-react](https://www.npmjs.com/package/@lauf/store-react) to learn about `useSelected()` which can refresh React components when only a selected part of your state changes.

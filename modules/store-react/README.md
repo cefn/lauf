@@ -1,6 +1,6 @@
 ## State Management for React with Typescript support.
 
-[![codecov](https://codecov.io/gh/cefn/lauf/branch/main/graph/badge.svg?token=H4O0Wmvho5&flag=lauf-store-react)](https://codecov.io/gh/cefn/lauf)
+[![codecov](https://codecov.io/gh/cefn/lauf/branch/main/graph/badge.svg?token=H4O0Wmvho5&flag=store-react)](https://codecov.io/gh/cefn/lauf)
 
 <img src="https://github.com/cefn/lauf/raw/main/vector/logo.png" alt="Logo - Image of Runner" align="left"><br></br>
 
@@ -12,10 +12,10 @@
 ### Install
 
 ```
-npm install @lauf/lauf-store-react --save
+npm install @lauf/store-react --save
 ```
 
-`@lauf/lauf-store-react` enables React apps to use [@lauf/lauf-store](https://github.com/cefn/lauf/tree/main/modules/lauf-store)
+`@lauf/store-react` enables React apps to use [@lauf/store](https://github.com/cefn/lauf/tree/main/modules/store)
 for state-management, providing a simple substitute for Flux/Redux based on
 [Immer](https://immerjs.github.io/immer/).
 
@@ -35,8 +35,8 @@ and how controls can change the state.
 ```typescript
 import React from "react";
 import ReactDOM from "react-dom";
-import { Immutable, Store } from "@lauf/lauf-store";
-import { useSelected, useStore } from "@lauf/lauf-store-react";
+import { Immutable, Store } from "@lauf/store";
+import { useSelected, useStore } from "@lauf/store-react";
 
 interface AppState {
   counter: number;

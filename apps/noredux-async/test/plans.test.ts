@@ -5,7 +5,7 @@ import {
   cutAfterReaction,
   ReactionCut,
 } from "@lauf/lauf-runner-trial";
-import { createStore, Immutable } from "@lauf/lauf-store";
+import { createStore, Immutable } from "@lauf/store";
 
 import {
   mainPlan,

@@ -1,7 +1,7 @@
 import React, { FC, useEffect, useState } from "react";
 import Head from "next/head";
-import { createStore, Store } from "@lauf/lauf-store/src";
-import { useSelected } from "@lauf/lauf-store-react";
+import { createStore, Store } from "@lauf/store/src";
+import { useSelected } from "@lauf/store-react";
 import { AppState, INITIAL_STATE, RED, GREEN, BLUE } from "./state";
 import { decreaseColor, increaseColor } from "./change";
 
