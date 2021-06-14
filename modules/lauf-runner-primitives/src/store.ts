@@ -5,7 +5,7 @@ import {
   ActionSequence,
 } from "@lauf/lauf-runner";
 import { Editor, Immutable, RootState, Selector, Store } from "@lauf/store";
-import { BasicMessageQueue, MessageQueue } from "@lauf/lauf-queue";
+import { BasicMessageQueue, MessageQueue } from "@lauf/queue";
 
 import { receive } from "./queue";
 import { ExitStatus, Follower, Controls } from "./types";

@@ -1,7 +1,7 @@
 import { follow, edit, receive } from "@lauf/lauf-runner-primitives";
 import { ActionSequence, backgroundPlan } from "@lauf/lauf-runner";
 import { createStore } from "@lauf/store";
-import { BasicMessageQueue } from "@lauf/lauf-queue";
+import { BasicMessageQueue } from "@lauf/queue";
 import { Game, GameState, Player, Station } from "./types";
 import { alert, lookupStationData, prompt } from "./action";
 

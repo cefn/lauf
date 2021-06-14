@@ -1,4 +1,4 @@
-import { MessageQueue } from "@lauf/lauf-queue";
+import { MessageQueue } from "@lauf/queue";
 import { Immutable, Store } from "@lauf/store";
 
 export type Player = string;

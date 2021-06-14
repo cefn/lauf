@@ -1,5 +1,5 @@
 import { Action, planOfAction } from "@lauf/lauf-runner";
-import { MessageQueue } from "@lauf/lauf-queue";
+import { MessageQueue } from "@lauf/queue";
 
 export class Receive<T> implements Action<T> {
   constructor(readonly queue: MessageQueue<T>) {}

@@ -6,7 +6,7 @@ import {
   raceWait,
   backgroundPlan,
 } from "@lauf/lauf-runner";
-import { MessageQueue } from "@lauf/lauf-queue";
+import { MessageQueue } from "@lauf/queue";
 import { receive } from "@lauf/lauf-runner-primitives";
 import {
   createAppModel,

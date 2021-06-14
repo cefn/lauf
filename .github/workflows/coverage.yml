@@ -10,15 +10,14 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [14.x]
-        module-name: [store, store-react, lauf-runner]
+        module-name: [store, store-react, queue, lock, lauf-runner]
 
     steps:
       - uses: actions/checkout@master
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 14.x
       - run: yarn
       - run: cd modules/${{matrix.module-name}} && yarn run test
       - uses: codecov/codecov-action@v1

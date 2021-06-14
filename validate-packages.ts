@@ -163,12 +163,13 @@ const RULES: readonly PackageJsonRule[] = [
     packagePaths: "modules/draft/*/package.json",
     status: "error",
   },
-  {
-    path: "private",
-    expected: undefined,
-    packagePaths: "modules/*/package.json",
-    status: "error",
-  },
+  // Rule temporarily disabled while lauf-runner is held back for v1.0.0
+  // {
+  //   path: "private",
+  //   expected: undefined,
+  //   packagePaths: "modules/*/package.json",
+  //   status: "error",
+  // },
   {
     path: "publishConfig",
     expected: {
