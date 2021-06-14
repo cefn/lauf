@@ -1,7 +1,7 @@
 import { Game, GameState, Player, Station } from "./types";
 import { follow, edit } from "@lauf/lauf-runner-primitives";
 import { ActionSequence, backgroundPlan } from "@lauf/lauf-runner";
-import { createStore } from "@lauf/lauf-store";
+import { createStore } from "@lauf/store";
 import { prompt } from "./action";
 
 function createGame(): Game {

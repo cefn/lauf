@@ -1,4 +1,4 @@
-import { useSelected } from "@lauf/lauf-store-react";
+import { useSelected } from "@lauf/store-react";
 import { selectSegments, StoreProps } from "../domain";
 import { Segment } from "./segment";
 

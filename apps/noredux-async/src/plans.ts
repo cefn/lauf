@@ -1,4 +1,4 @@
-import { createStore, Store, Selector, Immutable } from "@lauf/lauf-store";
+import { createStore, Store, Selector, Immutable } from "@lauf/store";
 import { edit, follow } from "@lauf/lauf-runner-primitives";
 import {
   Action,

@@ -1,4 +1,4 @@
-import { createStore, Store } from "@lauf/lauf-store";
+import { createStore, Store } from "@lauf/store";
 
 export type Player = string;
 export type Station = string;

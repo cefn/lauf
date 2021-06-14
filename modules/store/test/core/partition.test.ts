@@ -4,7 +4,7 @@ import {
   Immutable,
   RootState,
   Watcher,
-} from "@lauf/lauf-store/src";
+} from "@lauf/store/src";
 import { createDeferredMock } from "../util";
 import { createStoreSuite, StoreFactory } from "./storeSuite";
 

@@ -1,7 +1,7 @@
 /**
- * [[include:modules/lauf-store-react/README.md]]
+ * [[include:modules/store-react/README.md]]
  *
- * @module @lauf/lauf-store-react
+ * @module @lauf/store-react
  */
 import {
   createStore,
@@ -9,7 +9,7 @@ import {
   Selector,
   Immutable,
   RootState,
-} from "@lauf/lauf-store";
+} from "@lauf/store";
 import { useState, useEffect } from "react";
 
 /** When the component is first mounted, this hook creates and returns a a new

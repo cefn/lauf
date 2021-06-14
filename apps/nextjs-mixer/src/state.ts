@@ -1,4 +1,4 @@
-import { Immutable } from "@lauf/lauf-store/src";
+import { Immutable } from "@lauf/store/src";
 
 export type Rgb = [number, number, number];
 

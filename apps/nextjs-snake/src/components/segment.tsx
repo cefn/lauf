@@ -1,4 +1,4 @@
-import { Immutable } from "@lauf/lauf-store";
+import { Immutable } from "@lauf/store";
 import { Segment, SegmentPosition } from "../domain";
 import { getSegmentSpriteName, SPRITE_SHEET } from "./graphics";
 import { Sprite } from "./sprite";
@@ -6,7 +6,7 @@ import { Sprite } from "./sprite";
 export function Segment(segmentPosition: Immutable<SegmentPosition>) {
   const { segments, index } = segmentPosition;
   const {
-    pos: [gridX, gridY],
+    pos: [gridX, gridY]
   } = segments[index] as Segment;
   const spriteName = getSegmentSpriteName(segmentPosition);
 
@@ -16,7 +16,7 @@ export function Segment(segmentPosition: Immutable<SegmentPosition>) {
         spriteSheet: SPRITE_SHEET,
         spriteName,
         gridX,
-        gridY,
+        gridY
       }}
     />
   );

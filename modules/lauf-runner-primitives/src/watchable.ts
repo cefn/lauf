@@ -1,5 +1,5 @@
 import { Action, planOfAction } from "@lauf/lauf-runner";
-import { WatchableState } from "@lauf/lauf-store";
+import { WatchableState } from "@lauf/store";
 
 class GetValue<T> implements Action<T> {
   constructor(readonly watchableState: WatchableState<T>) {}

@@ -1,6 +1,6 @@
 import { ChangeEvent, FormEvent, useState } from "react";
 import { createGame, Game } from "./game";
-import { useSelected } from "@lauf/lauf-store-react";
+import { useSelected } from "@lauf/store-react";
 
 function Summary({ store }: Game) {
   const moves = useSelected(store, (state) => state.moves);

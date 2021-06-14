@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { Immutable, Store } from "@lauf/lauf-store";
-import { useSelected, useStore } from "@lauf/lauf-store-react";
+import { Immutable, Store } from "@lauf/store";
+import { useSelected, useStore } from "@lauf/store-react";
 
 interface AppState {
   counter: number;

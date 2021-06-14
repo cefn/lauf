@@ -1,23 +1,28 @@
 {
-  "name": "@lauf/lauf-store",
+  "name": "@lauf/store-react",
   "version": "0.1.0-beta.14",
+  "main": "dist/index.js",
   "files": [
     "README.md",
     "dist"
   ],
-  "main": "dist/index.js",
   "license": "MIT",
   "scripts": {
     "test": "jest",
     "check": "tsc --noEmit",
     "build": "tsc --build ./tsconfig.build.json",
     "prepare": "yarn run test && yarn run build",
-    "typedoc": "typedoc --out api ./src/index.ts"
+    "typedoc": "typedoc --out api ./src/index.ts ../store/src/index.ts --readme none --includes ../../"
   },
   "dependencies": {
-    "immer": "^8.0.1"
+    "@lauf/store": "^0.1.0-beta.14"
+  },
+  "peerDependencies": {
+    "react": "^17.0.1"
   },
   "devDependencies": {
+    "@testing-library/react": "^11.2.5",
+    "@testing-library/user-event": "^13.1.9",
     "typedoc": "^0.20.36",
     "typescript": "^4.2.2"
   },
@@ -25,7 +30,7 @@
   "publishConfig": {
     "access": "public"
   },
-  "homepage": "https://github.com/cefn/lauf/tree/main/modules/lauf-store#readme",
+  "homepage": "https://github.com/cefn/lauf/tree/main/modules/store-react#readme",
   "bugs": {
     "url": "https://github.com/cefn/lauf/issues",
     "email": "lauf@cefn.com"

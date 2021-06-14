@@ -1,5 +1,5 @@
 import type { MessageQueue } from "./types";
-import type { Watcher } from "@lauf/lauf-store";
+import type { Watcher } from "@lauf/store";
 
 export class BasicMessageQueue<T> implements MessageQueue<T> {
   items: ReadonlyArray<T> = [];

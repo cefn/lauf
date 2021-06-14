@@ -1,4 +1,4 @@
-import { Immutable } from "@lauf/lauf-store";
+import { Immutable } from "@lauf/store";
 import { SegmentPosition } from "../domain";
 import { SpriteSheet } from "./sprite";
 

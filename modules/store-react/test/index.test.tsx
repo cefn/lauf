@@ -6,7 +6,7 @@ import React from "react";
 import { useRootState, useSelected, useStore } from "../src";
 import { render, waitFor, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { createStore, Selector, Store } from "@lauf/lauf-store";
+import { createStore, Selector, Store } from "@lauf/store";
 import { act } from "react-dom/test-utils";
 
 /** IMAGINARY APPLICATION-SPECIFIC DATA, COMPONENTS, SELECTORS */

@@ -1,6 +1,6 @@
 import React, { MouseEvent } from "react";
-import { Store } from "@lauf/lauf-store";
-import { useSelected } from "@lauf/lauf-store-react";
+import { Store } from "@lauf/store";
+import { useSelected } from "@lauf/store-react";
 import {
   SubredditName,
   subredditNames,
@@ -8,14 +8,14 @@ import {
   selectFocusedCache,
   AppState,
   triggerSetFocus,
-  triggerFetchFocused,
+  triggerFetchFocused
 } from "../plans";
 import { Picker } from "../components/Picker";
 import { Posts } from "../components/Posts";
 
-type AppParams = {
+interface AppParams {
   store: Store<AppState>;
-};
+}
 
 export function App({ store }: AppParams) {
   const focused = useSelected(store, selectFocus);
@@ -29,7 +29,7 @@ export function App({ store }: AppParams) {
   };
 
   let postsPanel;
-  if (!cache) {
+  if (cache == null) {
     postsPanel = <p>Loading</p>;
   } else {
     const { posts, isFetching, lastUpdated } = cache;

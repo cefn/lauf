@@ -1,4 +1,4 @@
-import { Store } from "@lauf/lauf-store";
+import { Store } from "@lauf/store";
 import { AppState, Hue, Rgb } from "./state";
 
 export function clamp(value: number, min: number, max: number) {
