@@ -1,4 +1,4 @@
-import { BasicMessageQueue, MessageQueue } from "@lauf/lauf-queue";
+import { BasicMessageQueue, MessageQueue } from "@lauf/queue";
 import { StorePlans, QueuePlans } from "@lauf/lauf-runner-primitives";
 import { Immutable, Selector, Store, createStore } from "@lauf/store";
 

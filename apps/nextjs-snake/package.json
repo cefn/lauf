@@ -11,7 +11,7 @@
     "check": "tsc --noEmit"
   },
   "dependencies": {
-    "@lauf/lauf-queue": "^0.1.0-beta.15",
+    "@lauf/queue": "^0.1.0-beta.15",
     "@lauf/lauf-runner": "^0.1.0-beta.14",
     "@lauf/lauf-runner-primitives": "^0.1.0-beta.15",
     "@lauf/store": "^0.1.0-beta.15",

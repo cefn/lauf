@@ -51,6 +51,6 @@ To get started understanding and using the approach, read the [introductory tuto
 
 ## Primitives
 
-Lauf includes primitives to coordinate shared resources and state between concurrent `ActionSequences`. Currently a [Store](./modules/store) for state, a [Message Queue](./modules/lauf-queue) for events and a [Mutex or Lock](./modules/lauf-lock) to control resource-sharing.
+Lauf includes primitives to coordinate shared resources and state between concurrent `ActionSequences`. Currently a [Store](./modules/store) for state, a [Message Queue](./modules/queue) for events and a [Mutex or Lock](./modules/lock) to control resource-sharing.
 
 These are minimal Promise-based implementations, independent of [lauf-runner](./modules/lauf-runner) `ActionSequences`. Definitions that wrap these primitive features for `ActionSequences` are distributed in the [lauf-runner-primitives](./modules/lauf-runner-primitives) module.
