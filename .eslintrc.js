@@ -19,12 +19,9 @@ module.exports = {
     },
   },
   extends: [
-    "plugin:@typescript-eslint/recommended",
-    "plugin:@typescript-eslint/eslint-recommended",
-    "plugin:@typescript-eslint/recommended-requiring-type-checking",
-    "plugin:import/typescript",
-    "plugin:jest/recommended",
-    "eslint-config-standard-with-typescript",
+    //TODO invest the time to meet airbnb linting standards
+    //"eslint-config-airbnb-typescript"
+    "eslint-config-standard-typescript",
     "eslint-config-prettier",
   ],
   env: {
