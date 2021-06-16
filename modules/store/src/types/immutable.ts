@@ -9,9 +9,8 @@ import type { castDraft, Draft } from "immer";
  * `T` and its descendant properties, telling the compiler that no change should
  * be made anywhere in a Store's state tree.
  *
- * Primitive properties are already immutable by definition. Descendants
- * satisfying [[RootState]] are processed recursively. Other descendants of
- * `T`are omitted.
+ * Primitive properties are already immutable by definition. Functions are treated
+ * as primitive values. All other objects and arrays are processed recursively.
  *
  */
 export type Immutable<T> = T extends (...args: any[]) => any
@@ -45,10 +44,10 @@ type CastDraft = typeof castDraft;
  * changes as well as returning a value, (easily done by accident in simple
  * arrow functions).
  *
- * For careful use in rare cases, Immer's `castDraft` is provided as the second
+ * For careful use in rare cases, Immer's `castDraft` is available in the second
  * editor argument. It can cast parts of previous `Immutable` states to be
- * 'mutable' for assignment to the next `draft` state. If you use this feature,
- * items can be added to the draft state, but no changes be made to them.
+ * 'mutable' for assignment to the next `draft` state. Thos items can be added
+ * to the draft state, but no changes should actually be made to them.
  *
  * See {@link https://immerjs.github.io/immer/ | Immer docs} for more detail on
  * the conventions for Immer `producers`.
