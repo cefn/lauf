@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/ban-types */
 import type { castDraft, Draft } from "immer";
-import { RootState } from "./store";
 
 /** Recursive implementation of `Readonly<T>`.
  *
@@ -15,7 +14,11 @@ import { RootState } from "./store";
  * `T`are omitted.
  *
  */
-export type Immutable<T> = T extends object ? ImmutableIndex<T> : T;
+export type Immutable<T> = T extends (...args: any[]) => any
+  ? T
+  : T extends object
+  ? ImmutableIndex<T>
+  : T;
 
 /** Recursive Readonly implementation for any (indexable) [[RootState]] such as
  * an array or object */
