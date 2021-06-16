@@ -8,7 +8,7 @@ interface AppState {
 }
 
 const INITIAL_STATE: Immutable<AppState> = {
-  counter: 0
+  counter: 0,
 } as const;
 
 interface StoreProps {
@@ -21,25 +21,13 @@ const Display = ({ store }: StoreProps) => {
 };
 
 const Increment = ({ store }: StoreProps) => (
-  <button
-    onClick={() =>
-      store.edit((draft) => {
-        draft.counter += 1;
-      })
-    }
-  >
+  <button onClick={() => store.edit((draft) => (draft.counter += 1))}>
     Increase
   </button>
 );
 
 const Decrement = ({ store }: StoreProps) => (
-  <button
-    onClick={() =>
-      store.edit((draft) => {
-        draft.counter -= 1;
-      })
-    }
-  >
+  <button onClick={() => store.edit((draft) => (draft.counter -= 1))}>
     Decrease
   </button>
 );

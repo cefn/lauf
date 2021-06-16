@@ -12,11 +12,26 @@ import { WatchableState } from "./watchable";
  * [[Selector|selected]] branch of the state is the same ***item*** as before,
  * it is guaranteed to contain all the same ***values*** as before.
  *
- * This guarantee enables Watchers, renderers like
+ * This guarantee is crucial.
+ *
+ * Immutability allows Watchers you write, renderers like
  * [[https://reactjs.org/|React]] and memoizers like
- * [[https://github.com/reduxjs/reselect|Reselect]] to efficiently re-render or
- * recompute ***only*** when changes to an item make it necessary - that is,
- * when `Object.is(prevItem,nextItem)===false`.
+ * [[https://github.com/reduxjs/reselect|Reselect]] or React's
+ * [useMemo()](https://reactjs.org/docs/hooks-reference.html#usememo) to use
+ * 'shallow equality checking'. They can efficiently check when changes to an
+ * item make it necessary to re-render or recompute - simply
+ * when`Object.is(prevItem,nextItem)===false`.
+ *
+ * Immutability eliminates bugs and race conditions in state-change event
+ * handlers. Handlers notified of a change effectively have a snapshot of state.
+ * You don't have to handle cases where other code changed the state again
+ * before your handler read the data. N.B. whenever you [[edit|Editor]] data,
+ * you DO work with the current, not historical state, but this reconciliation
+ * is unavoidable and manageable.
+ *
+ * Finally, Immutability establishes a basis for advanced debugging techniques such as
+ * time-travel debugging since every state change notification includes a
+ * momentary snapshot of the app state which can be stored indefinitely.
  *
  * ## Watching State
  *
