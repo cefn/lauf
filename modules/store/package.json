@@ -1,5 +1,6 @@
 {
   "name": "@lauf/store",
+  "description": "State Management for Javascript with Typescript support.",
   "version": "0.1.1",
   "files": [
     "README.md",
