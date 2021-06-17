@@ -96,7 +96,7 @@ const RULES: readonly PackageJsonRule[] = [
   },
   {
     path: "devDependencies.typescript",
-    expected: "^4.2.2",
+    expected: "^4.3.4",
     status: "error",
   },
   {
