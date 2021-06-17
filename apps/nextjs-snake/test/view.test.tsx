@@ -1,7 +1,7 @@
 import React from "react";
 import assert from "assert";
 import { render, act } from "@testing-library/react";
-import { performSequence, promiseExpiry } from "@lauf/lauf-runner";
+import { promiseExpiry } from "@lauf/lauf-runner";
 import { mainPlan, _test_game } from "../src/game";
 import { Game } from "../src/view";
 import { SPRITE_SHEET } from "../src/components/graphics";
@@ -12,12 +12,12 @@ const { resetGame, eatFruit } = _test_game;
 
 describe.skip("Passing test case  - incompatible jsx config", () => {
   test("Selector tracks fruitPos after replacement", async () => {
-    //launch app
-    const appModel = await performSequence(mainPlan());
+    // launch app
+    const appModel = mainPlan();
     const { gameStore, inputQueue } = appModel;
     const { container } = render(<Game {...appModel} />);
 
-    //define routine to validate style-rendered position
+    // define routine to validate style-rendered position
     const validateFruitPos = () => {
       const [gridX, gridY] = gameStore.read().fruitPos;
       const fruitSprite = container.querySelector(`[data-testclass="FRUIT"]`);
@@ -27,7 +27,7 @@ describe.skip("Passing test case  - incompatible jsx config", () => {
         gridX,
         gridY,
         spriteName: "FRUIT",
-        spriteSheet: SPRITE_SHEET,
+        spriteSheet: SPRITE_SHEET
       });
       expect(actualStyle).toMatchObject(expectedStyle);
     };
@@ -40,12 +40,12 @@ describe.skip("Passing test case  - incompatible jsx config", () => {
           inputQueue.send([direction, false]);
         }
       }
-      await performSequence(eatFruit(appModel));
-      await performSequence(eatFruit(appModel));
+      await eatFruit(appModel);
+      await eatFruit(appModel);
     });
     validateFruitPos();
     await act(async () => {
-      //GO IN A CIRCLE TO EAT YOURSELF
+      // GO IN A CIRCLE TO EAT YOURSELF
       for (const direction of [
         "LEFT",
         "UP",
@@ -54,7 +54,7 @@ describe.skip("Passing test case  - incompatible jsx config", () => {
         "LEFT",
         "UP",
         "RIGHT",
-        "DOWN",
+        "DOWN"
       ] as Direction[]) {
         inputQueue.send([direction, true]);
         inputQueue.send([direction, false]);

@@ -3,7 +3,7 @@ import { Segment, SegmentPosition } from "../domain";
 import { getSegmentSpriteName, SPRITE_SHEET } from "./graphics";
 import { Sprite } from "./sprite";
 
-export function Segment(segmentPosition: Immutable<SegmentPosition>) {
+export function SegmentSprite(segmentPosition: Immutable<SegmentPosition>) {
   const { segments, index } = segmentPosition;
   const {
     pos: [gridX, gridY]

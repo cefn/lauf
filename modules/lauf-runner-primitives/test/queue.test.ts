@@ -1,10 +1,10 @@
-import { BasicMessageQueue } from "@lauf/queue";
+import { createQueue } from "@lauf/queue";
 import { performPlan, performSequence } from "@lauf/lauf-runner";
 import { send, receive } from "@lauf/lauf-runner-primitives";
 
 describe("send,receive behaviour", () => {
   test("Simple send and receive", async () => {
-    const queue = new BasicMessageQueue();
+    const queue = createQueue();
     const sendEnding = await performPlan(function* () {
       return yield* send(queue, "foo");
     });
@@ -16,7 +16,7 @@ describe("send,receive behaviour", () => {
   });
 
   test("receive: messages in same order as sent", async () => {
-    const queue = new BasicMessageQueue();
+    const queue = createQueue();
     queue.send("foo");
     queue.send("bar");
     queue.send("baz");
@@ -31,7 +31,7 @@ describe("send,receive behaviour", () => {
   });
 
   test("receive: works before sending", async () => {
-    const queue = new BasicMessageQueue();
+    const queue = createQueue();
     const plan = function* () {
       const received = yield* receive(queue);
       return received;
@@ -45,7 +45,7 @@ describe("send,receive behaviour", () => {
   test("send: returns false on overfilling queue", async () => {
     const maxItems = 2;
     const maxConsumers = Number.MAX_SAFE_INTEGER;
-    const queue = new BasicMessageQueue<string>(maxItems, maxConsumers);
+    const queue = createQueue<string>(maxItems, maxConsumers);
     expect(await performSequence(send(queue, "foo"))).toEqual(true);
     expect(await performSequence(send(queue, "bar"))).toEqual(true);
     expect(await performSequence(send(queue, "baz"))).toEqual(false);
@@ -54,7 +54,7 @@ describe("send,receive behaviour", () => {
   test("receive: throws on oversubscribing queue", () => {
     const maxItems = Number.MAX_SAFE_INTEGER;
     const maxConsumers = 2;
-    const queue = new BasicMessageQueue<string>(maxItems, maxConsumers);
+    const queue = createQueue<string>(maxItems, maxConsumers);
     queue.receive();
     queue.receive();
     expect(() => {

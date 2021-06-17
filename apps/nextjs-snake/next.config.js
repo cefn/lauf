@@ -1,8 +1,5 @@
 module.exports = () => {
   return {
-    // future: {
-    //   webpack5: true,
-    // },
     webpack(config) {
       config.module.rules.push({
         test: /\.tsx?$/,
@@ -10,6 +7,5 @@ module.exports = () => {
       });
       return config;
     },
-    assetPrefix: "./",
   };
 };

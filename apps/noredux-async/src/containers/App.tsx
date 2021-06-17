@@ -7,8 +7,8 @@ import {
   selectFocus,
   selectFocusedCache,
   AppState,
-  triggerSetFocus,
-  triggerFetchFocused
+  setFocus,
+  fetchFocused
 } from "../plans";
 import { Picker } from "../components/Picker";
 import { Posts } from "../components/Posts";
@@ -21,11 +21,11 @@ export function App({ store }: AppParams) {
   const focused = useSelected(store, selectFocus);
   const cache = useSelected(store, selectFocusedCache);
   const onPickerSelect = (newName: SubredditName) => {
-    triggerSetFocus(store, newName);
+    setFocus(store, newName);
   };
   const onButtonClick = (event: MouseEvent) => {
     event.preventDefault();
-    triggerFetchFocused(store);
+    fetchFocused(store);
   };
 
   let postsPanel;
