@@ -29,11 +29,11 @@ type ImmutableIndex<T> = Readonly<
 
 type CastDraft = typeof castDraft;
 
-/**  A function to perform edits on a [[RootState]]. The editor is passed a
+/**  A function passed to [[Store.edit]]. The editor is called back with a
  * `draft` - a mutable proxy of the Store's current `Immutable` `RootState`.
  *
- * You can make changes to the mutable `draft` proxy within the editor using any
- * javascript syntax. When it returns,
+ * You can make changes to the mutable `draft` proxy within your editor callback
+ * using any javascript syntax. When it returns,
  * {@link https://immerjs.github.io/immer/ | Immer} efficiently composes a new
  * [[Immutable]] state to reflect your drafted changes, leaving the old state
  * intact. The new state is passed to [[Store.write]].
