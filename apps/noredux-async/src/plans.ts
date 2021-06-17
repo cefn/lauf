@@ -1,4 +1,4 @@
-import { createStore, Store, Selector, Immutable } from "@lauf/store";
+import { Store, Selector, Immutable } from "@lauf/store";
 import { edit, follow } from "@lauf/lauf-runner-primitives";
 import {
   Action,
@@ -27,7 +27,7 @@ export type Cache = {
 
 export type Post = { title: string };
 
-export const initialAppState: Immutable<AppState> = {
+export const initialAppState: AppState = {
   focus: subredditNames[0],
   caches: {},
 } as const;
