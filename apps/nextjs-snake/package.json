@@ -1,6 +1,6 @@
 {
   "name": "next-snake",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -11,11 +11,11 @@
     "check": "tsc --noEmit"
   },
   "dependencies": {
-    "@lauf/lauf-runner": "^0.1.1",
-    "@lauf/lauf-runner-primitives": "^0.1.1",
-    "@lauf/queue": "^0.1.1",
-    "@lauf/store": "^0.1.1",
-    "@lauf/store-react": "^0.1.1",
+    "@lauf/lauf-runner": "^0.1.2",
+    "@lauf/lauf-runner-primitives": "^0.1.2",
+    "@lauf/queue": "^0.1.2",
+    "@lauf/store": "^0.1.2",
+    "@lauf/store-react": "^0.1.2",
     "next": "^10.0.0",
     "react": "17.0.1",
     "react-dom": "17.0.1",

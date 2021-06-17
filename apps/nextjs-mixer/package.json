@@ -1,6 +1,6 @@
 {
   "name": "nextjs-mixer",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "private": true,
   "scripts": {
     "dev": "NODE_OPTIONS='--inspect' next dev",
@@ -10,8 +10,8 @@
     "check": "tsc --noEmit"
   },
   "dependencies": {
-    "@lauf/store": "^0.1.1",
-    "@lauf/store-react": "^0.1.1",
+    "@lauf/store": "^0.1.2",
+    "@lauf/store-react": "^0.1.2",
     "next": "^10.0.0",
     "react": "17.0.1",
     "react-dom": "17.0.1",
