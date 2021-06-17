@@ -13,15 +13,21 @@ import type { castDraft, Draft } from "immer";
  * as primitive values. All other objects and arrays are processed recursively.
  *
  */
-export type Immutable<T> = T extends (...args: any[]) => any
+export type Immutable<T> = T extends
+  | ((...args: any[]) => any)
+  | string
+  | number
+  | boolean
+  | null
+  | undefined
   ? T
-  : T extends object
-  ? ImmutableIndex<T>
-  : T;
+  : T extends any[] | object
+  ? ImmutableObject<T>
+  : never;
 
 /** Recursive Readonly implementation for any (indexable) [[RootState]] such as
  * an array or object */
-type ImmutableIndex<T> = Readonly<
+type ImmutableObject<T> = Readonly<
   {
     [K in keyof T]: Immutable<T[K]>;
   }
