@@ -1,5 +1,6 @@
 {
   "name": "@lauf/store-react",
+  "description": "State Management for React with Typescript support.",
   "version": "0.1.1",
   "main": "dist/index.js",
   "files": [
