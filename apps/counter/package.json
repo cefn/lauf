@@ -1,6 +1,6 @@
 {
   "name": "counter",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "main": "index.js",
   "license": "MIT",
   "scripts": {
@@ -84,6 +84,6 @@
   "repository": "github:cefn/lauf",
   "dependencies": {
     "@lauf/store": "^0.1.2",
-    "@lauf/store-react": "^0.1.2"
+    "@lauf/store-react": "^0.1.3"
   }
 }
