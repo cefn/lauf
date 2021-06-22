@@ -1,13 +1,6 @@
-import {
-  ActionSequence,
-  Expiry,
-  isExpiry,
-  expire,
-  raceWait,
-  backgroundPlan,
-} from "@lauf/lauf-runner";
+import { isExpiry, promiseExpiry } from "@lauf/lauf-runner";
 import { MessageQueue } from "@lauf/queue";
-import { receive } from "@lauf/lauf-runner-primitives";
+import { followSelector, withSelectorQueue } from "@lauf/store-follow";
 import {
   createAppModel,
   AppModel,
@@ -25,51 +18,56 @@ import {
 } from "./domain";
 import { isVectorEqual, randomSquare, plus, wrap } from "./util";
 
-export function* mainPlan(): ActionSequence<AppModel, any> {
+export function mainPlan(): AppModel {
   const appModel = createAppModel();
-  yield* resetGame(appModel);
-  yield* backgroundPlan(inputDirectionRoutine, appModel);
-  yield* backgroundPlan(fruitRoutine, appModel);
-  yield* backgroundPlan(snakeMotionRoutine, appModel);
-  yield* backgroundPlan(snakeCollisionRoutine, appModel);
+  resetGame(appModel);
+  //SPAWN WITHOUT AWAITING
+  inputDirectionRoutine(appModel);
+  fruitRoutine(appModel);
+  snakeMotionRoutine(appModel);
+  snakeCollisionRoutine(appModel);
   return appModel;
 }
 
-function* resetGame({ edit }: AppModel) {
-  yield* edit((state) => INITIAL_STATE);
+function resetGame({ gameStore }: AppModel) {
+  gameStore.write(INITIAL_STATE);
 }
 
-function* snakeMotionRoutine(appModel: AppModel) {
-  const { withQueue } = appModel;
-  yield* withQueue(selectMotion, function* (motionQueue, initialMotion) {
-    let motion = initialMotion;
-    while (true) {
-      if (!motion) {
-        //snake still: await motion change
-        motion = yield* receive(motionQueue);
-      } else {
-        //snake moving: await both step timeout AND motion change
-        motion = yield* moveUntilMotionChange(appModel, motion, motionQueue);
+async function snakeMotionRoutine(appModel: AppModel) {
+  const { gameStore } = appModel;
+  const { edit } = gameStore;
+  await withSelectorQueue(
+    gameStore,
+    selectMotion,
+    async function (motionQueue, initialMotion) {
+      const { receive } = motionQueue;
+      let motion = initialMotion;
+      while (true) {
+        if (!motion) {
+          //snake still: await motion change
+          motion = await receive();
+        } else {
+          //snake moving: await both step timeout AND motion change
+          motion = await moveUntilMotionChange(appModel, motion, motionQueue);
+        }
       }
     }
-  });
+  );
 }
 
-function* moveUntilMotionChange(
+async function moveUntilMotionChange(
   appModel: AppModel,
   motion: Direction,
   motionQueue: MessageQueue<Motion>
-): ActionSequence<Motion, any> {
+): Promise<Motion> {
+  const { receive } = motionQueue;
   //promise future change in motion
-  const [motionChangePromise] = yield* backgroundPlan(receive, motionQueue);
+  const motionChangePromise = receive(); //N.B. not awaited
   while (true) {
-    yield* moveSnake(appModel, motion);
+    moveSnake(appModel, motion);
     //promise future timeout
-    const [expiryPromise] = yield* backgroundPlan(expire, STEP_MS);
-    const [ending] = yield* raceWait<Expiry | Motion>([
-      motionChangePromise,
-      expiryPromise,
-    ]);
+    const expiryPromise = promiseExpiry(STEP_MS); //N.B. not awaited
+    const ending = await Promise.race([motionChangePromise, expiryPromise]);
     if (isExpiry(ending)) {
       //step timeout came first wait again
       continue;
@@ -79,27 +77,31 @@ function* moveUntilMotionChange(
   }
 }
 
-function* fruitRoutine(appModel: AppModel) {
-  const { follow, select } = appModel;
-  yield* follow(selectHead, function* (head): ActionSequence<void, any> {
-    const fruitPos = yield* select(selectFruitPos);
-    if (isVectorEqual(fruitPos, head.pos)) {
-      yield* eatFruit(appModel);
+async function fruitRoutine(appModel: AppModel) {
+  const { gameStore } = appModel;
+  const { select } = gameStore;
+  await followSelector(
+    gameStore,
+    selectHead,
+    async function (head): Promise<void> {
+      const fruitPos = select(selectFruitPos);
+      if (isVectorEqual(fruitPos, head.pos)) {
+        eatFruit(appModel);
+      }
     }
-  });
+  );
 }
 
 /** Handle directions being activated and released (driven by keypresses or touchscreen drags) */
-function* inputDirectionRoutine({
-  edit,
-  select,
-  inputQueue,
-}: AppModel): ActionSequence<never, any> {
+async function inputDirectionRoutine(appModel: AppModel): Promise<never> {
+  const { gameStore, inputQueue } = appModel;
+  const { receive } = inputQueue;
+  const { edit, select } = gameStore;
   while (true) {
     //block for next instruction
-    const [inputDirection, active] = yield* receive(inputQueue);
-    const motionDirection = yield* select(selectMotion);
-    const { direction: headDirection } = yield* select(selectHead);
+    const [inputDirection, active] = await receive();
+    const motionDirection = select(selectMotion);
+    const { direction: headDirection } = select(selectHead);
     if (active) {
       if (inputDirection === motionDirection) {
         continue; //ignore - no change needed - probably key repeat
@@ -108,7 +110,7 @@ function* inputDirectionRoutine({
         continue; //incompatible - can't reverse course
       }
       //set snake in motion
-      yield* edit((state) => {
+      edit((state) => {
         state.motion = inputDirection;
       });
     } else {
@@ -117,15 +119,17 @@ function* inputDirectionRoutine({
         continue; //ignore release of other directions
       }
       //stop snake
-      yield* edit((state) => {
+      edit((state) => {
         state.motion = null;
       });
     }
   }
 }
 
-function* eatFruit({ edit }: AppModel) {
-  yield* edit((state, castDraft) => {
+function eatFruit(appModel: AppModel) {
+  const { gameStore } = appModel;
+  const { edit } = gameStore;
+  edit((state, castDraft) => {
     state.score += 1;
     state.length += 1;
     //place new fruit outside snake
@@ -143,29 +147,35 @@ function* eatFruit({ edit }: AppModel) {
   });
 }
 
-function* snakeCollisionRoutine(appModel: AppModel) {
-  const { follow, select } = appModel;
-  yield* follow(selectHead, function* (head): ActionSequence<void, any> {
-    const segments = yield* select(selectSegments);
-    for (const segment of segments) {
-      if (segment !== head && isVectorEqual(head.pos, segment.pos)) {
-        yield* resetGame(appModel);
+async function snakeCollisionRoutine(appModel: AppModel) {
+  const { gameStore } = appModel;
+  const { select } = gameStore;
+  await followSelector(
+    gameStore,
+    selectHead,
+    async function (head): Promise<void> {
+      const segments = select(selectSegments);
+      for (const segment of segments) {
+        if (segment !== head && isVectorEqual(head.pos, segment.pos)) {
+          resetGame(appModel);
+        }
       }
     }
-  });
+  );
 }
 
-function* moveSnake(appModel: AppModel, direction: Direction) {
-  const { select } = appModel;
-  const head = yield* select(selectHead);
+function moveSnake(appModel: AppModel, direction: Direction) {
+  const { gameStore } = appModel;
+  const { select } = gameStore;
+  const head = select(selectHead);
   if (head) {
     const pos = wrap(plus(head.pos, DIRECTION_VECTORS[direction]));
-    yield* addHead(appModel, { pos, direction });
+    addHead(appModel, { pos, direction });
   }
 }
 
-function* addHead({ edit }: AppModel, head: Segment) {
-  yield* edit((draftState, castDraft) => {
+function addHead({ gameStore: { edit } }: AppModel, head: Segment) {
+  edit((draftState, castDraft) => {
     const { segments } = draftState;
     //add head
     let newSegments = castDraft([head, ...segments]);

@@ -1,43 +1,25 @@
 {
-  "name": "next-snake",
-  "version": "0.1.2",
-  "private": true,
+  "name": "@lauf/store-follow",
+  "version": "0.1.1",
+  "main": "dist/index.js",
+  "license": "MIT",
   "scripts": {
-    "dev": "next dev",
-    "debug": "NODE_OPTIONS='--inspect-brk' next dev",
-    "build": "next build",
-    "start": "next start",
-    "test": "jest",
-    "check": "tsc --noEmit"
-  },
-  "dependencies": {
-    "@lauf/lauf-runner": "^0.1.2",
-    "@lauf/lauf-runner-primitives": "^0.1.2",
-    "@lauf/queue": "^0.1.2",
-    "@lauf/store": "^0.1.2",
-    "@lauf/store-react": "^0.1.2",
-    "next": "^11.0.0",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
-    "styled-components": "^5.2.1",
-    "styled-jsx": "^3.4.4"
+    "test": "jest --passWithNoTests",
+    "check": "tsc --noEmit",
+    "build": "tsc --build ./tsconfig.build.json",
+    "prepare": "yarn run test && yarn run build"
   },
   "devDependencies": {
-    "@babel/core": "^7.13.10",
-    "@babel/preset-env": "^7.13.10",
-    "@babel/preset-typescript": "^7.13.0",
-    "@testing-library/react": "^11.2.5",
-    "@types/react": "^17.0.2",
-    "@types/styled-components": "^5.1.7",
-    "@types/styled-jsx": "^2.2.8",
-    "babel-jest": "^26.6.3",
-    "eslint-config-next": "^11.0.0",
-    "eslint-config-standard-typescript": "^1.0.3",
-    "eslint-plugin-standard": "^5.0.0",
-    "ts-loader": "^8.0.17",
     "typescript": "^4.3.4"
   },
-  "homepage": "https://github.com/cefn/lauf#readme",
+  "files": [
+    "README.md",
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "homepage": "https://github.com/cefn/lauf/tree/main/modules/store-follow#readme",
   "bugs": {
     "url": "https://github.com/cefn/lauf/issues",
     "email": "lauf@cefn.com"

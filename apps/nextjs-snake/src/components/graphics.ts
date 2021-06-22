@@ -28,17 +28,17 @@ const SNAKE_SPRITE_OFFSETS = {
   TAIL_DOWN: [1, 3],
 } as const;
 
-export const SPRITE_SIDE = 64; //in px
+export const SPRITE_SIDE = 64; // in px
 
 export const SPRITE_SHEET: SpriteSheet<SnakeSpriteName> = {
-  //Graphics thanks to https://rembound.com/articles/creating-a-snake-game-tutorial-with-html5
+  // Graphics thanks to https://rembound.com/articles/creating-a-snake-game-tutorial-with-html5
   url: "./sprites.png",
   spriteWidth: SPRITE_SIDE,
   spriteHeight: SPRITE_SIDE,
   offsets: SNAKE_SPRITE_OFFSETS,
 } as const;
 
-//TODO use some template literal types here?
+// TODO use some template literal types here?
 export function getSegmentSpriteName({
   segments,
   index,
@@ -56,5 +56,5 @@ export function getSegmentSpriteName({
   if (name in SPRITE_SHEET.offsets) {
     return name as SnakeSpriteName;
   }
-  throw `Invalid sprite name ${name}`;
+  throw new Error(`Invalid sprite name ${name}`);
 }

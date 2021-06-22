@@ -1,7 +1,7 @@
 import type { MessageQueue } from "./types";
 import type { Watcher } from "@lauf/store";
 
-export class BasicMessageQueue<T> implements MessageQueue<T> {
+class DefaultMessageQueue<T> implements MessageQueue<T> {
   items: ReadonlyArray<T> = [];
   watchers: ReadonlyArray<Watcher<T>> = [];
   constructor(
@@ -36,4 +36,11 @@ export class BasicMessageQueue<T> implements MessageQueue<T> {
       throw new Error(`Queue already has ${this.maxWatchers}`);
     }
   };
+}
+
+export function createQueue<T>(
+  maxItems?: number,
+  maxWatchers?: number
+): MessageQueue<T> {
+  return new DefaultMessageQueue(maxItems, maxWatchers);
 }

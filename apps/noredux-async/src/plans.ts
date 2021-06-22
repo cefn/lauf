@@ -1,11 +1,5 @@
 import { Store, Selector, Immutable } from "@lauf/store";
-import { edit, follow } from "@lauf/lauf-runner-primitives";
-import {
-  Action,
-  ActionSequence,
-  planOfAction,
-  performSequence,
-} from "@lauf/lauf-runner";
+import { followSelector } from "@lauf/store-follow";
 
 /** STORE DEFINITIONS */
 
@@ -49,37 +43,30 @@ export const selectFocusedCache: Selector<AppState, Cache | undefined> = (
 
 /** ACTIONS */
 
-export class FetchSubreddit implements Action<Post[]> {
-  constructor(readonly name: SubredditName) {}
-  async act() {
-    const response = await fetch(`https://www.reddit.com/r/${this.name}.json`);
-    const json = await response.json();
-    return json.data.children.map((child: any) => child.data);
-  }
+async function fetchSubreddit(name: SubredditName): Promise<Post[]> {
+  const response = await fetch(`https://www.reddit.com/r/${name}.json`);
+  const json = await response.json();
+  return json.data.children.map((child: any) => child.data);
 }
-
-const fetchSubreddit = planOfAction(FetchSubreddit);
 
 /** PLANS */
 
-export function* mainPlan(store: Store<AppState>): ActionSequence<void, any> {
-  yield* follow(store, selectFocus, function* (focus) {
+export async function mainPlan(store: Store<AppState>) {
+  await followSelector(store, selectFocus, async (focus) => {
     // invoked on initial value and every subsequent change
     if (focus) {
       const cache = selectFocusedCache(store.read());
       if (!cache?.posts) {
-        yield* fetchPlan(store, focus);
+        await fetchPlan(store, focus);
       }
     }
   });
 }
 
-export function* fetchPlan(
-  store: Store<AppState>,
-  name: SubredditName
-): ActionSequence<void, any> {
+async function fetchPlan(store: Store<AppState>, name: SubredditName) {
+  const { edit } = store;
   //initialise cache and transition to 'fetching' state
-  yield* edit(store, (draft) => {
+  edit((draft) => {
     draft.caches[name] = {
       ...(draft.caches[name] || (initialCache as Cache)),
       isFetching: true,
@@ -88,10 +75,10 @@ export function* fetchPlan(
   //perform the fetch
   let posts: Post[];
   try {
-    posts = yield* fetchSubreddit(name);
+    posts = await fetchSubreddit(name);
   } finally {
     //update cache with results
-    yield* edit(store, (draft) => {
+    edit((draft) => {
       if (posts) {
         //save posts and update time, reset fetching status
         draft.caches[name] = {
@@ -110,25 +97,17 @@ export function* fetchPlan(
   }
 }
 
-function* setFocusPlan(store: Store<AppState>, focus: SubredditName) {
-  yield* edit(store, (draft) => {
+/** USER INPUTS */
+
+export function setFocus({ edit }: Store<AppState>, focus: SubredditName) {
+  edit((draft) => {
     draft.focus = focus;
   });
 }
 
-function* fetchFocusedPlan(store: Store<AppState>) {
+export async function fetchFocused(store: Store<AppState>) {
   const { focus } = store.read();
   if (focus) {
-    yield* fetchPlan(store, focus);
+    await fetchPlan(store, focus);
   }
-}
-
-/** USER INPUTS */
-
-export function triggerSetFocus(store: Store<AppState>, focus: SubredditName) {
-  performSequence(setFocusPlan(store, focus));
-}
-
-export function triggerFetchFocused(store: Store<AppState>) {
-  performSequence(fetchFocusedPlan(store));
 }

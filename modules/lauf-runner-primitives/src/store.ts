@@ -5,7 +5,7 @@ import {
   ActionSequence,
 } from "@lauf/lauf-runner";
 import { Editor, Immutable, RootState, Selector, Store } from "@lauf/store";
-import { BasicMessageQueue, MessageQueue } from "@lauf/queue";
+import { createQueue, MessageQueue } from "@lauf/queue";
 
 import { receive } from "./queue";
 import { ExitStatus, Follower, Controls } from "./types";
@@ -21,7 +21,7 @@ export function* withQueue<State extends RootState, Selected, Ending, Reaction>(
   selector: Selector<State, Selected>,
   handleQueue: QueueHandler<Selected, Ending, any>
 ): ActionSequence<Ending, any> {
-  const queue = new BasicMessageQueue<Selected>();
+  const queue = createQueue<Selected>();
   let prevSelected: Selected = selector(store.read());
   const selectedNotifier = (value: Immutable<State>) => {
     const nextSelected = selector(value);
