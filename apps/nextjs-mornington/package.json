@@ -6,8 +6,9 @@
     "dev": "NODE_OPTIONS='--inspect' next dev",
     "build": "next build",
     "start": "next start",
-    "test": "jest --passWithNoTests",
-    "check": "tsc --noEmit"
+    "test": "jest",
+    "check": "tsc --noEmit",
+    "preinstall": "npx only-allow pnpm"
   },
   "dependencies": {
     "axios": "^0.21.1",

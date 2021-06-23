@@ -7,7 +7,8 @@
     "start": "webpack serve --mode=development --hot",
     "build": "webpack --mode=production",
     "check": "tsc --noEmit",
-    "test": "jest"
+    "test": "jest",
+    "preinstall": "npx only-allow pnpm"
   },
   "devDependencies": {
     "@babel/core": "^7.13.8",

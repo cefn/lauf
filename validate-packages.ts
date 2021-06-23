@@ -1,4 +1,4 @@
-#!/usr/bin/env -S npx ts-node
+#!/usr/bin/env -S pnpx ts-node
 /**
  * An example of running this script surgically to fix just one property...
  * npx ./validate-packages.ts
@@ -124,7 +124,7 @@ const RULES: readonly PackageJsonRule[] = [
   },
   {
     path: "scripts.prepare",
-    expected: "yarn run test && yarn run build",
+    expected: "pnpm run test && pnpm run build",
     packagePaths: "modules/**",
     status: "error",
   },

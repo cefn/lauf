@@ -8,7 +8,8 @@
     "test": "jest",
     "check": "tsc --noEmit",
     "build": "tsc --build ./tsconfig.build.json",
-    "prepare": "yarn run test && yarn run build"
+    "prepare": "pnpm run test && pnpm run build",
+    "preinstall": "npx only-allow pnpm"
   },
   "devDependencies": {
     "typescript": "^4.3.4"
