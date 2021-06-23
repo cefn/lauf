@@ -77,6 +77,14 @@ const RULES: readonly PackageJsonRule[] = [
     status: "error",
   },
   {
+    path: "publishConfig",
+    packagePaths: "modules/**",
+    expected: {
+      directory: "dist",
+    },
+    status: "error",
+  },
+  {
     path: "author",
     expected: "Cefn Hoile <github.com@cefn.com> (https://cefn.com)",
     status: "error",
@@ -97,6 +105,11 @@ const RULES: readonly PackageJsonRule[] = [
   {
     path: "devDependencies.typescript",
     expected: "^4.3.4",
+    status: "error",
+  },
+  {
+    path: "scripts.preinstall",
+    expected: "npx only-allow pnpm",
     status: "error",
   },
   {
