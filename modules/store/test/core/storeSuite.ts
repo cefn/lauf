@@ -1,4 +1,4 @@
-import { Immutable, RootState, Store, Watcher } from "@lauf/store/src";
+import { Immutable, RootState, Store, Watcher } from "@lauf/store";
 import { createDeferredMock } from "../util";
 
 /** Defining a factory allows us to run the same test suite across stores and  partitioned stores. */

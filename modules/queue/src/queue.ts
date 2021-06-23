@@ -1,5 +1,4 @@
-import type { MessageQueue } from "./types";
-import type { Watcher } from "@lauf/store";
+import type { MessageQueue, Watcher } from "./types";
 
 class DefaultMessageQueue<T> implements MessageQueue<T> {
   items: ReadonlyArray<T> = [];

@@ -274,7 +274,12 @@ importers:
 
   modules/lauf-runner-trial:
     specifiers:
+      '@lauf/lauf-runner': workspace:^0.1.2
+      '@lauf/lauf-runner-trial': workspace:^0.1.2
       typescript: ^4.3.4
+    dependencies:
+      '@lauf/lauf-runner': link:../lauf-runner
+      '@lauf/lauf-runner-trial': 'link:'
     devDependencies:
       typescript: 4.3.4
 
@@ -301,7 +306,12 @@ importers:
 
   modules/store-follow:
     specifiers:
+      '@lauf/queue': workspace:^0.1.3
+      '@lauf/store': workspace:^0.1.2
       typescript: ^4.3.4
+    dependencies:
+      '@lauf/queue': link:../queue
+      '@lauf/store': link:../store
     devDependencies:
       typescript: 4.3.4
 

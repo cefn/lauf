@@ -66,5 +66,9 @@
       "@typescript-eslint/explicit-function-return-type": "off",
       "react/prop-types": "off"
     }
+  },
+  "dependencies": {
+    "@lauf/lauf-runner": "workspace:^0.1.2",
+    "@lauf/lauf-runner-trial": "workspace:^0.1.2"
   }
 }
