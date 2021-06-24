@@ -19,7 +19,10 @@
   ],
   "gitHead": "03bd2f443dd739f47240c303214f24d611aa4ddc",
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "directory": "dist",
+    "main": "dist/index.js",
+    "typings": "dist/index.d.ts"
   },
   "homepage": "https://github.com/cefn/lauf/tree/main/modules/queue#readme",
   "bugs": {

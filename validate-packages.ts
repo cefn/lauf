@@ -80,7 +80,10 @@ const RULES: readonly PackageJsonRule[] = [
     path: "publishConfig",
     packagePaths: "modules/**",
     expected: {
+      access: "public",
       directory: "dist",
+      main: "dist/index.js",
+      typings: "dist/index.d.ts",
     },
     status: "error",
   },
@@ -177,14 +180,6 @@ const RULES: readonly PackageJsonRule[] = [
   //   packagePaths: "modules/*/package.json",
   //   status: "error",
   // },
-  {
-    path: "publishConfig",
-    expected: {
-      access: "public",
-    },
-    packagePaths: "modules/*/package.json",
-    status: "error",
-  },
 ] as const;
 
 const { strategy, filterPackagePaths, filterPropertyPaths } = yargs

@@ -64,6 +64,9 @@
     }
   },
   "publishConfig": {
-    "directory": "dist"
+    "access": "public",
+    "directory": "dist",
+    "main": "dist/index.js",
+    "typings": "dist/index.d.ts"
   }
 }
