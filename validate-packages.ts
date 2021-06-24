@@ -81,7 +81,7 @@ const RULES: readonly PackageJsonRule[] = [
     packagePaths: "modules/**",
     expected: {
       access: "public",
-      directory: "dist",
+      // directory: "dist",
       main: "dist/index.js",
       typings: "dist/index.d.ts",
     },
@@ -245,9 +245,8 @@ for (const packageJsonPath of packageJsonPaths) {
   }
 
   //skip workspace root
-  if (packageJson.workspaces) {
+  if (packageJson.name === "lauf-monorepo") {
     console.log(chalk.green(`Skipping workspace root ${packageJson.name}`));
-    assert(packageJson.name === "lauf-monorepo");
     continue;
   }
 
