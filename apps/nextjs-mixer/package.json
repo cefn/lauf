@@ -6,8 +6,9 @@
     "dev": "NODE_OPTIONS='--inspect' next dev",
     "build": "next build",
     "start": "next start",
-    "test": "jest",
-    "check": "tsc --noEmit"
+    "test": "jest --passWithNoTests",
+    "check": "tsc --noEmit",
+    "preinstall": "npx only-allow pnpm"
   },
   "dependencies": {
     "@lauf/store": "^0.1.2",

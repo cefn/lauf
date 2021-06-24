@@ -1,4 +1,4 @@
-#!/usr/bin/env -S npx ts-node
+#!/usr/bin/env -S pnpx ts-node
 /**
  * An example of running this script surgically to fix just one property...
  * npx ./validate-packages.ts
@@ -77,6 +77,17 @@ const RULES: readonly PackageJsonRule[] = [
     status: "error",
   },
   {
+    path: "publishConfig",
+    packagePaths: "modules/**",
+    expected: {
+      access: "public",
+      directory: "dist",
+      main: "dist/index.js",
+      typings: "dist/index.d.ts",
+    },
+    status: "error",
+  },
+  {
     path: "author",
     expected: "Cefn Hoile <github.com@cefn.com> (https://cefn.com)",
     status: "error",
@@ -100,6 +111,11 @@ const RULES: readonly PackageJsonRule[] = [
     status: "error",
   },
   {
+    path: "scripts.preinstall",
+    expected: "npx only-allow pnpm",
+    status: "error",
+  },
+  {
     path: "scripts.test",
     expected: "jest",
     status: "warning",
@@ -111,7 +127,7 @@ const RULES: readonly PackageJsonRule[] = [
   },
   {
     path: "scripts.prepare",
-    expected: "yarn run test && yarn run build",
+    expected: "pnpm run test && pnpm run build",
     packagePaths: "modules/**",
     status: "error",
   },
@@ -164,14 +180,6 @@ const RULES: readonly PackageJsonRule[] = [
   //   packagePaths: "modules/*/package.json",
   //   status: "error",
   // },
-  {
-    path: "publishConfig",
-    expected: {
-      access: "public",
-    },
-    packagePaths: "modules/*/package.json",
-    status: "error",
-  },
 ] as const;
 
 const { strategy, filterPackagePaths, filterPropertyPaths } = yargs
@@ -289,7 +297,7 @@ for (const packageJsonPath of packageJsonPaths) {
       //check strategy, possibly skip fix depending on rule status
       if (
         (status === "error" && ["dryRun"].includes(strategy)) ||
-        (status === "warning" && ["dryRun", "fixWarnings"].includes(strategy))
+        (status === "warning" && ["dryRun", "fixErrors"].includes(strategy))
       ) {
         //skip the fix
         found[path] = { actualValue, expectedValue, fixed: false };

@@ -1,0 +1,6 @@
+packages:
+  # include
+  - "apps/**"
+  - "modules/**"
+  # exclude
+  - "!modules/draft/**"
