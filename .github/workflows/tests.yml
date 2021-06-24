@@ -20,9 +20,10 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
-      - run: npx pnpm add -g pnpm
+      - name: Install PNPM
+        run: npm install -g pnpm
+      # - run: npx pnpm add -g pnpm
       # - run: curl -f https://get.pnpm.io/v6.7.js | node - add --global pnpm
-      # - run: npm install -g pnpm
       - run: pnpm install
       - run: pnpm run validate
       - run: lerna bootstrap
