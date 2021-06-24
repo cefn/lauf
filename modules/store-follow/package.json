@@ -1,6 +1,6 @@
 {
   "name": "@lauf/store-follow",
-  "version": "0.1.3",
+  "version": "0.2.0",
   "main": "dist/index.js",
   "license": "MIT",
   "scripts": {
@@ -68,7 +68,7 @@
     }
   },
   "dependencies": {
-    "@lauf/queue": "workspace:^0.1.3",
-    "@lauf/store": "workspace:^0.1.2"
+    "@lauf/queue": "workspace:^0.2.0",
+    "@lauf/store": "workspace:^0.2.0"
   }
 }
