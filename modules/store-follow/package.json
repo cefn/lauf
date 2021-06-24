@@ -4,7 +4,7 @@
   "main": "dist/index.js",
   "license": "MIT",
   "scripts": {
-    "test": "jest",
+    "test": "jest --passWithNoTests",
     "check": "tsc --noEmit",
     "build": "tsc --build ./tsconfig.build.json",
     "prepare": "pnpm run test && pnpm run build",

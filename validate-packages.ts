@@ -297,7 +297,7 @@ for (const packageJsonPath of packageJsonPaths) {
       //check strategy, possibly skip fix depending on rule status
       if (
         (status === "error" && ["dryRun"].includes(strategy)) ||
-        (status === "warning" && ["dryRun", "fixWarnings"].includes(strategy))
+        (status === "warning" && ["dryRun", "fixErrors"].includes(strategy))
       ) {
         //skip the fix
         found[path] = { actualValue, expectedValue, fixed: false };

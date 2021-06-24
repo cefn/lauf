@@ -7,7 +7,7 @@
     "start": "webpack serve --mode=development --hot",
     "build": "webpack --mode=production",
     "check": "tsc --noEmit",
-    "test": "jest",
+    "test": "jest --passWithNoTests",
     "preinstall": "npx only-allow pnpm"
   },
   "devDependencies": {
