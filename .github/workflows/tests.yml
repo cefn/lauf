@@ -26,7 +26,6 @@ jobs:
       # - run: curl -f https://get.pnpm.io/v6.7.js | node - add --global pnpm
       - run: pnpm install
       - run: pnpm run validate
-      - run: lerna bootstrap
       - run: pnpm run check:lauf
       - run: pnpm run check
       - run: pnpm run test
