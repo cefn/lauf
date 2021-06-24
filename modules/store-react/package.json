@@ -1,7 +1,7 @@
 {
   "name": "@lauf/store-react",
   "description": "State Management for React with Typescript support.",
-  "version": "0.1.3",
+  "version": "0.2.0",
   "main": "dist/index.js",
   "files": [
     "README.md",
@@ -16,7 +16,7 @@
     "preinstall": "npx only-allow pnpm"
   },
   "dependencies": {
-    "@lauf/store": "^0.1.2"
+    "@lauf/store": "^0.2.0"
   },
   "peerDependencies": {
     "react": "^17.0.2"
@@ -29,7 +29,6 @@
   "gitHead": "03bd2f443dd739f47240c303214f24d611aa4ddc",
   "publishConfig": {
     "access": "public",
-    "directory": "dist",
     "main": "dist/index.js",
     "typings": "dist/index.d.ts"
   },
