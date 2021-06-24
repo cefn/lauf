@@ -29,11 +29,11 @@ Finally, most apps will evolve towards the richness of the `event_tutorial` app 
 
 ## Running the Example Apps
 
-To run the example apps...
+To run the example apps [install pnpm](https://pnpm.io/installation) then run...
 
 ```bash
 cd apps/nextjs-mornington
-yarn run dev
+pnpm run dev
 ```
 
 ...then visit http://localhost:3000 to navigate to one of the three entry points.
