@@ -3,10 +3,6 @@
   "version": "0.1.4",
   "repository": "https://github.com/cefn/lauf",
   "private": true,
-  "workspaces": [
-    "modules/*",
-    "apps/*"
-  ],
   "scripts": {
     "build": "pnpm recursive run build",
     "build:changed": "pnpm recursive run build --filter '...[origin/main]...'",
