@@ -8,17 +8,17 @@
     "apps/*"
   ],
   "scripts": {
-    "build": "lerna run build",
-    "build:changed": "lerna run --since origin/main --include-dependents build",
-    "lint": "lerna exec -- eslint . --ext .js,.jsx,.ts,.tsx",
-    "lint:changed": "lerna exec --since origin/main --include-dependents -- eslint . --ext .js,.jsx,.ts,.tsx",
+    "build": "pnpm recursive run build",
+    "build:changed": "pnpm recursive run build --filter '...[origin/main]...'",
+    "lint": "pnpm exec -- eslint . --ext .js,.jsx,.ts,.tsx",
+    "lint:changed": "pnpm recursive exec --filter '...[origin/main]...' -- eslint . --ext .js,.jsx,.ts,.tsx",
     "test": "jest",
-    "test:changed": "lerna run --since origin/main --include-dependents test",
-    "check": "lerna run check",
-    "check:changed": "lerna run --since origin/main --include-dependents check",
-    "check:lauf": "lerna run --scope '@lauf/*' check",
+    "test:changed": "pnpm recursive run test --filter '...[origin/main]...'",
+    "check": "pnpm recursive run check",
+    "check:changed": "pnpm recursive run check --filter '...[origin/main]...'",
+    "check:lauf": "pnpm recursive run check --filter '@lauf/*'",
     "validate": "ts-node ./validate-packages.ts",
-    "release": "lerna publish",
+    "release": "pnpm publish",
     "docs": "typedoc --tsconfig tsconfig.typedoc.json --includes ./ --readme none"
   },
   "devDependencies": {
