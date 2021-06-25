@@ -1,16 +1,28 @@
 /* eslint-disable @typescript-eslint/ban-types */
 import type { castDraft, Draft } from "immer";
 
-/** Recursive implementation of `Readonly<T>`.
+/** Recursive implementation of Typescript's `Readonly<T>`.
  *
- * Flags and enforces immutability of a [[RootState]] and its descendants for
- * values [[Store.write|assigned to]]  or [[Store.read|retrieved from]] a
- * [[Store]]. The type `Immutable<T>` is equivalent to applying `Readonly<T>` to
- * `T` and its descendant properties, telling the compiler that no change should
- * be made anywhere in a Store's state tree.
+ * Unlike some implementations of immutability this approach introduces no
+ * special objects and methods and typically doesn't require you to change your
+ * code.
  *
- * Primitive properties are already immutable by definition. Functions are treated
- * as primitive values. All other objects and arrays are processed recursively.
+ * It is used to flags and enforce immutability of a [[RootState]] and its
+ * descendants - values [[Store.write|assigned to]] or [[Store.read|retrieved
+ * from]] a [[Store]]. The type `Immutable<T>` is equivalent to applying
+ * `Readonly<T>` to `T` and its descendant properties, telling the compiler that
+ * no change should be made anywhere in a Store's state tree.
+ *
+ * Relying on Typescript's builtin `Readonly` allows the use of normal
+ * javascript values and syntax, with the exception that operations which would
+ * manipulate the item are disallowed by the compiler. Applications written in
+ * Typescript get the greatest benefit from this approach, but javascript IDEs
+ * that load typings for code-completion can also indicate violations of the
+ * `Readonly` contract.
+ *
+ * Primitive properties are already immutable by definition. Functions are
+ * treated as primitive values. All other objects and arrays have their children
+ * made `Readonly` recursively.
  *
  */
 export type Immutable<T> = T extends (...args: any[]) => any

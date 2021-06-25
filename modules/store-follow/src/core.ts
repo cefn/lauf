@@ -4,7 +4,7 @@ import { Controls, Follower, QueueHandler, ExitStatus } from "./types";
 
 /**
  * Creates a queue subscribed to a [[Store]]'s [[Selector]] value then waits for
- * the duration of (possibly async) `handleQueue`. A selector queue
+ * `handleQueue` to complete (which may be async). A selector queue
  * [Queue.receive|receives] an initial message with the value calculated by the
  * [[Selector|selector]] from the [[Store|store]]. It is subscribed to receive a
  * further message whenever the selector's value changes. After `handleQueue`

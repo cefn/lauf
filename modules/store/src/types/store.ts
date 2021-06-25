@@ -6,33 +6,6 @@ import { WatchableState } from "./watchable";
  * which can be changed and monitored for changes to drive an app. Make a new
  * `Store` by calling [[createStore]] with an `initialState`.
  *
- * ## Immutable State
- *
- * Never modifying the state tree means when the state or a
- * [[Selector|selected]] branch of the state is the same ***item*** as before,
- * it is guaranteed to contain all the same ***values*** as before.
- *
- * This guarantee is crucial.
- *
- * Immutability allows Watchers you write, renderers like
- * [[https://reactjs.org/|React]] and memoizers like
- * [[https://github.com/reduxjs/reselect|Reselect]] or React's
- * [useMemo()](https://reactjs.org/docs/hooks-reference.html#usememo) to use
- * 'shallow equality checking'. They can efficiently check when changes to an
- * item make it necessary to re-render or recompute - simply
- * when`Object.is(prevItem,nextItem)===false`.
- *
- * Immutability eliminates bugs and race conditions in state-change event
- * handlers. Handlers notified of a change effectively have a snapshot of state.
- * You don't have to handle cases where other code changed the state again
- * before your handler read the data. N.B. whenever you [[edit|Editor]] data,
- * you DO work with the current, not historical state, but this reconciliation
- * is unavoidable and manageable.
- *
- * Finally, Immutability establishes a basis for advanced debugging techniques such as
- * time-travel debugging since every state change notification includes a
- * momentary snapshot of the app state which can be stored indefinitely.
- *
  * ## Watching State
  *
  * Assigning a new [[Immutable]] `RootState` using [[Store.write]] notifies
@@ -49,6 +22,34 @@ import { WatchableState } from "./watchable";
  *
  * Alternatively you can construct a new `Immutable` value yourself, then
  * explicitly call [[Store.write]] to update the state.
+ *
+ * ## Immutable State: Motivation
+ *
+ * Never modifying the state tree means when the state or a
+ * [[Selector|selected]] branch of the state is the same ***item*** as before,
+ * it is guaranteed to contain all the same ***values*** as before. This
+ * guarantee is crucial.
+ *
+ * Immutability allows Watchers you write, renderers like
+ * [[https://reactjs.org/|React]] and memoizers like
+ * [[https://github.com/reduxjs/reselect|Reselect]] or React's
+ * [useMemo()](https://reactjs.org/docs/hooks-reference.html#usememo) to use
+ * 'shallow equality checking'. They can efficiently check when changes to an
+ * item should trigger a re-render or recompute - simply
+ * when`Object.is(prevItem,nextItem)===false`.
+ *
+ * Immutability eliminates bugs and race conditions in state-change event
+ * handlers. Handlers notified of a change effectively have a snapshot of state.
+ * You don't have to handle cases where other code changed the state again
+ * before your handler read the data.
+ *
+ * Finally, Immutability establishes a basis for advanced debugging techniques
+ * such as time-travel debugging since every state change notification includes
+ * a momentary snapshot of the app state which can be stored indefinitely.
+ *
+ * *Note whenever you [[Editor|edit]] data in the Store, this necessarily
+ * operates over the current, not historical state, but this reconciliation is
+ * unavoidable and manageable.*
  *
  */
 export interface Store<State extends RootState>
@@ -77,11 +78,14 @@ export type Selector<State extends RootState, Selected> = (
   state: Immutable<State>
 ) => Immutable<Selected>;
 
-/** Suitable state container for a [[Store]],
- * Includes for example Arrays, Tuples, Objects, Functions */
+/** Defines the set of possible state types for a [[Store]],
+ * usually the top level State 'container' is either an
+ * Array, Tuple, or keyed Object */
 export type RootState = object;
 
-/** A [[RootState]] which can be partitioned into a child [[RootState]] by
+/** An item satisfying type constraints of [[RootState]] but where a child item
+ * at `Key` ***also*** satisfies `RootState`. A Store with a
+ * [[PartitionableState]] can therefore be partitioned into a child [[Store]] by
  * `Key`.
  *
  * Partitioning enables hierarchy and logical isolation of a [[Store]], so that
@@ -94,6 +98,5 @@ export type RootState = object;
  * [[Watcher|Watchers]] of a child partition if the child [[RootState]] has not
  * changed, meaning no value within the child partition has changed. See
  */
-export type PartitionableState<
-  Key extends string | number | symbol
-> = RootState & { [k in Key]: RootState };
+export type PartitionableState<Key extends string | number | symbol> =
+  RootState & { [k in Key]: RootState };
