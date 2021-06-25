@@ -3,5 +3,5 @@
  *
  * @module @lauf/lock
  */
-export * from "./core";
+export * from "./lock";
 export * from "./types";

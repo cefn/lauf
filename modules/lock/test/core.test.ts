@@ -1,11 +1,11 @@
-import { BasicLock } from "@lauf/lock";
+import { createLock } from "@lauf/lock";
 import { promiseDelay, randomInteger } from "./util";
 
 describe("Can lock using arbitrary references", () => {
   const validKeys = [undefined, 3, "hello", true, {}, []];
 
   async function tryLock(key: any | void) {
-    const lock = new BasicLock();
+    const lock = createLock();
     const unlock = await lock.acquire();
     unlock();
   }
@@ -65,7 +65,7 @@ describe("Mutual Exclusion", () => {
   test("Procedures with lock have no interleaved results", async () => {
     const pushed: string[] = [];
     //define async procedure WITH a lock
-    const lock = new BasicLock();
+    const lock = createLock();
     async function withLock() {
       const unlock = await lock.acquire();
       await pushSequenceTo(pushed);
