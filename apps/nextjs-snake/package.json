@@ -8,8 +8,7 @@
     "build": "next build",
     "start": "next start",
     "test": "jest",
-    "check": "tsc --noEmit",
-    "preinstall": "npx only-allow pnpm"
+    "check": "tsc --noEmit"
   },
   "dependencies": {
     "@lauf/lauf-runner": "^0.1.2",
