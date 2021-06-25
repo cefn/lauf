@@ -99,9 +99,9 @@ async function inputDirectionRoutine(appModel: AppModel): Promise<never> {
   const { edit, select } = gameStore;
   while (true) {
     //block for next instruction
-    const [inputDirection, active] = await receive();
-    const motionDirection = select(selectMotion);
-    const { direction: headDirection } = select(selectHead);
+    const [inputDirection, active] = await receive(); // newly instructed direction
+    const motionDirection = select(selectMotion); // direction currently moving (or undefined if still)
+    const { direction: headDirection } = select(selectHead); // direction the head is pointing
     if (active) {
       if (inputDirection === motionDirection) {
         continue; //ignore - no change needed - probably key repeat
@@ -132,18 +132,18 @@ function eatFruit(appModel: AppModel) {
   edit((state, castDraft) => {
     state.score += 1;
     state.length += 1;
-    //place new fruit outside snake
+    // place new fruit outside snake
     let nextPos = null;
     while (nextPos === null) {
-      nextPos = castDraft(randomSquare());
+      nextPos = randomSquare();
       for (const segment of state.segments) {
         if (isVectorEqual(nextPos, segment.pos)) {
-          nextPos = null; //try again
+          nextPos = null; // landed on the snake - try again
           break;
         }
       }
     }
-    state.fruitPos = nextPos;
+    state.fruitPos = castDraft(nextPos);
   });
 }
 
