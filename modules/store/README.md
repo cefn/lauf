@@ -1,4 +1,4 @@
-## State Management for Javascript with Typescript support.
+## Lightweight Application State Management
 
 [![codecov](https://codecov.io/gh/cefn/lauf/branch/main/graph/badge.svg?token=H4O0Wmvho5&flag=store)](https://codecov.io/gh/cefn/lauf)
 
