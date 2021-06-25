@@ -15,11 +15,11 @@
 npm install @lauf/store-react --save
 ```
 
-`@lauf/store-react` enables React apps to use [@lauf/store](https://github.com/cefn/lauf/tree/main/modules/store)
+`@lauf/store-react` enables React apps to use [@lauf/store](https://www.npmjs.com/package/@lauf/store)
 for state-management, providing a simple substitute for Flux/Redux based on
 [Immer](https://immerjs.github.io/immer/).
 
-Browse the [API](https://cefn.com/lauf/api) or the Typescript example inlined below from our [Counter
+Browse the [API](https://cefn.com/lauf/api/modules/_lauf_store_react.html) or the Typescript example inlined below from our [Counter
 App](https://github.com/cefn/lauf/tree/main/apps/counter).
 
 The example shows how `useSelected` can bind part of a `Store`'s state to a component,
