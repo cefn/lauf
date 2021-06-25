@@ -19,9 +19,11 @@ npm install @lauf/store --save
 
 It is incredibly lightweight and suitable for adoption with almost any server-side or client-side framework in Typescript or Javascript.
 
-A React binding of `@lauf/store` is provided by the [@lauf/store-react](https://www.npmjs.com/package/@lauf/store-react) package.
+Framework-independent async bindings for `@lauf/store` are provided by [@lauf/store-follow](https://www.npmjs.com/package/@lauf/store-follow).
 
-Browse the [API](https://cefn.com/lauf/api) or see the minimal JS and TS examples inlined below **_without_** React, showing how to define a new application state, track changes and make edits.
+React bindings for `@lauf/store` are provided by [@lauf/store-react](https://www.npmjs.com/package/@lauf/store-react).
+
+Browse the [API](https://cefn.com/lauf/api/modules/_lauf_store.html) or see the minimal JS and TS examples inlined below **_without_** React or Async, showing the fundamentals of defining a new application state, tracking changes and making edits.
 
 ### In Javascript
 
