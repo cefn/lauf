@@ -6,11 +6,13 @@ import { DefaultWatchableState } from "./watchableState";
 /** Reference implementation of Lauf [[Store]]  */
 class DefaultStore<State extends RootState>
   extends DefaultWatchableState<Immutable<State>>
-  implements Store<State> {
+  implements Store<State>
+{
   edit = (editor: Editor<State>) => {
-    const nextState = (produce<Immutable<State>>(this.read(), (draft) => {
+    const nextState = produce<Immutable<State>>(this.read(), (draft) => {
       editor(draft, castDraft);
-    }) as unknown) as Immutable<State>;
+    }) as unknown as Immutable<State>;
+    console.log(JSON.stringify(nextState));
     return this.write(nextState);
   };
 

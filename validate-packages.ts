@@ -132,6 +132,12 @@ const RULES: readonly PackageJsonRule[] = [
     status: "error",
   },
   {
+    path: "scripts['start:monorepo']",
+    expected: "RESOLVE=monorepo pnpm run start",
+    packagePaths: "apps/**",
+    status: "error",
+  },
+  {
     path: "license",
     expected: "MIT",
     packagePaths: "modules/**",
