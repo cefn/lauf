@@ -15,7 +15,10 @@
     "check:lauf": "pnpm recursive run check --filter '@lauf/*'",
     "validate": "ts-node ./validate-packages.ts",
     "release": "pnpm publish",
-    "docs": "typedoc --tsconfig tsconfig.typedoc.json --includes ./ --readme none"
+    "docs": "typedoc --tsconfig tsconfig.typedoc.json --includes ./ --readme none --out api",
+    "docs:watch": "pnpm run docs -- --watch",
+    "docs:serve": "reload -d api",
+    "docs:dev": "npm-run-all --parallel docs:watch docs:serve"
   },
   "devDependencies": {
     "@babel/core": "^7.13.8",
@@ -49,12 +52,14 @@
     "jest-expect-message": "^1.0.2",
     "lodash": "^4.17.21",
     "minimatch": "^3.0.4",
+    "npm-run-all": "^4.1.5",
     "prettier": "^2.2.1",
     "prompt-sync": "^4.2.0",
+    "reload": "^3.2.0",
     "ts-jest": "^26.5.2",
     "ts-loader": "^8.0.17",
     "ts-node": "^9.1.1",
-    "typedoc": ">=0.21.0-beta.2",
+    "typedoc": "^0.21.1",
     "typescript": "^4.3.4",
     "webpack": "^5.24.2"
   },
