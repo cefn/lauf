@@ -12,7 +12,6 @@ class DefaultStore<State extends RootState>
     const nextState = produce<Immutable<State>>(this.read(), (draft) => {
       editor(draft, castDraft);
     }) as unknown as Immutable<State>;
-    console.log(JSON.stringify(nextState));
     return this.write(nextState);
   };
 

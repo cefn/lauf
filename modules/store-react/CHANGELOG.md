@@ -1,6 +1,15 @@
 # @lauf/store-react
 
+## 0.2.1
+
+### Patch Changes
+
+- Patch bump to differentiate monorepo packages
+- Updated dependencies [undefined]
+  - @lauf/store@0.2.1
+
 ## 0.2.0
+
 ### Minor Changes
 
 - f9a19c9: First attempted pnpm publish.
