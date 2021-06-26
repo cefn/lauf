@@ -179,8 +179,6 @@ importers:
       '@babel/core': ^7.13.10
       '@babel/preset-env': ^7.13.10
       '@babel/preset-typescript': ^7.13.0
-      '@lauf/lauf-runner': ^0.1.2
-      '@lauf/lauf-runner-primitives': ^0.1.4
       '@lauf/queue': ^0.2.0
       '@lauf/store': ^0.2.0
       '@lauf/store-react': ^0.2.0
@@ -200,8 +198,6 @@ importers:
       ts-loader: ^8.0.17
       typescript: ^4.3.4
     dependencies:
-      '@lauf/lauf-runner': link:../../modules/lauf-runner
-      '@lauf/lauf-runner-primitives': link:../../modules/lauf-runner-primitives
       '@lauf/queue': link:../../modules/queue
       '@lauf/store': link:../../modules/store
       '@lauf/store-react': link:../../modules/store-react

@@ -8,12 +8,9 @@
     "build": "next build",
     "start": "next start",
     "test": "jest",
-    "check": "tsc --noEmit",
-    "preinstall": "npx only-allow pnpm"
+    "check": "tsc --noEmit"
   },
   "dependencies": {
-    "@lauf/lauf-runner": "^0.1.2",
-    "@lauf/lauf-runner-primitives": "^0.1.4",
     "@lauf/queue": "^0.2.0",
     "@lauf/store": "^0.2.0",
     "@lauf/store-react": "^0.2.0",

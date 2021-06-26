@@ -112,7 +112,7 @@ const RULES: readonly PackageJsonRule[] = [
   },
   {
     path: "scripts.preinstall",
-    expected: "npx only-allow pnpm",
+    expected: undefined,
     status: "error",
   },
   {

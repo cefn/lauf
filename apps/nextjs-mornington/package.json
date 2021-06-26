@@ -7,8 +7,7 @@
     "build": "next build",
     "start": "next start",
     "test": "jest --passWithNoTests",
-    "check": "tsc --noEmit",
-    "preinstall": "npx only-allow pnpm"
+    "check": "tsc --noEmit"
   },
   "dependencies": {
     "axios": "^0.21.1",

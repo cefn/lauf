@@ -5,10 +5,10 @@
   "license": "MIT",
   "scripts": {
     "start": "webpack serve --mode=development --hot",
+    "start:monorepo": "webpack serve --mode=development --hot --config webpack.monorepo.config.js",
     "build": "webpack --mode=production",
     "check": "tsc --noEmit",
-    "test": "jest --passWithNoTests",
-    "preinstall": "npx only-allow pnpm"
+    "test": "jest --passWithNoTests"
   },
   "devDependencies": {
     "@babel/core": "^7.13.8",
