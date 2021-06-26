@@ -5,7 +5,6 @@
   "license": "MIT",
   "scripts": {
     "start": "webpack serve --mode=development --hot",
-    "start:monorepo": "RESOLVE=monorepo pnpm run start",
     "build": "webpack --mode=production",
     "check": "tsc --noEmit",
     "test": "jest --passWithNoTests"
@@ -85,6 +84,8 @@
   "repository": "github:cefn/lauf",
   "dependencies": {
     "@lauf/store": "^0.2.0",
-    "@lauf/store-react": "^0.2.0"
+    "@lauf/store-react": "^0.2.0",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2"
   }
 }

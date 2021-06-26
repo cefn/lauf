@@ -103,6 +103,8 @@ importers:
       babel-loader: ^8.2.2
       css-loader: ^5.1.1
       html-webpack-plugin: ^5.2.0
+      react: ^17.0.2
+      react-dom: ^17.0.2
       style-loader: ^2.0.0
       ts-loader: ^8.0.17
       tsconfig-paths-webpack-plugin: ^3.3.0
@@ -113,6 +115,8 @@ importers:
     dependencies:
       '@lauf/store': link:../../modules/store
       '@lauf/store-react': link:../../modules/store-react
+      react: 17.0.2
+      react-dom: 17.0.2_react@17.0.2
     devDependencies:
       '@babel/core': 7.14.6
       '@babel/preset-env': 7.14.7_@babel+core@7.14.6
@@ -229,6 +233,8 @@ importers:
       babel-loader: ^8.2.2
       css-loader: ^5.1.1
       html-webpack-plugin: ^5.2.0
+      react: ^17.0.2
+      react-dom: ^17.0.2
       style-loader: ^2.0.0
       ts-loader: ^8.0.17
       tsconfig-paths-webpack-plugin: ^3.3.0
@@ -236,6 +242,9 @@ importers:
       webpack: ^5.24.3
       webpack-cli: ^4.5.0
       webpack-dev-server: ^3.11.2
+    dependencies:
+      react: 17.0.2
+      react-dom: 17.0.2_react@17.0.2
     devDependencies:
       '@babel/core': 7.14.6
       '@babel/preset-env': 7.14.7_@babel+core@7.14.6
@@ -9825,7 +9834,7 @@ packages:
       serialize-javascript: 5.0.1
       source-map: 0.6.1
       terser: 5.7.0
-      webpack: 5.40.0
+      webpack: 5.40.0_webpack-cli@4.7.2
     dev: true
 
   /terser/4.8.0:
@@ -10000,7 +10009,7 @@ packages:
       micromatch: 4.0.4
       semver: 7.3.5
       typescript: 4.3.4
-      webpack: 5.40.0
+      webpack: 5.40.0_webpack-cli@4.7.2
     dev: true
 
   /ts-node/9.1.1_typescript@4.3.4:

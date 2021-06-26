@@ -28,15 +28,3 @@ module.exports = {
     }),
   ],
 };
-
-// if (process.env.RESOLVE === "monorepo") {
-//   module.exports.module.rules = module.exports.module.rules.map((rule) => {
-//     if (rule.loader === "ts-loader") {
-//       rule.options = {
-//         ...rule.options,
-//         configFile: "tsconfig.monorepo.json",
-//       };
-//     }
-//     return rule;
-//   });
-// }
