@@ -1,45 +1,56 @@
 import type { MessageQueue, Watcher } from "./types";
 
-class DefaultMessageQueue<T> implements MessageQueue<T> {
-  items: ReadonlyArray<T> = [];
-  watchers: ReadonlyArray<Watcher<T>> = [];
+class DefaultMessageQueue<Message> implements MessageQueue<Message> {
+  // items passed to send when no receiver was waiting for callback
+  messages: ReadonlyArray<Message> = [];
+  // callbacks passed to receive when no item was waiting to send
+  receivers: ReadonlyArray<Watcher<Message>> = [];
+  // TODO offer ops to at least count, possibly manipulate, message list
   constructor(
-    readonly maxItems = Number.MAX_SAFE_INTEGER,
-    readonly maxWatchers = Number.MAX_SAFE_INTEGER
+    readonly maxMessages = Number.MAX_SAFE_INTEGER,
+    readonly maxReceivers = Number.MAX_SAFE_INTEGER
   ) {}
-  send = (item: T) => {
-    if (this.watchers.length) {
-      let consumer: Watcher<T>;
-      [consumer, ...this.watchers] = this.watchers as [Watcher<T>];
-      consumer(item);
+  // TODO make async, await Promise.resolve() to push event into next
+  // tick, await receiver
+  send = (message: Message) => {
+    if (this.receivers.length) {
+      let receiver: Watcher<Message>;
+      [receiver, ...this.receivers] = this.receivers as [Watcher<Message>];
+      receiver(message);
       return true;
     }
-    if (this.items.length < this.maxItems) {
-      this.items = [...this.items, item];
+    if (this.messages.length < this.maxMessages) {
+      this.messages = [...this.messages, message];
       return true;
     } else {
       return false;
     }
   };
-  //TODO add a boolean option here for non-blocking
+  // TODO add a boolean option here for non-blocking?
   receive = () => {
-    if (this.items.length) {
-      let item: T;
-      [item, ...this.items] = this.items as [T];
-      return Promise.resolve(item);
-    } else if (this.watchers.length < this.maxWatchers) {
-      return new Promise<T>((resolve) => {
-        this.watchers = [...this.watchers, resolve];
+    if (this.messages.length) {
+      let message: Message;
+      [message, ...this.messages] = this.messages as [Message];
+      return Promise.resolve(message);
+    } else if (this.receivers.length < this.maxReceivers) {
+      return new Promise<Message>((resolve) => {
+        this.receivers = [...this.receivers, resolve];
       });
     } else {
-      throw new Error(`Queue already has ${this.maxWatchers}`);
+      throw new Error(`Queue already has ${this.maxReceivers} receivers`);
     }
   };
 }
 
+/**
+ * Create a new [[MessageQueue]], with no backlog limits by default.
+ * @param messageBacklog Maximum backlog of waiting messages before [[send()]] returns `false`
+ * @param receiverBacklog Maximum backlog of waiting receivers before [[receive()]] throws an Error
+ * @returns a [[MessageQueue]] with the specified backlog limits
+ */
 export function createQueue<T>(
-  maxItems?: number,
-  maxWatchers?: number
+  messageBacklog?: number,
+  receiverBacklog?: number
 ): MessageQueue<T> {
-  return new DefaultMessageQueue(maxItems, maxWatchers);
+  return new DefaultMessageQueue(messageBacklog, receiverBacklog);
 }
