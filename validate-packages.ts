@@ -81,8 +81,8 @@ const RULES: readonly PackageJsonRule[] = [
     packagePaths: "modules/**",
     expected: {
       access: "public",
-      // directory: "dist",
       main: "dist/index.js",
+      typings: "dist/index.d.ts",
     },
     status: "error",
   },
@@ -150,7 +150,7 @@ const RULES: readonly PackageJsonRule[] = [
   },
   {
     path: "main",
-    expected: "dist/index.js",
+    expected: "src/index.ts",
     packagePaths: "modules/**",
     status: "error",
   },

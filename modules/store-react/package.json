@@ -2,7 +2,6 @@
   "name": "@lauf/store-react",
   "description": "State Management for React with Typescript support.",
   "version": "0.2.2",
-  "main": "dist/index.js",
   "files": [
     "README.md",
     "dist"
@@ -28,7 +27,8 @@
   "gitHead": "03bd2f443dd739f47240c303214f24d611aa4ddc",
   "publishConfig": {
     "access": "public",
-    "main": "dist/index.js"
+    "main": "dist/index.js",
+    "typings": "dist/index.d.ts"
   },
   "homepage": "https://github.com/cefn/lauf/tree/main/modules/store-react#readme",
   "bugs": {
@@ -74,5 +74,6 @@
       "@typescript-eslint/explicit-function-return-type": "off",
       "react/prop-types": "off"
     }
-  }
+  },
+  "main": "src/index.ts"
 }

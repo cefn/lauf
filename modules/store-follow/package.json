@@ -1,7 +1,6 @@
 {
   "name": "@lauf/store-follow",
   "version": "0.2.2",
-  "main": "dist/index.js",
   "license": "MIT",
   "scripts": {
     "test": "jest --passWithNoTests",
@@ -18,7 +17,8 @@
   ],
   "publishConfig": {
     "access": "public",
-    "main": "dist/index.js"
+    "main": "dist/index.js",
+    "typings": "dist/index.d.ts"
   },
   "homepage": "https://github.com/cefn/lauf/tree/main/modules/store-follow#readme",
   "bugs": {
@@ -68,5 +68,6 @@
   "dependencies": {
     "@lauf/queue": "workspace:^0.2.2",
     "@lauf/store": "workspace:^0.2.2"
-  }
+  },
+  "main": "src/index.ts"
 }
