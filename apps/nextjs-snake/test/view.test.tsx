@@ -1,7 +1,7 @@
 import React from "react";
 import assert from "assert";
 import { render, act } from "@testing-library/react";
-import { promiseExpiry } from "@lauf/lauf-runner";
+import { promiseExpiry } from "../src/delay";
 import { mainPlan, _test_game } from "../src/game";
 import { Game } from "../src/view";
 import { SPRITE_SHEET } from "../src/components/graphics";
