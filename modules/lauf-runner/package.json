@@ -1,15 +1,13 @@
 {
   "name": "@lauf/lauf-runner",
   "version": "0.1.2",
-  "main": "dist/index.js",
   "private": true,
   "license": "MIT",
   "scripts": {
     "test": "jest",
     "check": "tsc --noEmit",
     "build": "tsc --build ./tsconfig.build.json",
-    "prepare": "pnpm run test && pnpm run build",
-    "preinstall": "npx only-allow pnpm"
+    "prepare": "pnpm run test && pnpm run build"
   },
   "devDependencies": {
     "typescript": "^4.3.4"
@@ -68,5 +66,6 @@
       "@typescript-eslint/explicit-function-return-type": "off",
       "react/prop-types": "off"
     }
-  }
+  },
+  "main": "src/index.ts"
 }

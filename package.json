@@ -5,6 +5,7 @@
   "private": true,
   "scripts": {
     "build": "pnpm recursive run build",
+    "build:lauf": "pnpm recursive run build --filter '@lauf/*'",
     "build:changed": "pnpm recursive run build --filter '...[origin/main]...'",
     "lint": "pnpm exec -- eslint . --ext .js,.jsx,.ts,.tsx",
     "lint:changed": "pnpm recursive exec --filter '...[origin/main]...' -- eslint . --ext .js,.jsx,.ts,.tsx",
@@ -14,7 +15,7 @@
     "check:changed": "pnpm recursive run check --filter '...[origin/main]...'",
     "check:lauf": "pnpm recursive run check --filter '@lauf/*'",
     "validate": "ts-node ./validate-packages.ts",
-    "release": "pnpm publish",
+    "release": "pnpx changeset add && git add && git commit -a && pnpx changeset version &&om pnpm install && pnpm publish -r",
     "docs": "typedoc --tsconfig tsconfig.typedoc.json --includes ./ --readme none --out api",
     "docs:watch": "pnpm run docs -- --watch",
     "docs:serve": "reload -d api",

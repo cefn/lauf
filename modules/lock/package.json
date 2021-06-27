@@ -1,14 +1,12 @@
 {
   "name": "@lauf/lock",
-  "version": "0.2.0",
-  "main": "dist/index.js",
+  "version": "0.2.3",
   "license": "MIT",
   "scripts": {
     "test": "jest",
     "check": "tsc --noEmit",
     "build": "tsc --build ./tsconfig.build.json",
-    "prepare": "pnpm run test && pnpm run build",
-    "preinstall": "npx only-allow pnpm"
+    "prepare": "pnpm run test && pnpm run build"
   },
   "devDependencies": {
     "typescript": "^4.3.4"
@@ -67,5 +65,6 @@
       "@typescript-eslint/explicit-function-return-type": "off",
       "react/prop-types": "off"
     }
-  }
+  },
+  "main": "src/index.ts"
 }

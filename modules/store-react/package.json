@@ -1,8 +1,7 @@
 {
   "name": "@lauf/store-react",
   "description": "State Management for React with Typescript support.",
-  "version": "0.2.0",
-  "main": "dist/index.js",
+  "version": "0.2.3",
   "files": [
     "README.md",
     "dist"
@@ -12,11 +11,10 @@
     "test": "jest",
     "check": "tsc --noEmit",
     "build": "tsc --build ./tsconfig.build.json",
-    "prepare": "pnpm run test && pnpm run build",
-    "preinstall": "npx only-allow pnpm"
+    "prepare": "pnpm run test && pnpm run build"
   },
   "dependencies": {
-    "@lauf/store": "^0.2.0"
+    "@lauf/store": "^0.2.3"
   },
   "peerDependencies": {
     "react": "^17.0.2"
@@ -76,5 +74,6 @@
       "@typescript-eslint/explicit-function-return-type": "off",
       "react/prop-types": "off"
     }
-  }
+  },
+  "main": "src/index.ts"
 }

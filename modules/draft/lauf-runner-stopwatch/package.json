@@ -2,14 +2,12 @@
   "name": "@lauf/lauf-runner-stopwatch",
   "version": "0.1.0",
   "private": true,
-  "main": "dist/index.js",
   "license": "MIT",
   "scripts": {
     "test": "jest",
     "check": "tsc --noEmit",
     "build": "tsc --build ./tsconfig.build.json",
-    "prepare": "pnpm run test && pnpm run build",
-    "preinstall": "npx only-allow pnpm"
+    "prepare": "pnpm run test && pnpm run build"
   },
   "devDependencies": {
     "typescript": "^4.3.4"
@@ -67,5 +65,6 @@
     "access": "public",
     "main": "dist/index.js",
     "typings": "dist/index.d.ts"
-  }
+  },
+  "main": "src/index.ts"
 }

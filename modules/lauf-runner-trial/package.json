@@ -1,15 +1,13 @@
 {
   "name": "@lauf/lauf-runner-trial",
   "version": "0.1.2",
-  "main": "dist/index.js",
   "private": true,
   "license": "MIT",
   "scripts": {
     "test": "jest",
     "check": "tsc --noEmit",
     "build": "tsc --build ./tsconfig.build.json",
-    "prepare": "pnpm run test && pnpm run build",
-    "preinstall": "npx only-allow pnpm"
+    "prepare": "pnpm run test && pnpm run build"
   },
   "devDependencies": {
     "typescript": "^4.3.4"
@@ -72,5 +70,6 @@
   "dependencies": {
     "@lauf/lauf-runner": "workspace:^0.1.2",
     "@lauf/lauf-runner-trial": "workspace:^0.1.2"
-  }
+  },
+  "main": "src/index.ts"
 }

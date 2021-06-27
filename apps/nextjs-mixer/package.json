@@ -1,22 +1,21 @@
 {
   "name": "nextjs-mixer",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "private": true,
   "scripts": {
     "dev": "NODE_OPTIONS='--inspect' next dev",
     "build": "next build",
     "start": "next start",
     "test": "jest --passWithNoTests",
-    "check": "tsc --noEmit",
-    "preinstall": "npx only-allow pnpm"
+    "check": "tsc --noEmit"
   },
   "dependencies": {
-    "@lauf/store": "^0.2.0",
-    "@lauf/store-react": "^0.2.0",
-    "next": "^10.0.0",
-    "react": "17.0.1",
-    "react-dom": "17.0.1",
-    "react-is": "^17.0.1",
+    "@lauf/store": "^0.2.2",
+    "@lauf/store-react": "^0.2.2",
+    "next": "^11.0.1",
+    "react": "17.0.2",
+    "react-dom": "17.0.2",
+    "react-is": "^17.0.2",
     "styled-components": "^5.2.1"
   },
   "devDependencies": {
