@@ -4,10 +4,10 @@ function arrayWithout<T>(arr: ReadonlyArray<T>, index: number) {
   return [...arr.slice(0, index), ...arr.slice(index + 1)];
 }
 
-export class BasicLock<T> implements Lock {
-  protected keys: ReadonlyArray<T | void> = [];
+class DefaultLock<Key> implements Lock<Key> {
+  protected keys: ReadonlyArray<Key | void> = [];
   protected releasePromises: ReadonlyArray<Promise<void>> = [];
-  acquire = async (key?: T) => {
+  acquire = async (key?: Key) => {
     let release = null;
     do {
       const index = this.keys.indexOf(key);
@@ -33,4 +33,13 @@ export class BasicLock<T> implements Lock {
     } while (release === null);
     return release;
   };
+}
+
+/**
+ * Create a [[Lock]] to assert mutual exclusion for
+ * values of type `Key`
+ * @returns
+ */
+export function createLock<Key = any>() {
+  return new DefaultLock<Key>();
 }

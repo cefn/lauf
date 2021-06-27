@@ -2,7 +2,9 @@
   "entryPoints": [
     "modules/store/src/index.ts",
     "modules/store-react/src/index.ts",
-    "modules/store-follow/src/index.ts"
+    "modules/store-follow/src/index.ts",
+    "modules/queue/src/index.ts",
+    "modules/lock/src/index.ts"
   ],
   "out": "api"
 }
