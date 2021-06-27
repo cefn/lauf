@@ -5,6 +5,7 @@
   "private": true,
   "scripts": {
     "build": "pnpm recursive run build",
+    "build:lauf": "pnpm recursive run build --filter '@lauf/*'",
     "build:changed": "pnpm recursive run build --filter '...[origin/main]...'",
     "lint": "pnpm exec -- eslint . --ext .js,.jsx,.ts,.tsx",
     "lint:changed": "pnpm recursive exec --filter '...[origin/main]...' -- eslint . --ext .js,.jsx,.ts,.tsx",

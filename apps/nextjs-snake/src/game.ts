@@ -1,4 +1,4 @@
-import { isExpiry, promiseExpiry } from "@lauf/lauf-runner";
+import { isExpiry, promiseExpiry } from "./delay";
 import { MessageQueue } from "@lauf/queue";
 import { followSelector, withSelectorQueue } from "@lauf/store-follow";
 import {

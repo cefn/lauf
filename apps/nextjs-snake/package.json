@@ -13,6 +13,7 @@
   "dependencies": {
     "@lauf/queue": "^0.2.0",
     "@lauf/store": "^0.2.0",
+    "@lauf/store-follow": "^0.2.0",
     "@lauf/store-react": "^0.2.0",
     "next": "^11.0.0",
     "react": "^17.0.2",
@@ -25,6 +26,7 @@
     "@babel/preset-env": "^7.13.10",
     "@babel/preset-typescript": "^7.13.0",
     "@testing-library/react": "^11.2.5",
+    "@types/jest": "^26.0.23",
     "@types/react": "^17.0.2",
     "@types/styled-components": "^5.1.7",
     "@types/styled-jsx": "^2.2.8",

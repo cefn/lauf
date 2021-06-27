@@ -5,7 +5,6 @@
   "license": "MIT",
   "scripts": {
     "start": "webpack serve --mode=development --hot",
-    "start:monorepo": "webpack serve --mode=development --hot --config webpack.monorepo.config.js",
     "build": "webpack --mode=production",
     "check": "tsc --noEmit",
     "test": "jest --passWithNoTests"
@@ -17,6 +16,7 @@
     "babel-loader": "^8.2.2",
     "css-loader": "^5.1.1",
     "html-webpack-plugin": "^5.2.0",
+    "react-scripts": "^4.0.3",
     "style-loader": "^2.0.0",
     "ts-loader": "^8.0.17",
     "tsconfig-paths-webpack-plugin": "^3.3.0",
@@ -85,6 +85,8 @@
   "repository": "github:cefn/lauf",
   "dependencies": {
     "@lauf/store": "^0.2.0",
-    "@lauf/store-react": "^0.2.0"
+    "@lauf/store-react": "^0.2.0",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2"
   }
 }
