@@ -1,5 +1,11 @@
 # @lauf/lock
 
+## 0.2.2
+
+### Patch Changes
+
+- b72aca2: Remove incorrect typings field
+
 ## 0.2.1
 
 ### Patch Changes
