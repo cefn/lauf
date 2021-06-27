@@ -100,6 +100,8 @@ importers:
       '@babel/preset-react': ^7.12.13
       '@lauf/store': ^0.2.0
       '@lauf/store-react': ^0.2.0
+      '@types/react': ^17.0.11
+      '@types/react-dom': ^17.0.8
       babel-loader: ^8.2.2
       css-loader: ^5.1.1
       html-webpack-plugin: ^5.2.0
@@ -122,6 +124,8 @@ importers:
       '@babel/core': 7.14.6
       '@babel/preset-env': 7.14.7_@babel+core@7.14.6
       '@babel/preset-react': 7.14.5_@babel+core@7.14.6
+      '@types/react': 17.0.11
+      '@types/react-dom': 17.0.8
       babel-loader: 8.2.2_1ef96c0ff5bf278057a4bc2ae1f672a2
       css-loader: 5.2.6_webpack@5.40.0
       html-webpack-plugin: 5.3.2_webpack@5.40.0
@@ -239,6 +243,8 @@ importers:
       '@lauf/store': ^0.2.0
       '@lauf/store-follow': ^0.2.0
       '@lauf/store-react': ^0.2.0
+      '@types/react': ^17.0.11
+      '@types/react-dom': ^17.0.8
       babel-loader: ^8.2.2
       css-loader: ^5.1.1
       html-webpack-plugin: ^5.2.0
@@ -262,6 +268,8 @@ importers:
       '@babel/core': 7.14.6
       '@babel/preset-env': 7.14.7_@babel+core@7.14.6
       '@babel/preset-react': 7.14.5_@babel+core@7.14.6
+      '@types/react': 17.0.11
+      '@types/react-dom': 17.0.8
       babel-loader: 8.2.2_1ef96c0ff5bf278057a4bc2ae1f672a2
       css-loader: 5.2.6_webpack@5.40.0
       html-webpack-plugin: 5.3.2_webpack@5.40.0
