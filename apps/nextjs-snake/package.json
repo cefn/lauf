@@ -8,8 +8,7 @@
     "build": "next build",
     "start": "next start",
     "test": "jest",
-    "check": "tsc --noEmit",
-    "start:monorepo": "RESOLVE=monorepo pnpm run start"
+    "check": "tsc --noEmit"
   },
   "dependencies": {
     "@lauf/queue": "^0.2.0",

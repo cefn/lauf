@@ -133,7 +133,7 @@ const RULES: readonly PackageJsonRule[] = [
   },
   {
     path: "scripts['start:monorepo']",
-    expected: "RESOLVE=monorepo pnpm run start",
+    expected: undefined,
     packagePaths: "apps/**",
     status: "error",
   },
