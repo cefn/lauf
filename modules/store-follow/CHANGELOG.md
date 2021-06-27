@@ -1,5 +1,14 @@
 # @lauf/store-follow
 
+## 0.2.3
+
+### Patch Changes
+
+- 6f55e19: Update main and typings for modules
+- Updated dependencies [6f55e19]
+  - @lauf/queue@0.2.3
+  - @lauf/store@0.2.3
+
 ## 0.2.2
 
 ### Patch Changes

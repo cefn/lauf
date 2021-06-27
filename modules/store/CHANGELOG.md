@@ -1,5 +1,11 @@
 # @lauf/store
 
+## 0.2.3
+
+### Patch Changes
+
+- 6f55e19: Update main and typings for modules
+
 ## 0.2.2
 
 ### Patch Changes
