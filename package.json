@@ -15,7 +15,7 @@
     "check:changed": "pnpm recursive run check --filter '...[origin/main]...'",
     "check:lauf": "pnpm recursive run check --filter '@lauf/*'",
     "validate": "ts-node ./validate-packages.ts",
-    "release": "pnpm publish",
+    "release": "pnpx changeset add && git add && git commit -a && pnpm install && pnpm publish -r",
     "docs": "typedoc --tsconfig tsconfig.typedoc.json --includes ./ --readme none"
   },
   "devDependencies": {
