@@ -83,7 +83,6 @@ const RULES: readonly PackageJsonRule[] = [
       access: "public",
       // directory: "dist",
       main: "dist/index.js",
-      typings: "dist/index.d.ts",
     },
     status: "error",
   },

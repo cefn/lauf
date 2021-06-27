@@ -64,7 +64,6 @@
   },
   "publishConfig": {
     "access": "public",
-    "main": "dist/index.js",
-    "typings": "dist/index.d.ts"
+    "main": "dist/index.js"
   }
 }
