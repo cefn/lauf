@@ -3,16 +3,15 @@ import { Immutable, RootState, Selector, Store } from "@lauf/store";
 import { Controls, Follower, QueueHandler, ExitStatus } from "./types";
 
 /**
- * Creates a queue subscribed to a [[Store]]'s [[Selector]] value then waits for
- * `handleQueue` to complete (which may be async). A selector queue
- * [Queue.receive|receives] an initial message with the value calculated by the
- * [[Selector|selector]] from the [[Store|store]]. It is subscribed to receive a
- * further message whenever the selector's value changes. After `handleQueue`
- * returns the queue is unsubscribed.
- * @param store The store to monitor
- * @param selector The function to extract the selected value
- * @param handleQueue Callback which will be passed the queue
- * @returns
+ * Configures a [[MessageQueue]] that will receive messages with every new value
+ * of a [[Selector]] against a [[Store]]. Passes the queue and the initial value
+ * from the Selector to `handleQueue` then waits for `handleQueue` to return,
+ * after which the queue is unsubscribed.
+ *
+ * @param store Store to monitor
+ * @param selector Function that extracts the selected value
+ * @param handleQueue Function passed the initial selected value and queue
+ * @returns the value returned by `handleQueue`
  */
 export async function withSelectorQueue<
   State extends RootState,
@@ -43,14 +42,21 @@ export async function withSelectorQueue<
 }
 
 /**
- * Calls back and waits on the [[Follower|follower]] one time with the initial
- * value of [[Selector]] then again every time the Store has a changed value of
- * [[Selector]]. The [[Follower|follower]] is passed the new value, and also a
- * [[Control|control]] object.
+ * Invokes the [[Follower|follower]] once with the initial value of
+ * [[Selector|selector]] and again every time [[Store|store]] has a changed
+ * value of `Selector`. If follower is async, each invocation will
+ * be awaited before the next is called.
+ *
+ * The `follower` is passed the new value each time, and also a
+ * [[Controls|control]] object which can be used to exit the loop like `return
+ * control.exit(myValue)`. If `follower` doesn't return an exit
+ * instruction, its return value is ignored and it will be invoked again
+ * on the the next `Selector` change.
+ *
  * @param store The store to follow
  * @param selector The function to extract the selected value
  * @param follower The callback to handle each changing value
- * @returns An `Ending` returned when exiting the loop
+ * @returns Any `Ending` returned when exiting the loop
  */
 export async function followSelector<State extends RootState, Selected, Ending>(
   store: Store<State>,

@@ -14,7 +14,7 @@ export type Follower<Selected, Ending> = (
   controlHandle: Controls<Selected, Ending>
 ) => Promise<void | ExitStatus>;
 
-/** A control object for a [[Follow]] function to signal
+/** A control object for a [[Follower]] function to signal
  * exit behaviour, retrieve references.
  */
 export type Controls<Selected, Ending> = {

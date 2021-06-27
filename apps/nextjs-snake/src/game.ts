@@ -61,18 +61,20 @@ async function moveUntilMotionChange(
   motionQueue: MessageQueue<Motion>
 ): Promise<Motion> {
   const { receive } = motionQueue;
-  //promise future change in motion
-  const motionChangePromise = receive(); //N.B. not awaited
+  // promise future change in motion (don't await it yet)
+  const motionChangePromise = receive();
   while (true) {
+    // snake is in motion so move one step
     moveSnake(appModel, motion);
-    //promise future timeout
-    const expiryPromise = promiseExpiry(STEP_MS); //N.B. not awaited
+    // promise future timeout for next snake step (don't await it yet)
+    const expiryPromise = promiseExpiry(STEP_MS);
+    // Finally await Promise.race between step timeout and motion change
     const ending = await Promise.race([motionChangePromise, expiryPromise]);
     if (isExpiry(ending)) {
-      //step timeout came first wait again
+      //step timeout came, do another snake step
       continue;
     }
-    //motion change finally came
+    //motion change came! return new motion state to caller
     return ending;
   }
 }
