@@ -8,16 +8,16 @@ const directionMap: Record<string, Direction> = {
   ArrowLeft: "LEFT",
   ArrowUp: "UP",
   ArrowRight: "RIGHT",
-  ArrowDown: "DOWN",
+  ArrowDown: "DOWN"
 } as const;
 
 export function Game({ gameStore, inputQueue }: AppModel) {
-  //subscribe to key events, send as DirectionInput
+  // subscribe to key events, send as DirectionInput
   useEffect(() => {
     if (process.browser) {
       const keyListener = (e: KeyboardEvent) => {
         const { code, type } = e;
-        let active = type === "keydown";
+        const active = type === "keydown";
         const directionName = directionMap[code];
         if (!directionName) {
           return;
@@ -44,6 +44,9 @@ export function Game({ gameStore, inputQueue }: AppModel) {
           width: auto;
           border: 0;
           padding: 0;
+          margin: 0;
+        }
+        h1 {
           margin: 0;
         }
       `}</style>

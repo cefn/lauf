@@ -30,9 +30,13 @@ const SNAKE_SPRITE_OFFSETS = {
 
 export const SPRITE_SIDE = 64; // in px
 
+export const SCALE = 0.5;
+
 export const SPRITE_SHEET: SpriteSheet<SnakeSpriteName> = {
   // Graphics thanks to https://rembound.com/articles/creating-a-snake-game-tutorial-with-html5
   url: "./sprites.png",
+  width: 256,
+  height: 256,
   spriteWidth: SPRITE_SIDE,
   spriteHeight: SPRITE_SIDE,
   offsets: SNAKE_SPRITE_OFFSETS,

@@ -68,7 +68,7 @@ export type SegmentPosition = {
 
 // grid is defined as central (zero) square with squares in each direction
 // up to and including GRID_MAX
-export const GRID_MAX = 10;
+export const GRID_MAX = 5;
 export const GRID_SPAN = 1 + 2 * GRID_MAX;
 
 // export const gridArea = gridSpan * gridSpan;

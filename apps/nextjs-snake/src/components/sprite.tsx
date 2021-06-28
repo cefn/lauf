@@ -1,9 +1,12 @@
 import React from "react";
 import { Immutable } from "@lauf/store";
 import { GRID_MAX, GRID_SPAN } from "../domain";
+import { SCALE } from "./graphics";
 
 export type SpriteSheet<TileName extends string> = Immutable<{
   url: string;
+  width: number;
+  height: number;
   spriteWidth: number;
   spriteHeight: number;
   offsets: {
@@ -27,8 +30,8 @@ export function posToStyle<SpriteName extends string>(
     spriteSheet: { spriteWidth, spriteHeight }
   } = spriteProps;
   return {
-    left: `${(gridX + GRID_MAX) * spriteWidth}px`,
-    top: `${(GRID_SPAN - (gridY + GRID_MAX + 1)) * spriteHeight}px` // vertical axis is inverted in browser
+    left: `${(gridX + GRID_MAX) * spriteWidth * SCALE}px`,
+    top: `${(GRID_SPAN - (gridY + GRID_MAX + 1)) * spriteHeight * SCALE}px` // vertical axis is inverted in browser
   };
 }
 
@@ -36,13 +39,14 @@ export function Sprite<SpriteName extends string>(
   spriteProps: SpriteProps<SpriteName>
 ) {
   const { spriteSheet, spriteName } = spriteProps;
-  const { spriteWidth, spriteHeight } = spriteSheet;
+  const { width, height, spriteWidth, spriteHeight } = spriteSheet;
 
   const backgroundImage = `url(${spriteSheet.url})`;
   const [offsetX, offsetY] = spriteSheet.offsets[spriteName];
-  const backgroundPosition = `${-offsetX * spriteWidth}px ${
-    -offsetY * spriteHeight
+  const backgroundPosition = `${-offsetX * spriteWidth * SCALE}px ${
+    -offsetY * spriteHeight * SCALE
   }px`;
+  const backgroundSize = `${width * SCALE}px ${height * SCALE}px`;
 
   const { left, top } = posToStyle(spriteProps);
 
@@ -55,12 +59,13 @@ export function Sprite<SpriteName extends string>(
       style={{
         display,
         position,
-        width: spriteWidth,
-        height: spriteHeight,
+        width: spriteWidth * SCALE,
+        height: spriteHeight * SCALE,
         left,
         top,
         backgroundImage,
-        backgroundPosition
+        backgroundPosition,
+        backgroundSize
       }}
     />
   );
