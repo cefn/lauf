@@ -22,21 +22,23 @@ for state-management, providing a simple substitute for Flux/Redux based on
 Browse the [API](https://cefn.com/lauf/api/modules/_lauf_store_react.html) or the Typescript example inlined below from our [Counter
 App](https://github.com/cefn/lauf/tree/main/apps/counter).
 
-The example shows how `useSelected` can bind part of a `Store`'s state to a component,
-and how controls can change the state.
+The Counter example below shows how `useSelected` binds a selected part of a `Store`'s state to
+a component, and how controls should [[Store.edit|edit]] the state. See the code running
+in [this Code
+Sandbox](https://codesandbox.io/s/github/cefn/lauf/tree/main/apps/counter?file=/src/index.tsx)
 
-- `AppState` defines the state structure to be managed by the Store.
-- `StoreProps` defines how to pass the `Store` to React components.
+- `AppState` defines the state structure for the Store.
+- `StoreProps` passes the `Store` to React components.
 - The `Display` React component has a `useSelected` hook to re-render when `counter` changes.
-- The `Increment` and `Decrement` buttons don't track any changes, but they do trigger an `edit` to the `counter` when clicked.
-- `App` creates the `Store` with `useStore` passing in an `INITIAL_STATE`.
+- The `Increment` and `Decrement` buttons don't re-render on any state changes, but they DO trigger an `edit` to the `counter` state when clicked.
+- `App` calls `useStore` passing in an `INITIAL_STATE` to initialise a [[Store]] on first load.
 - `App` inserts the three components, passing each one the store to do its work.
 
 ```typescript
 import React from "react";
 import ReactDOM from "react-dom";
-import { Immutable, Store } from "@lauf/store";
-import { useSelected, useStore } from "@lauf/store-react";
+import { Store, Immutable } from "@lauf/store";
+import { useStore, useSelected } from "@lauf/store-react";
 
 interface AppState {
   counter: number;
