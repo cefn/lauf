@@ -1,5 +1,11 @@
 # @lauf/store
 
+## 1.0.0
+
+### Major Changes
+
+- 4448f95: Release 1.0.0 for all @lauf modules.
+
 ## 0.2.4
 
 ### Patch Changes

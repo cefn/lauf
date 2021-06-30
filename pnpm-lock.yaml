@@ -102,8 +102,8 @@ importers:
       '@babel/core': ^7.13.8
       '@babel/preset-env': ^7.13.9
       '@babel/preset-react': ^7.12.13
-      '@lauf/store': ^0.2.2
-      '@lauf/store-react': ^0.2.2
+      '@lauf/store': ^1.0.0
+      '@lauf/store-react': ^1.0.0
       '@types/react': ^17.0.11
       '@types/react-dom': ^17.0.8
       babel-loader: ^8.2.2
@@ -144,8 +144,8 @@ importers:
 
   apps/nextjs-mixer:
     specifiers:
-      '@lauf/store': ^0.2.2
-      '@lauf/store-react': ^0.2.2
+      '@lauf/store': ^1.0.0
+      '@lauf/store-react': ^1.0.0
       '@types/styled-components': ^5.1.7
       next: ^11.0.1
       react: 17.0.2
@@ -193,10 +193,10 @@ importers:
       '@babel/core': ^7.13.10
       '@babel/preset-env': ^7.13.10
       '@babel/preset-typescript': ^7.13.0
-      '@lauf/queue': ^0.2.2
-      '@lauf/store': ^0.2.2
-      '@lauf/store-follow': ^0.2.2
-      '@lauf/store-react': ^0.2.2
+      '@lauf/queue': ^1.0.0
+      '@lauf/store': ^1.0.0
+      '@lauf/store-follow': ^1.0.0
+      '@lauf/store-react': ^1.0.0
       '@testing-library/react': ^11.2.5
       '@types/jest': ^26.0.23
       '@types/react': ^17.0.2
@@ -244,9 +244,9 @@ importers:
       '@babel/core': ^7.13.8
       '@babel/preset-env': ^7.13.9
       '@babel/preset-react': ^7.12.13
-      '@lauf/store': ^0.2.2
-      '@lauf/store-follow': ^0.2.2
-      '@lauf/store-react': ^0.2.2
+      '@lauf/store': ^1.0.0
+      '@lauf/store-follow': ^1.0.0
+      '@lauf/store-react': ^1.0.0
       '@types/react': ^17.0.11
       '@types/react-dom': ^17.0.8
       babel-loader: ^8.2.2
@@ -295,8 +295,8 @@ importers:
   modules/lauf-runner-primitives:
     specifiers:
       '@lauf/lauf-runner': ^0.1.2
-      '@lauf/queue': ^0.2.0
-      '@lauf/store': ^0.2.0
+      '@lauf/queue': ^1.0.0
+      '@lauf/store': ^1.0.0
       typescript: ^4.3.4
     dependencies:
       '@lauf/lauf-runner': link:../lauf-runner
@@ -339,8 +339,8 @@ importers:
 
   modules/store-follow:
     specifiers:
-      '@lauf/queue': workspace:^0.2.4
-      '@lauf/store': workspace:^0.2.4
+      '@lauf/queue': workspace:^1.0.0
+      '@lauf/store': workspace:^1.0.0
       typescript: ^4.3.4
     dependencies:
       '@lauf/queue': link:../queue
@@ -350,7 +350,7 @@ importers:
 
   modules/store-react:
     specifiers:
-      '@lauf/store': ^0.2.4
+      '@lauf/store': ^1.0.0
       '@testing-library/react': ^11.2.5
       '@testing-library/user-event': ^13.1.9
       typescript: ^4.3.4
