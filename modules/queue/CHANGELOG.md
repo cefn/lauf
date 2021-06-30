@@ -1,5 +1,11 @@
 # @lauf/queue
 
+## 0.2.4
+
+### Patch Changes
+
+- 3a53ce1: Finalise and publish lock, queue, store-follow and their docs. Add tests for store-follow.
+
 ## 0.2.3
 
 ### Patch Changes
