@@ -1,5 +1,13 @@
 # counter
 
+## 0.1.6
+
+### Patch Changes
+
+- Updated dependencies [4448f95]
+  - @lauf/store@1.0.0
+  - @lauf/store-react@1.0.0
+
 ## 0.1.5
 
 ### Patch Changes

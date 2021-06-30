@@ -1,5 +1,17 @@
 # @lauf/store-follow
 
+## 1.0.0
+
+### Major Changes
+
+- 4448f95: Release 1.0.0 for all @lauf modules.
+
+### Patch Changes
+
+- Updated dependencies [4448f95]
+  - @lauf/queue@1.0.0
+  - @lauf/store@1.0.0
+
 ## 0.2.4
 
 ### Patch Changes

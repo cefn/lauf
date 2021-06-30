@@ -1,7 +1,7 @@
 {
   "name": "@lauf/store-react",
   "description": "State Management for React with Typescript support.",
-  "version": "0.2.4",
+  "version": "1.0.0",
   "files": [
     "README.md",
     "dist"
@@ -14,7 +14,7 @@
     "prepare": "pnpm run test && pnpm run build"
   },
   "dependencies": {
-    "@lauf/store": "^0.2.4"
+    "@lauf/store": "^1.0.0"
   },
   "peerDependencies": {
     "react": "^17.0.2"
