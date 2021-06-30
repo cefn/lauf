@@ -15,7 +15,7 @@
 npm install @lauf/queue --save
 ```
 
-`@lauf/queue` provides a minimal in-memory [[MessageQueue]] solution. It is incredibly lightweight with no dependencies and is suitable for adoption server-side or client-side in Typescript or Javascript.
+`@lauf/queue` provides a minimal in-memory `MessageQueue` solution. It is incredibly lightweight with no dependencies and is suitable for adoption server-side or client-side in Typescript or Javascript.
 
 A `MessageQueue` is like a mailbox. Your `async` code can await `queue.receive()` until the next message is available. In this way, one or more workers can consume and process bespoke application events in strict sequence.
 

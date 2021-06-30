@@ -1,7 +1,7 @@
 /**
  * A Release function issued to a caller when they acquire a [[Lock]] on a
- * particular key. This function is called to release the lock and allow other
- * processes to enter the mutual exclusion for that key. */
+ * particular key. The caller is expected to invoke this function to give up the
+ * lock and allow other processes to enter the mutual exclusion for that key. */
 export type Release = () => void;
 
 /**
