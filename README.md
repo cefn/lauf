@@ -9,9 +9,13 @@ Lauf is a proof-of-concept framework to make business logic isolated, explicit, 
 
 Flux-based frameworks like `Redux` or `React.useReducer` will guide you to use an action type, a structured payload definition, probably an Action creator, possibly a thunk creator, with the result sent via a dispatcher to (hopefully) line up with corresponding behaviour in a reducer and probably some middleware.
 
-Lauf aims to avoid all this. Your coding style with Lauf can remain as simple, procedural, explicit and debuggable as `async`/`await`.
+Lauf aims to avoid all this. Your coding style with Lauf remains simple, procedural and explicit.
 
-See for example the Counter app [in Typescript](./apps/counter) or [in Javascript](./apps/counter-js)
+The Counter app example [in Typescript](./apps/counter) or [in Javascript](./apps/counter-js) is made with Create-React-App.
+
+The Color Mixer example [in Typescript](./apps/nextjs-mixer) is made with NextJS.
+
+For an example of complex state management and eventing, see the Snake example [in Typescript](./apps/nextjs-snake)
 
 ## Primitives and Utilities
 
