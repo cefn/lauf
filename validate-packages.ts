@@ -74,7 +74,7 @@ const RULES: readonly PackageJsonRule[] = [
         "react/prop-types": "off",
       },
     },
-    status: "error",
+    status: "warning",
   },
   {
     path: "publishConfig",
@@ -107,7 +107,7 @@ const RULES: readonly PackageJsonRule[] = [
   {
     path: "devDependencies.typescript",
     expected: "^4.3.4",
-    status: "error",
+    status: "warning",
   },
   {
     path: "scripts.preinstall",
@@ -122,7 +122,7 @@ const RULES: readonly PackageJsonRule[] = [
   {
     path: "scripts.check",
     expected: "tsc --noEmit",
-    status: "error",
+    status: "warning",
   },
   {
     path: "scripts.prepare",
@@ -254,6 +254,7 @@ for (const packageJsonPath of packageJsonPaths) {
     actualValue: any;
     expectedValue: Expected;
     fixed: boolean;
+    status: Status;
   };
   const found: Record<Rule["path"], Violation> = {};
   let rewritePackageJson = false;
@@ -293,16 +294,15 @@ for (const packageJsonPath of packageJsonPaths) {
         JSON.stringify(expectedValue)
       )}'`;
       //check strategy, possibly skip fix depending on rule status
-      if (
+      const fixed = !(
         (status === "error" && ["dryRun"].includes(strategy)) ||
         (status === "warning" && ["dryRun", "fixErrors"].includes(strategy))
-      ) {
-        //skip the fix
-        found[path] = { actualValue, expectedValue, fixed: false };
-        continue;
-      } else {
+      );
+
+      found[path] = { actualValue, expectedValue, status, fixed };
+
+      if (fixed) {
         //proceed with fix
-        found[path] = { actualValue, expectedValue, fixed: true };
         console.log(`${message} FIXING`);
         lodashSet(packageJson, path, expectedValue);
         rewritePackageJson = true;
@@ -311,17 +311,19 @@ for (const packageJsonPath of packageJsonPaths) {
   }
 
   if (Object.entries(found).length > 0) {
-    console.log(`${packageJson.name} (${chalk.gray(packageJsonPath)})`);
+    console.log(
+      `${chalk.yellow(packageJson.name)} (${chalk.gray(packageJsonPath)})`
+    );
     for (const [
       path,
-      { actualValue: actual, expectedValue, fixed },
+      { actualValue: actual, expectedValue, fixed, status },
     ] of Object.entries(found)) {
       console.log(
-        `${chalk.yellow(path)} ${chalk.red(actual)}${chalk.yellow(
-          " not "
-        )}${chalk.green(JSON.stringify(expectedValue))} (${
-          fixed ? "FIXED" : `NOT FIXED (${strategy})`
-        })`
+        `${status.toUpperCase()} ${path} ${chalk.red(actual)}${chalk.yellow(
+          " SHOULD BE "
+        )}${chalk.green(JSON.stringify(expectedValue))} ${
+          fixed ? "FIXED" : `NOT FIXED (strategy=${strategy})`
+        }`
       );
     }
   }
