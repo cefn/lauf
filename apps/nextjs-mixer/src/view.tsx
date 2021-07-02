@@ -1,12 +1,14 @@
-import React, { FC, useEffect, useState } from "react";
+import React, { FC, useEffect } from "react";
 import Head from "next/head";
-import { createStore, Store } from "@lauf/store/src";
-import { useSelected } from "@lauf/store-react";
+
+import { Store } from "@lauf/store";
+import { useStore, useSelected } from "@lauf/store-react";
+
 import { AppState, INITIAL_STATE, RED, GREEN, BLUE } from "./state";
 import { decreaseColor, increaseColor } from "./change";
 
 export const ColorMixer: FC<{ colorStore: Store<AppState> }> = ({
-  colorStore
+  colorStore,
 }) => {
   const [red, green, blue] = useSelected(colorStore, (state) => state.color);
 
@@ -64,7 +66,7 @@ export const ColorMixer: FC<{ colorStore: Store<AppState> }> = ({
       <div
         style={{
           fontFamily: "sans-serif",
-          color: `rgb(${255 - red},${255 - green},${255 - blue})`
+          color: `rgb(${255 - red},${255 - green},${255 - blue})`,
         }}
       >
         <h1>Keyboard Shortcuts</h1>
@@ -79,7 +81,7 @@ export const ColorMixer: FC<{ colorStore: Store<AppState> }> = ({
 };
 
 export function ColorApp() {
-  const [colorStore] = useState(() => createStore(INITIAL_STATE));
+  const colorStore = useStore(INITIAL_STATE);
   return process.browser ? (
     <ColorMixer {...{ colorStore }} />
   ) : (

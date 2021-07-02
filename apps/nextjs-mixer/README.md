@@ -1,1 +1,3 @@
-This is a starter template for [Learn Next.js](https://nextjs.org/learn).
+This application contrasts with the Create-React-App [Counter app](../counter/).
+
+It is based on NextJS and introduces more complex state and eventing.
