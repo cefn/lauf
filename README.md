@@ -23,7 +23,7 @@ In detail
 - The `Display` React component has a `useSelected` hook to re-render when `counter` changes.
 - The `Increment` and `Decrement` buttons don't re-render on any state changes, but they DO trigger an `edit` to the `counter` state when clicked.
 
-See the Counter app running; [sandbox in javascript](https://codesandbox.io/s/github/cefn/lauf/tree/main/apps/counter-js), [sandbox in typescript](https://codesandbox.io/s/github/cefn/lauf/tree/main/apps/counter).
+See the Counter app running in a sandbox; ([javascript](https://codesandbox.io/s/github/cefn/lauf/tree/main/apps/counter-js)), ([typescript](https://codesandbox.io/s/github/cefn/lauf/tree/main/apps/counter)).
 
 ```javascript
 const INITIAL_STATE = {
