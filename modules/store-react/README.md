@@ -22,10 +22,14 @@ for state-management, providing a simple substitute for Flux/Redux based on
 Browse the [API](https://cefn.com/lauf/api/modules/_lauf_store_react.html) or the Typescript example inlined below from our [Counter
 App](https://github.com/cefn/lauf/tree/main/apps/counter).
 
-The Counter example below shows how `useSelected` binds a selected part of a `Store`'s state to
-a component, and how controls should [[Store.edit|edit]] the state. See the code running
-in [this Code
-Sandbox](https://codesandbox.io/s/github/cefn/lauf/tree/main/apps/counter?file=/src/index.tsx)
+The Counter example below shows how `useSelected` binds a selected part of a
+`Store`'s state to a component, and how events can `edit` the state.
+
+You can see the app
+running in an online sandbox; [in javascript](https://codesandbox.io/s/github/cefn/lauf/tree/main/apps/counter-js),
+or [in typescript](https://codesandbox.io/s/github/cefn/lauf/tree/main/apps/counter).
+
+#### App Behaviour
 
 - `AppState` defines the state structure for the Store.
 - `StoreProps` passes the `Store` to React components.
