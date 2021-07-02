@@ -1,10 +1,10 @@
 # Counter (Javascript)
 
-This simple Javascript app defines shared state independently of React, then binds React views and controls to it. See also the [Typescript version of this app](../counter/)
+This simple Javascript app defines shared state independently of React, then binds React views and controls to it. See also the [Typescript version of this app](https://github.com/cefn/lauf/tree/main/apps/counter)
 
 Visit https://codesandbox.io/s/github/cefn/lauf/tree/main/apps/counter-js to see the code and run it in an sandbox
 
-See [index.js](src/index.js) to understand how it works.
+See [index.js](https://github.com/cefn/lauf/tree/main/apps/counter-js/src/index.js) to understand how it works.
 
 Use `npm install` then `npm run start` to demo the application locally.
 
