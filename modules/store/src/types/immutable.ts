@@ -7,9 +7,9 @@ import type { castDraft, Draft } from "immer";
  * special objects and methods and typically doesn't require you to change your
  * code.
  *
- * It is used to flags and enforce immutability of a [[RootState]] and its
- * descendants - values [[Store.write|assigned to]] or [[Store.read|retrieved
- * from]] a [[Store]]. The type `Immutable<T>` is equivalent to applying
+ * It is used to flag and enforce immutability of a [[RootState]] and its
+ * descendants - values assigned to a [[Store]] ([[Store.write]]) or retrieved
+ * from it ([[Store.read]]). The type `Immutable<T>` is equivalent to applying
  * `Readonly<T>` to `T` and its descendant properties, telling the compiler that
  * no change should be made anywhere in a Store's state tree.
  *

@@ -96,7 +96,9 @@ export type RootState = object;
  * Partitioning can also make eventing more efficient. When a parent Store's
  * `RootState` changes, implementations can omit notifications for all
  * [[Watcher|Watchers]] of a child partition if the child [[RootState]] has not
- * changed, meaning no value within the child partition has changed. See
+ * changed, meaning no value within the child partition has changed.
+ *
+ * See also [[createStorePartition]].
  */
 export type PartitionableState<Key extends string | number | symbol> =
   RootState & { [k in Key]: RootState };
