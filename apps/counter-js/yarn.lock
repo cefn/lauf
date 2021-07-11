@@ -1389,6 +1389,20 @@
     "@types/yargs" "^15.0.0"
     chalk "^4.0.0"
 
+"@lauf/store-react@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@lauf/store-react/-/store-react-1.0.0.tgz#fc87f30ca5b8d742582fdf0862fb0583b8c5aeaf"
+  integrity sha512-eDHBwgbcO1IHSyv3QYY+tLtrMx4OJz8f+zfw1rUhSQKARTcmpjJBqLT48CtISchU0Q0uQlUK583DUotg4EL7XQ==
+  dependencies:
+    "@lauf/store" "^1.0.0"
+
+"@lauf/store@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@lauf/store/-/store-1.0.0.tgz#e0ca07855c00c0d7e13b6e8237e4ccaabfa88afb"
+  integrity sha512-X3ehudTBKpx4FhGZxRN6z8lw5bPEdiVU/j/QPFaOa6xTKkeBgcBs6NjO0kr3pTnIYJxJJSCyYARlouK83T2meA==
+  dependencies:
+    immer "^8.0.1"
+
 "@nodelib/fs.scandir@2.1.4":
   version "2.1.4"
   resolved "https://registry.yarnpkg.com/@nodelib/fs.scandir/-/fs.scandir-2.1.4.tgz#d4b3549a5db5de2683e0c1071ab4f140904bbf69"
@@ -5515,6 +5529,11 @@ immer@8.0.1:
   version "8.0.1"
   resolved "https://registry.yarnpkg.com/immer/-/immer-8.0.1.tgz#9c73db683e2b3975c424fb0572af5889877ae656"
   integrity sha512-aqXhGP7//Gui2+UrEtvxZxSquQVXTpZ7KDxfCcKAF3Vysvw0CViVaW9RZ1j1xlIYqaaaipBoqdqeibkc18PNvA==
+
+immer@^8.0.1:
+  version "8.0.4"
+  resolved "https://registry.yarnpkg.com/immer/-/immer-8.0.4.tgz#3a21605a4e2dded852fb2afd208ad50969737b7a"
+  integrity sha512-jMfL18P+/6P6epANRvRk6q8t+3gGhqsJ9EuJ25AXE+9bNTYtssvzeYbEd0mXRYWCmmXSIbnlpz6vd6iJlmGGGQ==
 
 import-cwd@^2.0.0:
   version "2.1.0"
