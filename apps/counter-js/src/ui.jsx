@@ -1,10 +1,6 @@
 import React from "react";
-import ReactDOM from "react-dom";
 import { useSelected, useStore } from "@lauf/store-react";
-
-const INITIAL_STATE = {
-  counter: 0,
-};
+import { INITIAL_STATE, increment, decrement } from "./logic";
 
 const Display = ({ store }) => {
   const counter = useSelected(store, (state) => state.counter);
@@ -12,18 +8,14 @@ const Display = ({ store }) => {
 };
 
 const Increment = ({ store }) => (
-  <button onClick={() => store.edit((draft) => (draft.counter += 1))}>
-    Increase
-  </button>
+  <button onClick={() => increment(store)}>Increase</button>
 );
 
 const Decrement = ({ store }) => (
-  <button onClick={() => store.edit((draft) => (draft.counter -= 1))}>
-    Decrease
-  </button>
+  <button onClick={() => decrement(store)}>Decrease</button>
 );
 
-const App = () => {
+export const App = () => {
   const store = useStore(INITIAL_STATE);
   return (
     <>
@@ -33,10 +25,3 @@ const App = () => {
     </>
   );
 };
-
-ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById("root")
-);
