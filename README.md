@@ -18,7 +18,7 @@ in any other UI Framework using
 
 In detail
 
-- `App` calls `useStore` passing `INITIAL_STATE` to initialise the [[Store]] on first load.
+- `App` calls `useStore` passing `INITIAL_STATE` to initialise the `Store` on first load.
 - `App` passes the store to three components
 - The `Display` React component has a `useSelected` hook to re-render when `counter` changes.
 - The `Increment` and `Decrement` buttons don't re-render on any state changes, but they DO trigger an `edit` to the `counter` state when clicked.
