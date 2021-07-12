@@ -13,40 +13,13 @@ export function promiseExpiry(ms: number): Promise<Expiry> {
   return promiseDelayValue(ms, EXPIRY);
 }
 
-type Awaited<T> = T extends PromiseLike<infer U> ? Awaited<U> : T;
-
-/** Races each of the named promises in `lookup`.
- * Returns an object containing a single, named result
- * for the first Promise that resolves.*/
-export async function race<
-  Key extends keyof any,
-  Value,
-  Lookup extends { [k in Key]: Promise<Value> }
->(lookup: Lookup) {
+export async function raceKeys<
+  Lookup extends { [k in string]: Promise<unknown> }
+>(lookup: Lookup): Promise<keyof Lookup> {
   return Promise.race(
     Object.entries(lookup).map(async ([key, promise]) => {
-      const result = await promise;
-      return { [key]: result };
+      await promise;
+      return key;
     })
-  ) as Promise<{ [k in Key]?: Awaited<Lookup[k]> }>;
+  );
 }
-
-// /** Proof of successful typing for doRace */
-// async function testRace() {
-
-//   const lookup = {
-//     magicNumber: Promise.resolve(3),
-//     magicWord: Promise.resolve("abracadabra"),
-//   } as const;
-
-//   const {magicNumber, magicWord} = await doRace(lookup);
-
-//   if(magicNumber){
-//     //it's a number
-//     console.log(`${magicNumber}th char of bingo is ${"bingo".charAt(magicNumber)}`);
-//   }
-//   else if(magicWord){
-//     // it's a string
-//     console.log(`first char of word is ${magicWord.charAt(0)}`);
-//   }
-// }
