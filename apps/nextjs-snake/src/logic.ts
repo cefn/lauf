@@ -1,4 +1,4 @@
-import { isExpiry, promiseExpiry } from "./util/delay";
+import { isExpiry, promiseExpiry } from "./util/promise";
 import { MessageQueue } from "@lauf/queue";
 import { followSelector, withSelectorQueue } from "@lauf/store-follow";
 import { isVectorEqual, randomPoint, plus, wrap } from "./util/vector";
@@ -62,21 +62,21 @@ async function stepWhileMoving(
   motion: Motion,
   { receive }: MessageQueue<Motion>
 ): Promise<void> {
-  let motionChangePromise = null;
+  let motionPromise = null;
   let expiryPromise = null;
   while (motion) {
     // snake is in motion, move one step
     stepSnake(appModel, motion);
     //ensure promises
-    motionChangePromise = motionChangePromise || receive();
+    motionPromise = motionPromise || receive();
     expiryPromise = expiryPromise || promiseExpiry(STEP_MS);
     // await race between timeout promise and motion change promise
-    const ending = await Promise.race([motionChangePromise, expiryPromise]);
+    const ending = await Promise.race([motionPromise, expiryPromise]);
     if (isExpiry(ending)) {
       expiryPromise = null;
     } else {
       motion = ending;
-      motionChangePromise = null;
+      motionPromise = null;
     }
   }
 }
