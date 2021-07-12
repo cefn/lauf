@@ -1,5 +1,5 @@
 import { Immutable } from "@lauf/store";
-import { SegmentPosition } from "../domain";
+import { SegmentPosition } from "../state";
 import { SpriteSheet } from "./sprite";
 
 export type SnakeSpriteName = keyof typeof SNAKE_SPRITE_OFFSETS;

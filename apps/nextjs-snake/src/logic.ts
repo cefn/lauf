@@ -1,9 +1,10 @@
-import { isExpiry, promiseExpiry } from "./delay";
+import { isExpiry, promiseExpiry } from "./util/delay";
 import { MessageQueue } from "@lauf/queue";
 import { followSelector, withSelectorQueue } from "@lauf/store-follow";
+import { isVectorEqual, randomPoint, plus, wrap } from "./util/vector";
 import {
-  createAppModel,
-  AppModel,
+  createModel,
+  Model,
   Segment,
   Direction,
   Motion,
@@ -15,27 +16,28 @@ import {
   DIRECTION_VECTORS,
   DIRECTION_OPPOSITES,
   STEP_MS,
-} from "./domain";
-import { isVectorEqual, randomSquare, plus, wrap } from "./util";
+} from "./state";
 
-export function mainPlan(): AppModel {
-  const appModel = createAppModel();
-  resetGame(appModel);
-  //SPAWN WITHOUT AWAITING
+export function mainPlan(): Model {
+  // CREATE MODEL
+  const appModel = createModel();
+
+  // SPAWN AGAINST MODEL WITHOUT AWAITING
   inputDirectionRoutine(appModel);
   fruitRoutine(appModel);
   snakeMotionRoutine(appModel);
   snakeCollisionRoutine(appModel);
+
+  // RETURN MODEL
   return appModel;
 }
 
-function resetGame({ gameStore }: AppModel) {
+function resetGame({ gameStore }: Model) {
   gameStore.write(INITIAL_STATE);
 }
 
-async function snakeMotionRoutine(appModel: AppModel) {
+async function snakeMotionRoutine(appModel: Model) {
   const { gameStore } = appModel;
-  const { edit } = gameStore;
   await withSelectorQueue(
     gameStore,
     selectMotion,
@@ -43,43 +45,43 @@ async function snakeMotionRoutine(appModel: AppModel) {
       const { receive } = motionQueue;
       let motion = initialMotion;
       while (true) {
-        if (!motion) {
+        while (!motion) {
           //snake still: await motion change
           motion = await receive();
-        } else {
-          //snake moving: await both step timeout AND motion change
-          motion = await moveUntilMotionChange(appModel, motion, motionQueue);
         }
+        //snake moving: await step timeout OR motion change
+        await stepWhileMoving(appModel, motion, motionQueue);
+        motion = null;
       }
     }
   );
 }
 
-async function moveUntilMotionChange(
-  appModel: AppModel,
-  motion: Direction,
-  motionQueue: MessageQueue<Motion>
-): Promise<Motion> {
-  const { receive } = motionQueue;
-  // promise future change in motion (don't await it yet)
-  const motionChangePromise = receive();
-  while (true) {
-    // snake is in motion so move one step
-    moveSnake(appModel, motion);
-    // promise future timeout for next snake step (don't await it yet)
-    const expiryPromise = promiseExpiry(STEP_MS);
-    // Finally await Promise.race between step timeout and motion change
+async function stepWhileMoving(
+  appModel: Model,
+  motion: Motion,
+  { receive }: MessageQueue<Motion>
+): Promise<void> {
+  let motionChangePromise = null;
+  let expiryPromise = null;
+  while (motion) {
+    // snake is in motion, move one step
+    stepSnake(appModel, motion);
+    //ensure promises
+    motionChangePromise = motionChangePromise || receive();
+    expiryPromise = expiryPromise || promiseExpiry(STEP_MS);
+    // await race between timeout promise and motion change promise
     const ending = await Promise.race([motionChangePromise, expiryPromise]);
     if (isExpiry(ending)) {
-      //step timeout came, do another snake step
-      continue;
+      expiryPromise = null;
+    } else {
+      motion = ending;
+      motionChangePromise = null;
     }
-    //motion change came! return new motion state to caller
-    return ending;
   }
 }
 
-async function fruitRoutine(appModel: AppModel) {
+async function fruitRoutine(appModel: Model) {
   const { gameStore } = appModel;
   const { select } = gameStore;
   await followSelector(
@@ -95,7 +97,7 @@ async function fruitRoutine(appModel: AppModel) {
 }
 
 /** Handle directions being activated and released (driven by keypresses or touchscreen drags) */
-async function inputDirectionRoutine(appModel: AppModel): Promise<never> {
+async function inputDirectionRoutine(appModel: Model): Promise<never> {
   const { gameStore, inputQueue } = appModel;
   const { receive } = inputQueue;
   const { edit, select } = gameStore;
@@ -128,16 +130,14 @@ async function inputDirectionRoutine(appModel: AppModel): Promise<never> {
   }
 }
 
-function eatFruit(appModel: AppModel) {
-  const { gameStore } = appModel;
-  const { edit } = gameStore;
+function eatFruit({ gameStore: { edit } }: Model) {
   edit((state, castDraft) => {
     state.score += 1;
     state.length += 1;
     // place new fruit outside snake
     let nextPos = null;
     while (nextPos === null) {
-      nextPos = randomSquare();
+      nextPos = randomPoint();
       for (const segment of state.segments) {
         if (isVectorEqual(nextPos, segment.pos)) {
           nextPos = null; // landed on the snake - try again
@@ -149,7 +149,7 @@ function eatFruit(appModel: AppModel) {
   });
 }
 
-async function snakeCollisionRoutine(appModel: AppModel) {
+async function snakeCollisionRoutine(appModel: Model) {
   const { gameStore } = appModel;
   const { select } = gameStore;
   await followSelector(
@@ -166,9 +166,10 @@ async function snakeCollisionRoutine(appModel: AppModel) {
   );
 }
 
-function moveSnake(appModel: AppModel, direction: Direction) {
-  const { gameStore } = appModel;
-  const { select } = gameStore;
+function stepSnake(appModel: Model, direction: Direction) {
+  const {
+    gameStore: { select },
+  } = appModel;
   const head = select(selectHead);
   if (head) {
     const pos = wrap(plus(head.pos, DIRECTION_VECTORS[direction]));
@@ -176,7 +177,7 @@ function moveSnake(appModel: AppModel, direction: Direction) {
   }
 }
 
-function addHead({ gameStore: { edit } }: AppModel, head: Segment) {
+function addHead({ gameStore: { edit } }: Model, head: Segment) {
   edit((draftState, castDraft) => {
     const { segments } = draftState;
     //add head

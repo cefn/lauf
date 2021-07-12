@@ -1,12 +1,12 @@
 import React from "react";
 import assert from "assert";
 import { render, act } from "@testing-library/react";
-import { promiseExpiry } from "../src/delay";
-import { mainPlan, _test_game } from "../src/game";
-import { Game } from "../src/view";
+import { promiseExpiry } from "../src/util/delay";
+import { mainPlan, _test_game } from "../src/logic";
+import { Game } from "../src/ui";
 import { SPRITE_SHEET } from "../src/components/graphics";
 import { posToStyle } from "../src/components/sprite";
-import { Direction } from "../src/domain";
+import { Direction } from "../src/state";
 
 const { resetGame, eatFruit } = _test_game;
 

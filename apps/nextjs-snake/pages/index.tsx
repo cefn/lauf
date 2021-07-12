@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { mainPlan } from "../src/game";
-import { AppModel } from "../src/domain";
-import { Game } from "../src/view";
+import { mainPlan } from "../src/logic";
+import { Model } from "../src/state";
+import { Game } from "../src/ui";
 
 export default function render() {
-  const [appModel, setAppModel] = useState<AppModel>();
+  const [appModel, setAppModel] = useState<Model>();
   useEffect(() => {
     // only launch application client-side
     if (process.browser) {

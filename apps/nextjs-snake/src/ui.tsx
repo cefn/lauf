@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import Head from "next/head";
 
-import { AppModel, Direction, DirectionInput } from "./domain";
+import { Model, Direction, DirectionInput } from "./state";
 import { Arena } from "./components/arena";
 
 const directionMap: Record<string, Direction> = {
@@ -11,7 +11,8 @@ const directionMap: Record<string, Direction> = {
   ArrowDown: "DOWN"
 } as const;
 
-export function Game({ gameStore, inputQueue }: AppModel) {
+export function Game(model: Model) {
+  const { inputQueue } = model;
   // subscribe to key events, send as DirectionInput
   useEffect(() => {
     if (process.browser) {
@@ -53,7 +54,7 @@ export function Game({ gameStore, inputQueue }: AppModel) {
       <Head>
         <title>Snake</title>
       </Head>
-      <Arena {...{ gameStore }} />
+      <Arena {...model} />
     </>
   );
 }
