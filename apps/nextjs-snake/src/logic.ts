@@ -1,4 +1,4 @@
-import { promiseExpiry, raceKeys } from "./util/promise";
+import { promiseExpiry } from "./util/promise";
 import { MessageQueue } from "@lauf/queue";
 import { followSelector, withSelectorQueue } from "@lauf/store-follow";
 import { isVectorEqual, randomPoint, plus, wrap } from "./util/vector";
@@ -67,21 +67,19 @@ async function stepWhileMoving(
   while (motion) {
     // snake still in motion, move one step
     stepSnake(appModel, motion);
-    // refresh missing step timeout and motion change promises
+    // ensure step timeout and motion change promises
     motionPromise = motionPromise || receive();
     expiryPromise = expiryPromise || promiseExpiry(STEP_MS);
     // race step timeout and motion change promises
-    const key = await raceKeys({
-      motionPromise,
-      expiryPromise,
-    } as const);
-    if (key === "motionPromise") {
-      // motion change: record motion, dispose promise
-      motion = await motionPromise;
-      motionPromise = null;
-    } else if (key === "expiryPromise") {
-      // step timeout dispose promise
-      expiryPromise = null;
+    const winner: string = await Promise.race([
+      motionPromise.then(() => "motionChanged"),
+      expiryPromise.then(() => "stepDue"),
+    ]);
+    if (winner === "motionChanged") {
+      motion = await motionPromise; // update motion
+      motionPromise = null; // dispose promise
+    } else if (winner === "stepDue") {
+      expiryPromise = null; // dispose promise
     }
   }
 }
