@@ -5,30 +5,37 @@
 <sub><sup>Logo - Diego Naive, Noun Project.</sup></sub>
 <br></br>
 
-Lauf isolates business logic from UI. It uses a normal Javascript object as a central, reactive [Store](https://www.npmjs.com/package/@lauf/store).
+Lauf strictly isolates business logic and state management from UI.
+
+It uses a normal Javascript object as a central, reactive [Store](https://www.npmjs.com/package/@lauf/store).
 
 Lauf business logic is explicit, predictable, testable - like a Redux app, but without the boilerplate.
 
-The Counter app demo below uses
-[@lauf/store-react](https://github.com/cefn/lauf/tree/main/modules/store-react)
-bindings. However, Lauf has no React dependencies and can be used server side or
-in any other UI Framework using
-[@lauf/store](https://github.com/cefn/lauf/tree/main/modules/store) and
-[@lauf/store-follow](https://github.com/cefn/lauf/tree/main/modules/store-follow)
+## Getting started
 
-In detail
+In the example code below, `logic.js` defines state and state change
+definitions while `ui.js` uses those definitions, to create a Counter app.
 
-- `App` calls `useStore` passing `INITIAL_STATE` to initialise the [[Store]] on first load.
-- `App` passes the store to three components
-- The `Display` React component has a `useSelected` hook to re-render when `counter` changes.
-- The `Increment` and `Decrement` buttons don't re-render on any state changes, but they DO trigger an `edit` to the `counter` state when clicked.
-
-See the Counter app running in a sandbox; ([javascript](https://codesandbox.io/s/github/cefn/lauf/tree/main/apps/counter-js)), ([typescript](https://codesandbox.io/s/github/cefn/lauf/tree/main/apps/counter)).
+The `Display` automatically re-renders whenever the counter changes. The
+`Increment` and `Decrement` buttons are never re-rendered, but they trigger state
+changes on user input.
 
 ```javascript
-const INITIAL_STATE = {
+// logic.js
+export const INITIAL_STATE = {
   counter: 0,
 };
+
+export const increment = (draft) => (draft.counter += 1);
+
+export const decrement = (draft) => (draft.counter -= 1);
+```
+
+```javascript
+// ui.js
+import React from "react";
+import { useSelected, useStore } from "@lauf/store-react";
+import { INITIAL_STATE, increment, decrement } from "./logic";
 
 const Display = ({ store }) => {
   const counter = useSelected(store, (state) => state.counter);
@@ -36,18 +43,14 @@ const Display = ({ store }) => {
 };
 
 const Increment = ({ store }) => (
-  <button onClick={() => store.edit((draft) => (draft.counter += 1))}>
-    Increase
-  </button>
+  <button onClick={() => store.edit(increment)}>Increase</button>
 );
 
 const Decrement = ({ store }) => (
-  <button onClick={() => store.edit((draft) => (draft.counter -= 1))}>
-    Decrease
-  </button>
+  <button onClick={() => store.edit(increment)}>Decrease</button>
 );
 
-const App = () => {
+export const App = () => {
   const store = useStore(INITIAL_STATE);
   return (
     <>
@@ -59,21 +62,29 @@ const App = () => {
 };
 ```
 
-## Primitives and Utilities
+You can experiment with the Counter app running in a sandbox;
+([javascript version](https://codesandbox.io/s/github/cefn/lauf/tree/main/apps/counter-js)),
+([typescript version](https://codesandbox.io/s/github/cefn/lauf/tree/main/apps/counter)).
 
-Lauf includes a [Store](https://github.com/cefn/lauf/tree/main/modules/store) for state, a [Message Queue](https://github.com/cefn/lauf/tree/main/modules/queue) for events and a [Mutex or Lock](https://github.com/cefn/lauf/tree/main/modules/lock) to control resource-sharing.
+A more complex business logic example is the [NextJS Snake app](https://codesandbox.io/s/github/cefn/lauf/tree/main/apps/nextjs-snake).
+An example incorporating an network API and local cache is our [clone of the Redux Async example](https://codesandbox.io/s/github/cefn/lauf/tree/main/apps/noredux-async). An event queue example is the [Color Mixer](https://github.com/cefn/lauf/tree/main/apps/nextjs-mixer).
 
-To wire state to business logic, use [Store Follow](https://github.com/cefn/lauf/tree/main/modules/store-follow) to queue up state-changes for your handlers.
+Our interactive demos use
+[@lauf/store-react](https://github.com/cefn/lauf/tree/main/modules/store-react)
+bindings. However, Lauf has no React dependencies and can be used server side or
+in any other UI Framework using
+[@lauf/store](https://github.com/cefn/lauf/tree/main/modules/store) and
+[@lauf/store-follow](https://github.com/cefn/lauf/tree/main/modules/store-follow)
 
-To wire state to UI, use [Store React](https://github.com/cefn/lauf/tree/main/modules/store-react) to refresh components only when their bound state changes.
+## API Overview
 
-## Getting started
+To wire changing state to business logic, use [Store Follow](https://github.com/cefn/lauf/tree/main/modules/store-follow) to queue up state-changes for your handlers.
 
-A Create-React-App example is the [Counter app in Typescript](https://github.com/cefn/lauf/tree/main/apps/counter) or [in Javascript](https://github.com/cefn/lauf/tree/main/apps/counter-js) .
+To wire changing state to UI, use [Store React](https://github.com/cefn/lauf/tree/main/modules/store-react) to refresh components only when their bound state changes.
 
-A NextJS example is the [Color Mixer in Typescript](https://github.com/cefn/lauf/tree/main/apps/nextjs-mixer).
+Lauf utilities include a [Store](https://github.com/cefn/lauf/tree/main/modules/store) for state, a [Message Queue](https://github.com/cefn/lauf/tree/main/modules/queue) for events and a [Mutex or Lock](https://github.com/cefn/lauf/tree/main/modules/lock) to control resource-sharing.
 
-For an example of complex state management and eventing, see the NextJS [Snake Game in Typescript](https://github.com/cefn/lauf/tree/main/apps/nextjs-snake)
+To find out more, visit the [API](https://cefn.com/lauf/api/modules/_lauf_store_react.html)
 
 ## Lauf vs Redux
 

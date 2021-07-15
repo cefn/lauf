@@ -16,7 +16,7 @@ describe("Counter App Business Logic", () => {
     ({ counter } = store.read());
     expect(counter).toBe(0);
 
-    increment(store);
+    store.edit(increment);
 
     ({ counter } = store.read());
     expect(counter).toBe(1);
@@ -29,7 +29,7 @@ describe("Counter App Business Logic", () => {
     ({ counter } = store.read());
     expect(counter).toBe(0);
 
-    decrement(store);
+    store.edit(decrement);
 
     ({ counter } = store.read());
     expect(counter).toBe(-1);
@@ -43,7 +43,7 @@ describe("Counter App Business Logic", () => {
     expect(counter).toBe(0);
     const repeats = 100;
     for (let step = 0; step < repeats; step++) {
-      increment(store);
+      store.edit(increment);
     }
 
     ({ counter } = store.read());

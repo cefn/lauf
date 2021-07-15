@@ -8,11 +8,11 @@ const Display = ({ store }) => {
 };
 
 const Increment = ({ store }) => (
-  <button onClick={() => increment(store)}>Increase</button>
+  <button onClick={() => store.edit(increment)}>Increase</button>
 );
 
 const Decrement = ({ store }) => (
-  <button onClick={() => decrement(store)}>Decrease</button>
+  <button onClick={() => store.edit(increment)}>Decrease</button>
 );
 
 export const App = () => {

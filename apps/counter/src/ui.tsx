@@ -13,11 +13,11 @@ export const Display = ({ store }: StoreProps) => {
 };
 
 export const IncreaseButton = ({ store }: StoreProps) => (
-  <button onClick={() => increment(store)}>Increase</button>
+  <button onClick={() => store.edit(increment)}>Increase</button>
 );
 
 export const DecreaseButton = ({ store }: StoreProps) => (
-  <button onClick={() => decrement(store)}>Decrease</button>
+  <button onClick={() => store.edit(decrement)}>Decrease</button>
 );
 
 export const App = () => {
