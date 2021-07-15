@@ -32,5 +32,12 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "homepage": "https://github.com/cefn/lauf#readme",
+  "author": "Cefn Hoile <github.com@cefn.com> (https://cefn.com)",
+  "repository": "github:cefn/lauf",
+  "bugs": {
+    "url": "https://github.com/cefn/lauf/issues",
+    "email": "lauf@cefn.com"
   }
 }
