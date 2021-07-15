@@ -1,5 +1,14 @@
 # @lauf/store-follow
 
+## 1.0.1
+
+### Patch Changes
+
+- 3efbd96: Improved documentation
+- Updated dependencies [3efbd96]
+  - @lauf/queue@1.0.1
+  - @lauf/store@1.0.1
+
 ## 1.0.0
 
 ### Major Changes

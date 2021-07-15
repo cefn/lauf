@@ -1,5 +1,11 @@
 # @lauf/store
 
+## 1.0.1
+
+### Patch Changes
+
+- 3efbd96: Improved documentation
+
 ## 1.0.0
 
 ### Major Changes
