@@ -3,12 +3,12 @@ import { Immutable, Selector, Store, createStore } from "@lauf/store";
 
 /** GAME STATE */
 
-export type AppModel = {
-  gameStore: Store<GameState>;
+export type Model = {
+  gameStore: Store<Game>;
   inputQueue: MessageQueue<DirectionInput>;
 };
 
-export interface GameState {
+export interface Game {
   length: number;
   score: number;
   segments: Segment[];
@@ -21,17 +21,14 @@ export interface Segment {
   direction: Direction;
 }
 
-export function createAppModel(): AppModel {
-  const gameStore = createStore<GameState>(INITIAL_STATE);
-  const inputQueue = createQueue<[Direction, boolean]>();
-
+export function createModel(): Model {
   return {
-    inputQueue,
-    gameStore,
+    gameStore: createStore<Game>(INITIAL_STATE),
+    inputQueue: createQueue<[Direction, boolean]>(),
   };
 }
 
-export const INITIAL_STATE: Immutable<GameState> = {
+export const INITIAL_STATE: Immutable<Game> = {
   length: 3,
   score: 0,
   segments: [
@@ -41,23 +38,18 @@ export const INITIAL_STATE: Immutable<GameState> = {
   ],
   fruitPos: [0, 3],
   motion: null,
-} as const;
+};
 
 /** GAME STATE USED BY VIEW */
 
-export const selectMotion = (state: Immutable<GameState>) => state.motion;
-export const selectScore = (state: Immutable<GameState>) => state.score;
-export const selectSegments: Selector<GameState, Immutable<Segment[]>> = (
-  state
-) => state.segments;
-export const selectHead: Selector<GameState, Segment> = (state) =>
-  state.segments[0] as Segment;
-export const selectFruitPos: Selector<GameState, Immutable<Vector>> = (state) =>
-  state.fruitPos;
-
-export type StoreProps = {
-  gameStore: Store<GameState>;
-};
+export const selectMotion: Selector<Game, Motion> = ({ motion }) => motion;
+export const selectScore: Selector<Game, number> = ({ score }) => score;
+export const selectSegments: Selector<Game, Segment[]> = ({ segments }) =>
+  segments;
+export const selectHead: Selector<Game, Segment> = ({ segments }) =>
+  segments[0] as Segment;
+export const selectFruitPos: Selector<Game, Vector> = ({ fruitPos }) =>
+  fruitPos;
 
 export type SegmentPosition = {
   segments: Segment[];

@@ -1,5 +1,5 @@
-import { wrap } from "../src/util";
-import { GRID_MAX as GM } from "../src/domain";
+import { wrap } from "../src/util/vector";
+import { GRID_MAX as GM } from "../src/state";
 
 const EDGE = GM + 1;
 

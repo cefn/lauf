@@ -1,6 +1,6 @@
-import { GRID_MAX, GRID_SPAN, Vector } from "./domain";
+import { GRID_MAX, GRID_SPAN, Vector } from "../state";
 
-export function randomSquare(): Vector {
+export function randomPoint(): Vector {
   return [
     Math.floor(Math.random() * GRID_SPAN) - GRID_MAX,
     Math.floor(Math.random() * GRID_SPAN) - GRID_MAX,
@@ -24,12 +24,12 @@ export function scale(vec: Vector, factor: number): Vector {
 }
 
 export function wrap(vec: Vector): Vector {
-  return (vec.map((dim) => {
+  return vec.map((dim) => {
     const edgeOffset = dim + GRID_MAX;
     if (edgeOffset >= 0 && edgeOffset < GRID_SPAN) {
       return dim;
     } else {
       return ((edgeOffset + GRID_SPAN) % GRID_SPAN) - GRID_MAX;
     }
-  }) as unknown) as Vector;
+  }) as unknown as Vector;
 }
