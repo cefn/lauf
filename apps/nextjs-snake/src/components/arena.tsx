@@ -1,11 +1,11 @@
 import React from "react";
-import { GRID_SPAN, StoreProps } from "../domain";
+import { GRID_SPAN, Model } from "../state";
 import { SPRITE_SIDE, SCALE } from "./graphics";
 import { Fruit } from "./fruit";
 import { Score } from "./score";
 import { Snake } from "./snake";
 
-export function Arena({ gameStore }: StoreProps) {
+export function Arena(model: Model) {
   return (
     <div
       style={{
@@ -15,9 +15,9 @@ export function Arena({ gameStore }: StoreProps) {
         backgroundColor: "yellow"
       }}
     >
-      <Score {...{ gameStore }} />
-      <Fruit {...{ gameStore }} />
-      <Snake {...{ gameStore }} />
+      <Score {...model} />
+      <Fruit {...model} />
+      <Snake {...model} />
     </div>
   );
 }
