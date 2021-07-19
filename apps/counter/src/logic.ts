@@ -1,4 +1,4 @@
-import { Editor, Immutable, Store } from "@lauf/store";
+import { Editor, Immutable } from "@lauf/store";
 
 export interface AppState {
   counter: number;
