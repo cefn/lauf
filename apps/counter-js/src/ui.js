@@ -12,7 +12,7 @@ const Increment = ({ store }) => (
 );
 
 const Decrement = ({ store }) => (
-  <button onClick={() => store.edit(increment)}>Decrease</button>
+  <button onClick={() => store.edit(decrement)}>Decrease</button>
 );
 
 export const App = () => {
