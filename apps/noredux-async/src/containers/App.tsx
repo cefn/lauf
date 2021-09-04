@@ -1,15 +1,8 @@
 import React, { MouseEvent } from "react";
 import { Store } from "@lauf/store";
 import { useSelected } from "@lauf/store-react";
-import {
-  SubredditName,
-  subredditNames,
-  selectFocus,
-  selectFocusedCache,
-  AppState,
-  setFocus,
-  fetchFocused
-} from "../plans";
+import { SubredditName, subredditNames, AppState } from "../state";
+import { setFocus, refreshFocusedSubreddit } from "../plans";
 import { Picker } from "../components/Picker";
 import { Posts } from "../components/Posts";
 
@@ -18,14 +11,15 @@ interface AppParams {
 }
 
 export function App({ store }: AppParams) {
-  const focused = useSelected(store, selectFocus);
-  const cache = useSelected(store, selectFocusedCache);
+  const focus = useSelected(store, (state) => state.focus);
+  const cache = useSelected(store, (state) => state.caches[state.focus]);
+
   const onPickerSelect = (newName: SubredditName) => {
     setFocus(store, newName);
   };
   const onButtonClick = (event: MouseEvent) => {
     event.preventDefault();
-    fetchFocused(store);
+    refreshFocusedSubreddit(store);
   };
 
   let postsPanel;
@@ -61,7 +55,7 @@ export function App({ store }: AppParams) {
   return (
     <div>
       <Picker
-        selectedOption={focused}
+        selectedOption={focus}
         handleChange={onPickerSelect}
         options={[...subredditNames]}
       />

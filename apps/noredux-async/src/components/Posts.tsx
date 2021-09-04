@@ -1,5 +1,5 @@
 import React from "react";
-import { Post } from "../plans";
+import { Post } from "../state";
 import { Immutable } from "@lauf/store";
 
 interface PostsProps {
