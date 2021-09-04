@@ -2,33 +2,16 @@ import { Store } from "@lauf/store";
 import { followSelector } from "@lauf/store-follow";
 import { SubredditName, Post, AppState, Cache, initialCache } from "./state";
 
-async function fetchSubreddit(name: SubredditName): Promise<Post[]> {
-  const response = await fetch(`https://www.reddit.com/r/${name}.json`);
-  const json = await response.json();
-  return json.data.children.map((child: any) => child.data);
-}
-
 export function setFocus({ edit }: Store<AppState>, focus: SubredditName) {
   edit((draft) => {
     draft.focus = focus;
   });
 }
 
-export async function trackFocus(store: Store<AppState>) {
-  await followSelector(
-    store,
-    (state) => state.focus,
-    async (focus) => {
-      // invoked on initial value and every subsequent change
-      if (focus) {
-        // lazy-load cache
-        const { caches } = store.read();
-        if (!caches?.[focus]?.posts) {
-          await refreshFocusedSubreddit(store);
-        }
-      }
-    }
-  );
+async function fetchSubreddit(name: SubredditName): Promise<Post[]> {
+  const response = await fetch(`https://www.reddit.com/r/${name}.json`);
+  const json = await response.json();
+  return json.data.children.map((child: any) => child.data);
 }
 
 export async function refreshFocusedSubreddit({ read, edit }: Store<AppState>) {
@@ -67,4 +50,21 @@ export async function refreshFocusedSubreddit({ read, edit }: Store<AppState>) {
       }
     });
   }
+}
+
+export async function trackFocus(store: Store<AppState>) {
+  await followSelector(
+    store,
+    (state) => state.focus,
+    async (focus) => {
+      // invoked on initial value and every subsequent change
+      if (focus) {
+        // lazy-load cache
+        const { caches } = store.read();
+        if (!caches?.[focus]?.posts) {
+          await refreshFocusedSubreddit(store);
+        }
+      }
+    }
+  );
 }
