@@ -6,25 +6,26 @@ module.exports = {
   entry: "./src/index.tsx",
   output: {
     path: path.resolve(__dirname, "build"),
-    filename: "bundle.js",
+    filename: "bundle.js"
   },
   resolve: {
     extensions: [".tsx", ".ts", ".js"],
     modules: [path.join(__dirname, "src"), "node_modules"],
-    plugins: [new TsconfigPathsPlugin()],
+    plugins: [new TsconfigPathsPlugin()]
   },
   module: {
     rules: [
       {
         test: /\.tsx?$/,
         exclude: /node_modules/,
-        loader: "ts-loader",
-      },
-    ],
+        loader: "ts-loader"
+      }
+    ]
   },
   plugins: [
     new HtmlWebPackPlugin({
-      template: "./public/index.html",
-    }),
+      template: "./public/index.html"
+    })
   ],
+  devtool: "source-map"
 };
