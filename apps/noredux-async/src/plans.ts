@@ -1,12 +1,6 @@
 import { Store } from "@lauf/store";
 import { followSelector } from "@lauf/store-follow";
-import { SubredditName, Post, AppState, Cache, initialCache } from "./state";
-
-export function setFocus({ edit }: Store<AppState>, focus: SubredditName) {
-  edit((draft) => {
-    draft.focus = focus;
-  });
-}
+import { SubredditName, Post, AppState } from "./state";
 
 async function fetchSubreddit(name: SubredditName): Promise<Post[]> {
   const response = await fetch(`https://www.reddit.com/r/${name}.json`);
@@ -15,51 +9,50 @@ async function fetchSubreddit(name: SubredditName): Promise<Post[]> {
 }
 
 export async function refreshFocusedSubreddit({ read, edit }: Store<AppState>) {
-  // check for non-empty focus
   const { focus } = read();
-  if (!focus) {
-    return;
-  }
-  // initialise cache for focus, transition to 'fetching' state
-  edit((draft) => {
-    draft.caches[focus] = {
-      ...(draft.caches[focus] || (initialCache as Cache)),
-      isFetching: true
+
+  // lazy create cache
+  // assert fetching status
+  edit(({ caches }) => {
+    caches[focus] = {
+      ...(caches[focus] || {
+        posts: [],
+        lastUpdated: null
+      }),
+      isFetching: true,
+      failedFetching: false
     };
   });
-  // perform the fetch
-  let posts: Post[];
+
   try {
-    posts = await fetchSubreddit(focus);
-  } finally {
-    // update cache with results
-    edit((draft) => {
-      if (posts) {
-        // save posts and update time, reset fetching status
-        draft.caches[focus] = {
-          posts,
-          lastUpdated: new Date().getTime(),
-          isFetching: false
-        };
-      } else {
-        // failed - just reset fetching status
-        draft.caches[focus] = {
-          ...(draft.caches[focus] as Cache),
-          isFetching: false
-        };
-      }
+    // try to retrieve
+    const posts = await fetchSubreddit(focus);
+    // populate cache
+    edit(({ caches }) => {
+      caches[focus] = {
+        posts,
+        lastUpdated: new Date().getTime(),
+        isFetching: false,
+        failedFetching: false
+      };
+    });
+  } catch (error) {
+    // assert failure status
+    edit(({ caches }) => {
+      caches[focus].isFetching = false;
+      caches[focus].failedFetching = true;
     });
   }
 }
 
 export async function trackFocus(store: Store<AppState>) {
+  // invokes callback once then on every focus change
   await followSelector(
     store,
     (state) => state.focus,
     async (focus) => {
-      // invoked on initial value and every subsequent change
       if (focus) {
-        // lazy-load cache
+        // retrieve if new focus has empty cache
         const { caches } = store.read();
         if (!caches?.[focus]?.posts) {
           await refreshFocusedSubreddit(store);
@@ -67,4 +60,10 @@ export async function trackFocus(store: Store<AppState>) {
       }
     }
   );
+}
+
+export function setFocus({ edit }: Store<AppState>, focus: SubredditName) {
+  edit((draft) => {
+    draft.focus = focus;
+  });
 }

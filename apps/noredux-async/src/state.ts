@@ -1,5 +1,3 @@
-import { Immutable } from "@lauf/store";
-
 export const subredditNames = ["reactjs", "frontend"] as const;
 export type SubredditName = typeof subredditNames[number];
 
@@ -12,6 +10,7 @@ export interface AppState {
 
 export interface Cache {
   isFetching: boolean;
+  failedFetching: boolean;
   lastUpdated: number | null; // in milliseconds
   posts: Post[];
 }
@@ -23,10 +22,4 @@ export interface Post {
 export const initialAppState: AppState = {
   focus: subredditNames[0],
   caches: {}
-} as const;
-
-export const initialCache: Immutable<Cache> = {
-  lastUpdated: null,
-  isFetching: false,
-  posts: []
 } as const;

@@ -10,9 +10,12 @@ interface AppParams {
   store: Store<AppState>;
 }
 
+const focusSelector = (state: AppState) => state.focus;
+const cacheSelector = (state: AppState) => state.caches[state.focus];
+
 export function App({ store }: AppParams) {
-  const focus = useSelected(store, (state) => state.focus);
-  const cache = useSelected(store, (state) => state.caches[state.focus]);
+  const focus = useSelected(store, focusSelector);
+  const cache = useSelected(store, cacheSelector);
 
   const onPickerSelect = (newName: SubredditName) => {
     setFocus(store, newName);
@@ -24,9 +27,9 @@ export function App({ store }: AppParams) {
 
   let postsPanel;
   if (cache == null) {
-    postsPanel = <p>Loading</p>;
+    postsPanel = <p>Initialising...</p>;
   } else {
-    const { posts, isFetching, lastUpdated } = cache;
+    const { posts, isFetching, failedFetching, lastUpdated } = cache;
     postsPanel = (
       <>
         <p>
@@ -35,13 +38,14 @@ export function App({ store }: AppParams) {
               Last updated at {new Date(lastUpdated).toLocaleTimeString()}.{" "}
             </span>
           )}
+          {failedFetching && <span>Last refresh failed.</span>}
           {!isFetching && <button onClick={onButtonClick}>Refresh</button>}
         </p>
         {posts.length === 0 ? (
           isFetching ? (
-            <h2>Loading...</h2>
+            <h2>Refreshing...</h2>
           ) : (
-            <h2>Empty.</h2>
+            <p>No posts available.</p>
           )
         ) : (
           <div style={{ opacity: isFetching ? 0.5 : 1 }}>
