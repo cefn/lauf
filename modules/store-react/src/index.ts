@@ -9,8 +9,9 @@ import {
   Selector,
   Immutable,
   RootState,
+  Watcher
 } from "@lauf/store";
-import { useState, useEffect } from "react";
+import { useState, useMemo, useEffect } from "react";
 
 /** When the component is first mounted, this hook creates and returns a a new
  * long-lived [[Store]] initialised with `initialState`.
@@ -51,22 +52,32 @@ export function useSelected<State extends RootState, Selected>(
   store: Store<State>,
   selector: Selector<State, Selected>
 ) {
-  const [selected, setSelected] = useState(() => {
-    return selector(store.read());
-  });
+  let cachedState = store.read();
+  let [cachedSelected, setSelected] = useState(() => selector(cachedState));
   useEffect(() => {
-    let lastSelected = selected;
-    const unwatch = store.watch((value: Immutable<State>) => {
-      const nextSelected = selector(value);
-      if (Object.is(lastSelected, nextSelected)) {
+    // watcher will be notified for any new state
+    const watcher = (nextState: Immutable<State>) => {
+      cachedState = nextState; // update closure
+      const nextSelected = selector(cachedState);
+      if (Object.is(cachedSelected, nextSelected)) {
         return;
       }
-      lastSelected = nextSelected; // sync version in closure
-      setSelected(nextSelected); // set version in state
-    });
+      cachedSelected = nextSelected; // update closure
+      setSelected(nextSelected); // notify react
+    };
+    // subscribe to future state changes
+    const unwatch = store.watch(watcher);
+    // detect changes not relayed to watcher, e.g.
+    // state changed between useSelected and useEffect
+    // state changed because store has changed
+    const tickState = store.read();
+    if (!Object.is(cachedState, tickState)) {
+      watcher(tickState);
+    }
+    // unsubscribe on unmount or change of store, selector
     return unwatch;
   }, [store, selector]);
-  return selected;
+  return cachedSelected;
 }
 
 /** A hook for tracking the [[RootState]] of a [[Store]]. Note, this forces a reload

@@ -24,10 +24,6 @@ interface StoreProps {
 
 const planetSelector: Selector<State, Planet> = (state) => state.planet;
 
-// function loseAmulet(store: Store<State>) {
-//   store.edit((draft) => (draft.haveAmulet = false));
-// }
-
 const PlanetLabel = ({ planet }: { planet: string }) => (
   <p>This is planet {planet}</p>
 );
@@ -130,6 +126,7 @@ describe("useSelected : (re)render using subset of store", () => {
     branchSpy.mockClear();
     userEvent.click(screen.getByText("Set Mars"));
     await screen.findByText("This is planet mars");
+    await new Promise((resolve) => setTimeout(resolve, 50));
     expect(rootSpy).toHaveBeenCalledTimes(0); // root not re-rendered
     expect(branchSpy).toHaveBeenCalledTimes(1); // branch is re-rendered
 
