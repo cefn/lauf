@@ -186,7 +186,7 @@ const RULES: readonly PackageJsonRule[] = [
   // },
 ] as const;
 
-const { strategy, filterPackagePaths, filterPropertyPaths } = yargs as any
+const { strategy, filterPackagePaths, filterPropertyPaths } = yargs
   .option("strategy", {
     description: "Select alignment strategy",
     type: "string",
