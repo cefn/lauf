@@ -22,7 +22,7 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - name: Install PNPM
         run: npm install -g pnpm@6
-      - run: pnpm install
+      - run: pnpm install --frozen-lockfile
       - run: pnpm run validate
       - run: pnpm run check:lauf
       - run: pnpm run check
