@@ -20,7 +20,7 @@ jobs:
         with:
           node-version: 14.x
       - name: Install PNPM
-        run: npm install -g pnpm
+        run: npm install -g pnpm@6
       - run: pnpm install
       - run: cd modules/${{matrix.module-name}} && pnpm run test
       - uses: codecov/codecov-action@v1
