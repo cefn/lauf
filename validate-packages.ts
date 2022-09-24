@@ -115,6 +115,11 @@ const RULES: readonly PackageJsonRule[] = [
     status: "error",
   },
   {
+    path: "scripts.prepare",
+    expected: undefined,
+    status: "error",
+  },
+  {
     path: "scripts.test",
     expected: "jest",
     status: "warning",
@@ -125,7 +130,7 @@ const RULES: readonly PackageJsonRule[] = [
     status: "warning",
   },
   {
-    path: "scripts.prepare",
+    path: "scripts.prepublishOnly",
     expected: "pnpm run test && pnpm run build",
     packagePaths: "modules/**",
     status: "error",

@@ -11,7 +11,7 @@
     "test": "jest",
     "check": "tsc --noEmit",
     "build": "tsc --build ./tsconfig.build.json",
-    "prepare": "pnpm run test && pnpm run build"
+    "prepublishOnly": "pnpm run test && pnpm run build"
   },
   "dependencies": {
     "@lauf/store": "^1.0.1"
