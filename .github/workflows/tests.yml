@@ -52,8 +52,13 @@ jobs:
         run: |
           pnpm run check:lauf
           pnpm run check
-      - name: Configure SSL
-        if: ${{ matrix.NODE_OPTIONS }}
-        run: export NODE_OPTIONS=${{ matrix.NODE_OPTIONS }}
-      - name: Run Tests
+
+      - if: matrix.node-version == '16.x'
+        name: Tests without SSL Override
+        run: pnpm run test
+
+      - if: matrix.node-version != '16.x'
+        name: Tests with SSL Override
+        env:
+          NODE_OPTIONS: --openssl-legacy-provider
         run: pnpm run test
