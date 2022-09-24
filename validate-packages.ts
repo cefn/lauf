@@ -115,6 +115,11 @@ const RULES: readonly PackageJsonRule[] = [
     status: "error",
   },
   {
+    path: "scripts.prepare",
+    expected: undefined,
+    status: "error",
+  },
+  {
     path: "scripts.test",
     expected: "jest",
     status: "warning",
@@ -125,7 +130,7 @@ const RULES: readonly PackageJsonRule[] = [
     status: "warning",
   },
   {
-    path: "scripts.prepare",
+    path: "scripts.prepublishOnly",
     expected: "pnpm run test && pnpm run build",
     packagePaths: "modules/**",
     status: "error",
@@ -181,7 +186,7 @@ const RULES: readonly PackageJsonRule[] = [
   // },
 ] as const;
 
-const { strategy, filterPackagePaths, filterPropertyPaths } = yargs
+const { strategy, filterPackagePaths, filterPropertyPaths } = yargs as any
   .option("strategy", {
     description: "Select alignment strategy",
     type: "string",
