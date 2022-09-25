@@ -74,6 +74,7 @@ describe("useSelected : (re)render using subset of store", () => {
         coord: [1, 1],
       } as const);
     });
+    //TODO below assertion fails
     expect((await screen.findByTestId("component")).textContent).toBe("[1,1]");
   });
 
