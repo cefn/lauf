@@ -20,11 +20,11 @@ export async function withSelectorQueue<
 >(
   store: Store<State>,
   selector: Selector<State, Selected>,
-  handleQueue: QueueHandler<Selected, Ending>
+  handleQueue: QueueHandler<Immutable<Selected>, Ending>
 ): Promise<Ending> {
-  const queue = createQueue<Selected>();
+  const queue = createQueue<Immutable<Selected>>();
   //Could be hoisted as a 'SelectorWatchable'
-  let prevSelected: Selected = selector(store.read());
+  let prevSelected: Immutable<Selected> = selector(store.read());
   const selectedNotifier = (value: Immutable<State>) => {
     const nextSelected = selector(value);
     if (!Object.is(nextSelected, prevSelected)) {
@@ -69,7 +69,7 @@ export async function followSelector<State extends RootState, Selected, Ending>(
     async function (queue, selected) {
       const { receive } = queue;
       let result: Ending;
-      let lastSelected: Selected | undefined;
+      let lastSelected: Immutable<Selected> | undefined;
       const exitStatus: ExitStatus = ["exit"];
       const controls: Controls<Selected, Ending> = {
         exit(ending: Ending) {

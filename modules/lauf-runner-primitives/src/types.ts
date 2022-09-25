@@ -1,4 +1,5 @@
 import { ActionPlan } from "@lauf/lauf-runner";
+import { Immutable } from "@lauf/store";
 
 /** Special return 'flags' for followSelect */
 const exitStatus = ["exit"] as const;
@@ -10,7 +11,7 @@ export type Controls<Selected, Ending> = {
 };
 
 export type Follower<Selected, Ending, Reaction> = ActionPlan<
-  [Selected, Controls<Selected, Ending>],
+  [Immutable<Selected>, Controls<Immutable<Selected>, Ending>],
   void | ExitStatus,
   Reaction
 >;

@@ -14,15 +14,16 @@
     "prepublishOnly": "pnpm run test && pnpm run build"
   },
   "dependencies": {
-    "@lauf/store": "^1.0.1"
+    "@lauf/store": "workspace:^1.0.1"
   },
   "peerDependencies": {
-    "react": "^17.0.2"
+    "react": "^18.2.0"
   },
   "devDependencies": {
-    "@testing-library/react": "^11.2.5",
-    "@testing-library/user-event": "^13.1.9",
-    "typescript": "^4.3.4"
+    "@testing-library/dom": "^8.18.1",
+    "@testing-library/react": "^13.4.0",
+    "@testing-library/user-event": "^14.4.3",
+    "typescript": "^4.8.3"
   },
   "gitHead": "03bd2f443dd739f47240c303214f24d611aa4ddc",
   "publishConfig": {

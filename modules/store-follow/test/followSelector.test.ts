@@ -164,7 +164,9 @@ describe("followSelector behaviour", () => {
     } catch (e) {
       error = e;
     }
-    expect(error).toBeInstanceOf(Error);
+    if (!(error instanceof Error)) {
+      throw new Error("Thrown item wasn't an error");
+    }
     expect(error.message).toBe("I am terminating");
   });
 });

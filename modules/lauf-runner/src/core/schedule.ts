@@ -7,7 +7,8 @@ import { planOfAction, performPlan } from "./util";
 // } & { length: T["length"] };
 
 export class BackgroundPlan<Args extends any[], Ending, Reaction>
-  implements Action<readonly [Promise<Ending>]> {
+  implements Action<readonly [Promise<Ending>]>
+{
   readonly args: Args;
   constructor(
     readonly plan: ActionPlan<Args, Ending, Reaction>,
@@ -29,16 +30,18 @@ class Wait<Ending> implements Action<Ending> {
 
 function promiseWin<Ending>(
   competingPromises: Promise<Ending>[]
-): Promise<[Ending, Promise<Ending>]> {
+): Promise<readonly [Ending, Promise<Ending>]> {
   return Promise.race(
     competingPromises.map(async (promise) => {
       const result = await promise;
-      return [result, promise];
+      return [result, promise] as const;
     })
   );
 }
 
-export class RaceWait<Ending> implements Action<[Ending, Promise<Ending>]> {
+export class RaceWait<Ending>
+  implements Action<readonly [Ending, Promise<Ending>]>
+{
   constructor(readonly promises: Promise<Ending>[]) {}
   act() {
     return promiseWin(this.promises);

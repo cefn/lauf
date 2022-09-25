@@ -9,7 +9,7 @@ import {
   Selector,
   Immutable,
   RootState,
-  Watcher
+  Watcher,
 } from "@lauf/store";
 import { useState, useMemo, useEffect } from "react";
 
@@ -53,7 +53,9 @@ export function useSelected<State extends RootState, Selected>(
   selector: Selector<State, Selected>
 ) {
   let cachedState = store.read();
-  let [cachedSelected, setSelected] = useState(() => selector(cachedState));
+  let [cachedSelected, setSelected] = useState(() => {
+    return selector(cachedState);
+  });
   useEffect(() => {
     // watcher will be notified for any new state
     const watcher = (nextState: Immutable<State>) => {

@@ -5,7 +5,7 @@ import { createDeferredMock } from "../util";
 // eslint-disable-next-line jest/no-export
 export type StoreFactory = <State extends RootState>(
   state: Immutable<State>,
-  watchers?: ReadonlyArray<Watcher<State>>
+  watchers?: ReadonlyArray<Watcher<Immutable<State>>>
 ) => Store<State>;
 
 // eslint-disable-next-line jest/no-export
@@ -48,9 +48,8 @@ export function createStoreSuite(
 
     test("Watchers notified of edits", async () => {
       type State = Record<string, string[]>;
-      const { deferred, deferredResolve } = createDeferredMock<
-        Immutable<State>
-      >();
+      const { deferred, deferredResolve } =
+        createDeferredMock<Immutable<State>>();
       const store = storeFactory<State>({
         ancient: ["Roses are red", "Violets are blue"],
       });

@@ -55,7 +55,9 @@ describe("useSelected : (re)render using subset of store", () => {
       readonly coord: Coord;
     }
 
-    const selectCoord: Selector<TestState, Coord> = (state) => state.coord;
+    const selectCoord: Selector<TestState, Coord> = (state) => {
+      return state.coord;
+    };
 
     const Component = ({ store }: { store: Store<TestState> }) => {
       const coord = useSelected(store, selectCoord);
@@ -63,13 +65,13 @@ describe("useSelected : (re)render using subset of store", () => {
     };
 
     const store = createStore<TestState>({
-      coord: [0, 0]
+      coord: [0, 0],
     } as const);
     render(<Component store={store} />);
     expect((await screen.findByTestId("component")).textContent).toBe("[0,0]");
     act(() => {
       store.write({
-        coord: [1, 1]
+        coord: [1, 1],
       } as const);
     });
     expect((await screen.findByTestId("component")).textContent).toBe("[1,1]");

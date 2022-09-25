@@ -29,7 +29,7 @@ describe("BasicWatchable behaviour", () => {
     unwatch();
     void notifiable.doNotify("foo");
     await Promise.resolve(); // wait one tick for notifications
-    expect(watcher).not.toHaveBeenCalled();
+    expect(watcher).toHaveBeenCalledTimes(0);
   });
 });
 

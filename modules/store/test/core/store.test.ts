@@ -3,7 +3,7 @@ import { StoreFactory, createStoreSuite } from "./storeSuite";
 
 const rootStoreFactory: StoreFactory = <State extends RootState>(
   state: Immutable<State>,
-  watchers?: ReadonlyArray<Watcher<State>>
+  watchers?: ReadonlyArray<Watcher<Immutable<State>>>
 ) => createStore<State>(state, watchers);
 
 createStoreSuite("Root Store", rootStoreFactory);
