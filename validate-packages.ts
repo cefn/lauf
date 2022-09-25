@@ -7,20 +7,58 @@
  * ...to report errors for a specific property before force-fixing, then use the fixErrors strategy
  * npx ./validate-packages.ts --filterPropertyPaths=publishConfig --strategy=fixErrors
  */
-import assert from "assert";
 import fs from "fs";
 import glob from "glob";
 import { isDeepStrictEqual } from "util";
 import yargs from "yargs";
 import minimatch from "minimatch";
-import lodashGet from "lodash/get";
-import lodashSet from "lodash/set";
+import { get as lodashGet } from "lodash-es";
+import { set as lodashSet } from "lodash-es";
 import chalk from "chalk";
 
 type ExpectedValueFactory = (options: {
   packageJsonPath: string;
   packageJson: { name: string };
 }) => string;
+
+const typescriptEslintConfig = {
+  ignorePatterns: ["dist/**"],
+  rules: {
+    "no-param-reassign": [
+      "error",
+      {
+        props: true,
+        ignorePropertyModificationsFor: ["draft"],
+      },
+    ],
+    "no-restricted-syntax": [
+      "error",
+      "ForInStatement",
+      "LabeledStatement",
+      "WithStatement",
+    ],
+    "no-void": [
+      "error",
+      {
+        allowAsStatement: true,
+      },
+    ],
+    "@typescript-eslint/no-unused-vars": [
+      "error",
+      {
+        varsIgnorePattern: "^_",
+      },
+    ],
+    "import/prefer-default-export": "off",
+    "@typescript-eslint/explicit-module-boundary-types": "off",
+    "@typescript-eslint/explicit-function-return-type": "off",
+    "react/prop-types": "off",
+  },
+} as const;
+
+const reactJsEslintConfig = {
+  extends: ["react-app", "react-app/jest"],
+} as const;
 
 const RULES: readonly PackageJsonRule[] = [
   {
@@ -40,39 +78,11 @@ const RULES: readonly PackageJsonRule[] = [
   },
   {
     path: "eslintConfig",
-    expected: {
-      ignorePatterns: ["dist/**"],
-      rules: {
-        "no-param-reassign": [
-          "error",
-          {
-            props: true,
-            ignorePropertyModificationsFor: ["draft"],
-          },
-        ],
-        "no-restricted-syntax": [
-          "error",
-          "ForInStatement",
-          "LabeledStatement",
-          "WithStatement",
-        ],
-        "no-void": [
-          "error",
-          {
-            allowAsStatement: true,
-          },
-        ],
-        "@typescript-eslint/no-unused-vars": [
-          "error",
-          {
-            varsIgnorePattern: "^_",
-          },
-        ],
-        "import/prefer-default-export": "off",
-        "@typescript-eslint/explicit-module-boundary-types": "off",
-        "@typescript-eslint/explicit-function-return-type": "off",
-        "react/prop-types": "off",
-      },
+    expected: ({ packageJson: { name } }) => {
+      if (name === "counter-js") {
+        return reactJsEslintConfig;
+      }
+      return typescriptEslintConfig;
     },
     status: "warning",
   },
@@ -106,7 +116,16 @@ const RULES: readonly PackageJsonRule[] = [
   },
   {
     path: "devDependencies.typescript",
-    expected: "^4.3.4",
+    expected: ({ packageJsonPath, packageJson: { name } }) => {
+      if (packageJsonPath.includes("draft")) {
+        // Allow anything - it's in draft
+        return /.*/;
+      }
+      if (name === "counter-js") {
+        return undefined;
+      }
+      return "^4.8.3";
+    },
     status: "warning",
   },
   {
@@ -121,12 +140,35 @@ const RULES: readonly PackageJsonRule[] = [
   },
   {
     path: "scripts.test",
-    expected: "jest",
+    expected: ({ packageJson: { name } }) => {
+      if (name === "counter") {
+        return "npm-run-all test:unit test:integration";
+      }
+      if (name === "counter-js") {
+        return "react-scripts test";
+      }
+      if (
+        [
+          "@lauf/store-follow",
+          "nextjs-mixer",
+          "nextjs-mornington",
+          "noredux-async",
+        ].includes(name)
+      ) {
+        return "jest --passWithNoTests";
+      }
+      return "jest";
+    },
     status: "warning",
   },
   {
     path: "scripts.check",
-    expected: "tsc --noEmit",
+    expected: ({ packageJson: { name } }) => {
+      if (name === "counter-js") {
+        return undefined;
+      }
+      return "tsc --noEmit";
+    },
     status: "warning",
   },
   {
@@ -186,24 +228,6 @@ const RULES: readonly PackageJsonRule[] = [
   // },
 ] as const;
 
-const { strategy, filterPackagePaths, filterPropertyPaths } = yargs
-  .option("strategy", {
-    description: "Select alignment strategy",
-    type: "string",
-    default: "dryRun",
-    choices: ["dryRun", "fixErrors", "fixWarnings"],
-  })
-  .option("filterPackagePaths", {
-    description: "Filter pattern for package paths",
-    type: "string",
-  })
-  .option("filterPropertyPaths", {
-    description: "Filter pattern for property names",
-    type: "string",
-  })
-  .help()
-  .alias("help", "h").argv;
-
 const STATUSES = [
   "warning", // report violation
   "error", // fail on violation
@@ -231,118 +255,150 @@ interface PackageJsonRule {
   status: Status;
 }
 
-const packageJsonPaths = glob
-  .sync("**/package.json", {
-    ignore: "**/node_modules/**/package.json",
-  })
-  .sort();
+function matchesExpectation(actualValue: unknown, expectedValue: unknown) {
+  if (expectedValue instanceof RegExp && typeof actualValue === "string") {
+    return actualValue.match(expectedValue);
+  }
+  return isDeepStrictEqual(actualValue, expectedValue);
+}
 
-let failed = false;
+async function run() {
+  const { strategy, filterPackagePaths, filterPropertyPaths } = await yargs()
+    .option("strategy", {
+      description: "Select alignment strategy",
+      type: "string",
+      default: "dryRun",
+      choices: ["dryRun", "fixErrors", "fixWarnings"],
+    })
+    .option("filterPackagePaths", {
+      description: "Filter pattern for package paths",
+      type: "string",
+    })
+    .option("filterPropertyPaths", {
+      description: "Filter pattern for property names",
+      type: "string",
+    })
+    .help()
+    .alias("help", "h").argv;
 
-for (const packageJsonPath of packageJsonPaths) {
-  const packageJson = JSON.parse(fs.readFileSync(packageJsonPath).toString());
+  const packageJsonPaths = glob
+    .sync("**/package.json", {
+      ignore: "**/node_modules/**/package.json",
+    })
+    .sort();
 
-  if (filterPackagePaths) {
-    if (!minimatch(packageJsonPath, filterPackagePaths)) {
+  let failed = false;
+
+  for (const packageJsonPath of packageJsonPaths) {
+    const packageJson = JSON.parse(fs.readFileSync(packageJsonPath).toString());
+
+    if (filterPackagePaths) {
+      if (!minimatch(packageJsonPath, filterPackagePaths)) {
+        continue;
+      }
+    }
+
+    //skip workspace root
+    if (packageJson.name === "lauf-monorepo") {
+      console.log(chalk.green(`Skipping workspace root ${packageJson.name}`));
       continue;
     }
-  }
 
-  //skip workspace root
-  if (packageJson.name === "lauf-monorepo") {
-    console.log(chalk.green(`Skipping workspace root ${packageJson.name}`));
-    continue;
-  }
+    //traverse package json tree, checking and (optionally) fixing
+    type Violation = {
+      actualValue: any;
+      expectedValue: Expected;
+      fixed: boolean;
+      status: Status;
+    };
+    const found: Record<Rule["path"], Violation> = {};
+    let rewritePackageJson = false;
+    for (const { path, expected, status, packagePaths } of RULES) {
+      if (filterPropertyPaths) {
+        if (!minimatch(path, filterPropertyPaths)) {
+          continue;
+        }
+      }
 
-  //traverse package json tree, checking and (optionally) fixing
-  type Violation = {
-    actualValue: any;
-    expectedValue: Expected;
-    fixed: boolean;
-    status: Status;
-  };
-  const found: Record<Rule["path"], Violation> = {};
-  let rewritePackageJson = false;
-  for (const { path, expected, status, packagePaths } of RULES) {
-    if (filterPropertyPaths) {
-      if (!minimatch(path, filterPropertyPaths)) {
-        continue;
+      if (packagePaths) {
+        if (!minimatch(packageJsonPath, packagePaths)) {
+          continue;
+        }
+      }
+
+      const expectedValue =
+        typeof expected === "function"
+          ? expected({ packageJson, packageJsonPath })
+          : expected;
+
+      const actualValue = lodashGet(packageJson, path);
+      if (!matchesExpectation(actualValue, expectedValue)) {
+        //record violation
+        let violationColor: typeof chalk.redBright = chalk.redBright;
+        if (status === "error") {
+          //exit status
+          failed = true;
+        } else if (status === "warning") {
+          violationColor = chalk.yellow;
+        } else {
+          throw `Unexpected status`;
+        }
+        const message = `${violationColor(
+          status.toUpperCase()
+        )} ${path} was '${chalk.red(actualValue)}' not '${chalk.green(
+          JSON.stringify(expectedValue)
+        )}'`;
+        //check strategy, possibly skip fix depending on rule status
+        const fixed = !(
+          (status === "error" && ["dryRun"].includes(strategy)) ||
+          (status === "warning" && ["dryRun", "fixErrors"].includes(strategy))
+        );
+
+        found[path] = { actualValue, expectedValue, status, fixed };
+
+        if (fixed) {
+          //proceed with fix
+          console.log(`${message} FIXING`);
+          lodashSet(packageJson, path, expectedValue);
+          rewritePackageJson = true;
+        }
       }
     }
 
-    if (packagePaths) {
-      if (!minimatch(packageJsonPath, packagePaths)) {
-        continue;
-      }
-    }
-
-    const expectedValue =
-      typeof expected === "function"
-        ? expected({ packageJson, packageJsonPath })
-        : expected;
-
-    const actualValue = lodashGet(packageJson, path) as string;
-    if (!isDeepStrictEqual(actualValue, expectedValue)) {
-      //record violation
-      let violationColor: typeof chalk.redBright = chalk.redBright;
-      if (status === "error") {
-        //exit status
-        failed = true;
-      } else if (status === "warning") {
-        violationColor = chalk.yellow;
-      } else {
-        throw `Unexpected status`;
-      }
-      const message = `${violationColor(
-        status.toUpperCase()
-      )} ${path} was '${chalk.red(actualValue)}' not '${chalk.green(
-        JSON.stringify(expectedValue)
-      )}'`;
-      //check strategy, possibly skip fix depending on rule status
-      const fixed = !(
-        (status === "error" && ["dryRun"].includes(strategy)) ||
-        (status === "warning" && ["dryRun", "fixErrors"].includes(strategy))
-      );
-
-      found[path] = { actualValue, expectedValue, status, fixed };
-
-      if (fixed) {
-        //proceed with fix
-        console.log(`${message} FIXING`);
-        lodashSet(packageJson, path, expectedValue);
-        rewritePackageJson = true;
-      }
-    }
-  }
-
-  if (Object.entries(found).length > 0) {
-    console.log(
-      `${chalk.yellow(packageJson.name)} (${chalk.gray(packageJsonPath)})`
-    );
-    for (const [
-      path,
-      { actualValue: actual, expectedValue, fixed, status },
-    ] of Object.entries(found)) {
+    if (Object.entries(found).length > 0) {
       console.log(
-        `${status.toUpperCase()} ${path} ${chalk.red(actual)}${chalk.yellow(
-          " SHOULD BE "
-        )}${chalk.green(JSON.stringify(expectedValue))} ${
-          fixed ? "FIXED" : `NOT FIXED (strategy=${strategy})`
-        }`
+        `${chalk.yellow(packageJson.name)} (${chalk.gray(packageJsonPath)})`
+      );
+      for (const [
+        path,
+        { actualValue: actual, expectedValue, fixed, status },
+      ] of Object.entries(found)) {
+        console.log(
+          `${status.toUpperCase()} ${path} ${chalk.red(
+            JSON.stringify(actual)
+          )}${chalk.yellow(" SHOULD BE ")}${chalk.green(
+            JSON.stringify(expectedValue)
+          )} ${fixed ? "FIXED" : `NOT FIXED (strategy=${strategy})`}`
+        );
+      }
+    }
+
+    // const packageDir = dirname(packageJsonPath);
+    // const tsconfigBuildPath = `${packageDir}/tsconfig.build.json`;
+    // const tsconfigBuild = JSON.parse(fs.readFileSync(packageJsonPath).toString());
+    //Implement this using a `skel` folder instead
+
+    if (rewritePackageJson) {
+      fs.writeFileSync(
+        packageJsonPath,
+        JSON.stringify(packageJson, null, "  ")
       );
     }
   }
 
-  // const packageDir = dirname(packageJsonPath);
-  // const tsconfigBuildPath = `${packageDir}/tsconfig.build.json`;
-  // const tsconfigBuild = JSON.parse(fs.readFileSync(packageJsonPath).toString());
-  //Implement this using a `skel` folder instead
-
-  if (rewritePackageJson) {
-    fs.writeFileSync(packageJsonPath, JSON.stringify(packageJson, null, "  "));
+  if (failed) {
+    process.exit(-1);
   }
 }
 
-if (failed) {
-  process.exit(-1);
-}
+run();
