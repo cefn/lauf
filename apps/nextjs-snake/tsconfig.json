@@ -1,3 +1,4 @@
+// This could be better aligned with the canary example at https://github.com/vercel/next.js/blob/canary/examples/with-jest/tsconfig.json
 {
   "compilerOptions": {
     "target": "es2015",
@@ -12,7 +13,8 @@
     "skipLibCheck": true,
     "strict": true,
     "forceConsistentCasingInFileNames": true,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "incremental": true
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
   "exclude": ["node_modules"]

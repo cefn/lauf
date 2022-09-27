@@ -29,7 +29,7 @@ class DefaultStore<State extends RootState>
  */
 export function createStore<State extends RootState>(
   initialState: Immutable<State>,
-  watchers?: ReadonlyArray<Watcher<State>>
+  watchers?: ReadonlyArray<Watcher<Immutable<State>>>
 ): Store<State> {
   return new DefaultStore(initialState, watchers);
 }

@@ -13,7 +13,7 @@ export function Fruit({ gameStore }: Model) {
         spriteSheet: SPRITE_SHEET,
         spriteName,
         gridX,
-        gridY
+        gridY,
       }}
     />
   );

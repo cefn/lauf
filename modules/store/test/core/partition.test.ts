@@ -13,7 +13,7 @@ import { createStoreSuite, StoreFactory } from "./storeSuite";
 /** Creates a store as an object property in a parent store. */
 const partitionedMapStoreFactory: StoreFactory = <ChildState extends RootState>(
   childState: Immutable<ChildState>,
-  watchers?: ReadonlyArray<Watcher<ChildState>>
+  watchers?: ReadonlyArray<Watcher<Immutable<ChildState>>>
 ) => {
   interface ParentState {
     foo: ChildState;
@@ -29,7 +29,7 @@ const partitionedListStoreFactory: StoreFactory = <
   ChildState extends RootState
 >(
   childState: Immutable<ChildState>,
-  watchers?: ReadonlyArray<Watcher<ChildState>>
+  watchers?: ReadonlyArray<Watcher<Immutable<ChildState>>>
 ) => {
   type ParentState = [ChildState];
   const parentState: Immutable<ParentState> = [childState] as const;
@@ -84,7 +84,7 @@ describe("Parent Stores and Child Store Partitions", () => {
       draft.other.violets = "purple";
     });
     await new Promise((resolve) => setTimeout(resolve, 10));
-    expect(watcher).not.toHaveBeenCalled();
+    expect(watcher).toHaveBeenCalledTimes(0);
   });
 
   test("Parent watchers notified of child store assignments inside partition", async () => {

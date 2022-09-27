@@ -15,11 +15,12 @@ class DefaultStorePartition<
     Key extends keyof ParentState
   >
   extends DefaultWatchable<Immutable<ParentState[Key]>>
-  implements Store<ParentState[Key]> {
+  implements Store<ParentState[Key]>
+{
   constructor(
     readonly store: Store<ParentState>,
     readonly key: Key,
-    watchers?: ReadonlyArray<Watcher<ParentState[Key]>>
+    watchers?: ReadonlyArray<Watcher<Immutable<ParentState[Key]>>>
   ) {
     super(watchers);
     void this.notify(this.read());
@@ -34,28 +35,27 @@ class DefaultStorePartition<
         return;
       }
       lastSubState = subState;
-      void this.notify(subState as Immutable<ParentState[Key]>);
+      void this.notify(subState as unknown as Immutable<ParentState[Key]>);
     });
   };
 
   read = () => {
-    return this.store.read()[this.key] as Immutable<ParentState[Key]>;
+    return this.store.read()[this.key] as unknown as Immutable<
+      ParentState[Key]
+    >;
   };
 
   write = (state: Immutable<ParentState[Key]>) => {
-    this.store.edit((draft: Draft<Immutable<ParentState>>) => {
-      draft[this.key as keyof Draft<Immutable<ParentState>>] = castDraft(state);
+    this.store.edit((draft) => {
+      (draft as any)[this.key] = state as any;
     });
     return this.read();
   };
 
   edit = (editor: Editor<ParentState[Key]>) => {
-    this.store.edit(
-      (draft: Draft<Immutable<ParentState>>, toDraft: typeof castDraft) => {
-        const substate = draft[this.key as keyof Draft<Immutable<ParentState>>];
-        editor(substate as Draft<Immutable<ParentState[Key]>>, toDraft);
-      }
-    );
+    this.store.edit((draft, toDraft) => {
+      editor((draft as any)[this.key], toDraft);
+    });
     return this.read();
   };
 
@@ -79,7 +79,7 @@ export function createStorePartition<
 >(
   store: Store<State>,
   key: Key,
-  watchers?: ReadonlyArray<Watcher<State[Key]>>
+  watchers?: ReadonlyArray<Watcher<Immutable<State[Key]>>>
 ): Store<State[Key]> {
   return new DefaultStorePartition(store, key, watchers);
 }

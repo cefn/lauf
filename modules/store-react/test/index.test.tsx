@@ -6,8 +6,27 @@ import React from "react";
 import { useRootState, useSelected, useStore } from "../src";
 import { render, waitFor, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { createStore, Selector, Store } from "@lauf/store";
+import { createStore, Immutable, Selector, Store } from "@lauf/store";
 import { act } from "react-dom/test-utils";
+import flushPromises from "flush-promises";
+
+/** A promise of the next state change in a store. Watchers are notified in
+ * order of subscription, so notifications to any previously-subscribed watchers
+ * happen before this is resolved. */
+function stateWritten<T extends {}>(store: Store<T>) {
+  return new Promise<Immutable<T>>((resolve) => {
+    const unwatch = store.watch((state) => {
+      resolve(state);
+      unwatch();
+    });
+  });
+}
+
+async function statePropagated<T extends {}>(store: Store<T>) {
+  const state = await stateWritten(store); // wait for async operations to be triggered
+  await flushPromises(); // wait for async operations to complete
+  return state;
+}
 
 /** IMAGINARY APPLICATION-SPECIFIC DATA, COMPONENTS, SELECTORS */
 
@@ -55,38 +74,47 @@ describe("useSelected : (re)render using subset of store", () => {
       readonly coord: Coord;
     }
 
-    const selectCoord: Selector<TestState, Coord> = (state) => state.coord;
+    const selectCoord: Selector<TestState, Coord> = (state) => {
+      return state.coord;
+    };
 
-    const Component = ({ store }: { store: Store<TestState> }) => {
-      const coord = useSelected(store, selectCoord);
+    const Component = (props: { store: Store<TestState> }) => {
+      const coord = useSelected(props.store, selectCoord);
       return <div data-testid="component">{JSON.stringify(coord)}</div>;
     };
 
     const store = createStore<TestState>({
-      coord: [0, 0]
+      coord: [0, 0],
     } as const);
+
     render(<Component store={store} />);
+
     expect((await screen.findByTestId("component")).textContent).toBe("[0,0]");
-    act(() => {
+
+    const propagatedPromise = statePropagated(store);
+
+    await waitFor(async () => {
       store.write({
-        coord: [1, 1]
+        coord: [1, 1],
       } as const);
+      await propagatedPromise;
     });
+
     expect((await screen.findByTestId("component")).textContent).toBe("[1,1]");
   });
 
   test("Render count as expected before and after store edits", async () => {
-    const rootSpy = jest.fn();
-    const branchSpy = jest.fn();
+    const rootRenderSpy = jest.fn();
+    const branchRenderSpy = jest.fn();
 
     const Root = () => {
-      rootSpy();
+      rootRenderSpy();
       const store = useStore<State>({ planet: "earth" });
       return <Branch store={store} />;
     };
 
     const Branch = ({ store }: StoreProps) => {
-      branchSpy();
+      branchRenderSpy();
       const planet = useSelected(store, planetSelector);
       return (
         // planet value is rendered
@@ -118,24 +146,24 @@ describe("useSelected : (re)render using subset of store", () => {
     // mount component
     const treeToRender = <Root />;
     render(treeToRender);
-    expect(rootSpy).toHaveBeenCalledTimes(1); // root rendered
-    expect(branchSpy).toHaveBeenCalledTimes(1); // branch rendered
+    expect(rootRenderSpy).toHaveBeenCalledTimes(1); // root rendered
+    expect(branchRenderSpy).toHaveBeenCalledTimes(1); // branch rendered
 
     // edit some state rendered in Branch
-    rootSpy.mockClear();
-    branchSpy.mockClear();
+    rootRenderSpy.mockClear();
+    branchRenderSpy.mockClear();
     userEvent.click(screen.getByText("Set Mars"));
     await screen.findByText("This is planet mars");
     await new Promise((resolve) => setTimeout(resolve, 50));
-    expect(rootSpy).toHaveBeenCalledTimes(0); // root not re-rendered
-    expect(branchSpy).toHaveBeenCalledTimes(1); // branch is re-rendered
+    expect(rootRenderSpy).toHaveBeenCalledTimes(0); // root not re-rendered
+    expect(branchRenderSpy).toHaveBeenCalledTimes(1); // branch is re-rendered
 
     // edit some state not rendered Anywhere
-    rootSpy.mockClear();
-    branchSpy.mockClear();
+    rootRenderSpy.mockClear();
+    branchRenderSpy.mockClear();
     userEvent.click(screen.getByText("Secure Amulet"));
     await new Promise((resolve) => setTimeout(resolve, 50));
-    expect(rootSpy).toHaveBeenCalledTimes(0); // root not re-rendered
-    expect(branchSpy).toHaveBeenCalledTimes(0); // branch not re-rendered
+    expect(rootRenderSpy).toHaveBeenCalledTimes(0); // root not re-rendered
+    expect(branchRenderSpy).toHaveBeenCalledTimes(0); // branch not re-rendered
   });
 });
