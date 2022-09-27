@@ -6,7 +6,7 @@ import { Sprite } from "./sprite";
 export function SegmentSprite(segmentPosition: Immutable<SegmentPosition>) {
   const { segments, index } = segmentPosition;
   const {
-    pos: [gridX, gridY]
+    pos: [gridX, gridY],
   } = segments[index] as Segment;
   const spriteName = getSegmentSpriteName(segmentPosition);
 
@@ -16,7 +16,7 @@ export function SegmentSprite(segmentPosition: Immutable<SegmentPosition>) {
         spriteSheet: SPRITE_SHEET,
         spriteName,
         gridX,
-        gridY
+        gridY,
       }}
     />
   );

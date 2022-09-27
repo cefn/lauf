@@ -8,9 +8,9 @@ import { SPRITE_SHEET } from "../src/components/graphics";
 import { posToStyle } from "../src/components/sprite";
 import { Direction } from "../src/state";
 
-const { resetGame, eatFruit } = _test_game;
+const { eatFruit } = _test_game;
 
-describe.skip("Passing test case  - incompatible jsx config", () => {
+describe("Example Test Case", () => {
   test("Selector tracks fruitPos after replacement", async () => {
     // launch app
     const appModel = mainPlan();
@@ -27,7 +27,7 @@ describe.skip("Passing test case  - incompatible jsx config", () => {
         gridX,
         gridY,
         spriteName: "FRUIT",
-        spriteSheet: SPRITE_SHEET
+        spriteSheet: SPRITE_SHEET,
       });
       expect(actualStyle).toMatchObject(expectedStyle);
     };
@@ -40,8 +40,8 @@ describe.skip("Passing test case  - incompatible jsx config", () => {
           inputQueue.send([direction, false]);
         }
       }
-      await eatFruit(appModel);
-      await eatFruit(appModel);
+      eatFruit(appModel);
+      eatFruit(appModel);
     });
     validateFruitPos();
     await act(async () => {
@@ -54,7 +54,7 @@ describe.skip("Passing test case  - incompatible jsx config", () => {
         "LEFT",
         "UP",
         "RIGHT",
-        "DOWN"
+        "DOWN",
       ] as Direction[]) {
         inputQueue.send([direction, true]);
         inputQueue.send([direction, false]);

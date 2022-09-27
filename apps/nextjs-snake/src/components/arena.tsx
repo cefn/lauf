@@ -1,4 +1,3 @@
-import React from "react";
 import { GRID_SPAN, Model } from "../state";
 import { SPRITE_SIDE, SCALE } from "./graphics";
 import { Fruit } from "./fruit";
@@ -12,7 +11,7 @@ export function Arena(model: Model) {
         display: "block",
         width: GRID_SPAN * SPRITE_SIDE * SCALE,
         height: GRID_SPAN * SPRITE_SIDE * SCALE,
-        backgroundColor: "yellow"
+        backgroundColor: "yellow",
       }}
     >
       <Score {...model} />

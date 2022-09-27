@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import Head from "next/head";
 
 import { Model, Direction, DirectionInput } from "./state";
@@ -8,7 +8,7 @@ const directionMap: Record<string, Direction> = {
   ArrowLeft: "LEFT",
   ArrowUp: "UP",
   ArrowRight: "RIGHT",
-  ArrowDown: "DOWN"
+  ArrowDown: "DOWN",
 } as const;
 
 export function Game(model: Model) {

@@ -1,4 +1,3 @@
-import React from "react";
 import { Immutable } from "@lauf/store";
 import { GRID_MAX, GRID_SPAN } from "../state";
 import { SCALE } from "./graphics";
@@ -27,11 +26,11 @@ export function posToStyle<SpriteName extends string>(
   const {
     gridX,
     gridY,
-    spriteSheet: { spriteWidth, spriteHeight }
+    spriteSheet: { spriteWidth, spriteHeight },
   } = spriteProps;
   return {
     left: `${(gridX + GRID_MAX) * spriteWidth * SCALE}px`,
-    top: `${(GRID_SPAN - (gridY + GRID_MAX + 1)) * spriteHeight * SCALE}px` // vertical axis is inverted in browser
+    top: `${(GRID_SPAN - (gridY + GRID_MAX + 1)) * spriteHeight * SCALE}px`, // vertical axis is inverted in browser
   };
 }
 
@@ -65,7 +64,7 @@ export function Sprite<SpriteName extends string>(
         top,
         backgroundImage,
         backgroundPosition,
-        backgroundSize
+        backgroundSize,
       }}
     />
   );
