@@ -52,34 +52,21 @@ export function useSelected<State extends RootState, Selected>(
   store: Store<State>,
   selector: Selector<State, Selected>
 ) {
-  let cachedState = store.read();
-  let [cachedSelected, setSelected] = useState(() => {
-    return selector(cachedState);
-  });
+  let [selected, setSelected] = useState(() => selector(store.read()));
   useEffect(() => {
-    // watcher will be notified for any new state
-    const watcher = (nextState: Immutable<State>) => {
-      cachedState = nextState; // update closure
-      const nextSelected = selector(cachedState);
-      if (Object.is(cachedSelected, nextSelected)) {
-        return;
+    const maybeSetSelected = (nextState: Immutable<State>) => {
+      const nextSelected = selector(nextState); // what's the selected now?
+      if (!Object.is(selected, nextSelected)) {
+        selected = nextSelected; // sync value in maybeSetSelected closure
+        setSelected(nextSelected); // notify changed value
       }
-      cachedSelected = nextSelected; // update closure
-      setSelected(nextSelected); // notify react
     };
-    // subscribe to future state changes
-    const unwatch = store.watch(watcher);
-    // detect changes not relayed to watcher, e.g.
-    // state changed between useSelected and useEffect
-    // state changed because store has changed
-    const tickState = store.read();
-    if (!Object.is(cachedState, tickState)) {
-      watcher(tickState);
-    }
-    // unsubscribe on unmount or change of store, selector
-    return unwatch;
+    // handle changes between first render and useEffect
+    maybeSetSelected(store.read());
+    // handle future changes (returning unwatch function)
+    return store.watch(maybeSetSelected);
   }, [store, selector]);
-  return cachedSelected;
+  return selected;
 }
 
 /** A hook for tracking the [[RootState]] of a [[Store]]. Note, this forces a reload
