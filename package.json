@@ -16,7 +16,7 @@
     "check:changed": "pnpm recursive run check --filter '...[origin/main]...'",
     "check:lauf": "pnpm recursive run check --filter '@lauf/*'",
     "validate": "ts-node-esm ./validate-packages.ts",
-    "release": "pnpx changeset add && git add && git commit -a && pnpx changeset version && pnpm install && pnpm publish -r",
+    "release": "pnpx changeset add && pnpx changeset version && git add . && git commit -a && pnpm install --frozen-lockfile && pnpm recursive publish",
     "docs": "typedoc --tsconfig tsconfig.typedoc.json --includes ./ --out api",
     "docs:watch": "pnpm run docs -- --watch",
     "docs:serve": "reload -d api",
