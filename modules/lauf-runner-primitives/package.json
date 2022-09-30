@@ -1,6 +1,6 @@
 {
   "name": "@lauf/lauf-runner-primitives",
-  "version": "0.1.6-alpha.0",
+  "version": "0.1.6",
   "private": true,
   "license": "MIT",
   "scripts": {
@@ -17,9 +17,9 @@
     "dist"
   ],
   "dependencies": {
-    "@lauf/lauf-runner": "^0.1.2",
-    "@lauf/queue": "^1.1.0-alpha.0",
-    "@lauf/store": "^1.1.0-alpha.0"
+    "@lauf/lauf-runner": "workspace:^0.1.2",
+    "@lauf/queue": "^1.1.0",
+    "@lauf/store": "^1.1.0"
   },
   "gitHead": "03bd2f443dd739f47240c303214f24d611aa4ddc",
   "publishConfig": {

@@ -1,5 +1,14 @@
 # @lauf/lauf-runner-primitives
 
+## 0.1.6
+
+### Patch Changes
+
+- Updated dependencies [5c7cd0a]
+- Updated dependencies [ba8de9a]
+  - @lauf/queue@1.1.0
+  - @lauf/store@1.1.0
+
 ## 0.1.6-alpha.0
 
 ### Patch Changes
