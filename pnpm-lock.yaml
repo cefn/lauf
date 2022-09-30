@@ -154,14 +154,27 @@ importers:
 
   apps/nextjs-mixer:
     specifiers:
+      '@babel/core': ^7.19.3
+      '@babel/preset-env': ^7.19.3
+      '@babel/preset-typescript': ^7.18.6
       '@lauf/store': ^1.0.1
       '@lauf/store-react': ^1.0.1
+      '@testing-library/react': ^13.4.0
+      '@types/jest': ^29.1.1
+      '@types/react': ^18.0.21
       '@types/styled-components': ^5.1.26
+      '@types/styled-jsx': ^3.4.4
+      babel-jest: ^29.1.2
+      eslint-config-next: ^12.3.1
+      eslint-config-standard-typescript: ^1.0.3
+      eslint-plugin-standard: ^5.0.0
       next: ^12.3.1
-      react: 18.2.0
-      react-dom: 18.2.0
+      react: ^18.2.0
+      react-dom: ^18.2.0
       react-is: ^18.2.0
       styled-components: ^5.3.6
+      styled-jsx: ^5.0.7
+      ts-loader: ^9.4.1
       typescript: ^4.8.4
     dependencies:
       '@lauf/store': 1.0.1
@@ -171,20 +184,45 @@ importers:
       react-dom: 18.2.0_react@18.2.0
       react-is: 18.2.0
       styled-components: 5.3.6_fa3acc110621e003f368ed3f60914608
+      styled-jsx: 5.0.7_@babel+core@7.19.3+react@18.2.0
     devDependencies:
+      '@babel/core': 7.19.3
+      '@babel/preset-env': 7.19.3_@babel+core@7.19.3
+      '@babel/preset-typescript': 7.18.6_@babel+core@7.19.3
+      '@testing-library/react': 13.4.0_react-dom@18.2.0+react@18.2.0
+      '@types/jest': 29.1.1
+      '@types/react': 18.0.21
       '@types/styled-components': 5.1.26
+      '@types/styled-jsx': 3.4.4_@babel+core@7.19.3+react@18.2.0
+      babel-jest: 29.1.2_@babel+core@7.19.3
+      eslint-config-next: 12.3.1_eslint@8.24.0+typescript@4.8.4
+      eslint-config-standard-typescript: 1.0.3_@typescript-eslint+parser@5.38.1
+      eslint-plugin-standard: 5.0.0_eslint@8.24.0
+      ts-loader: 9.4.1_typescript@4.8.4+webpack@5.74.0
       typescript: 4.8.4
 
   apps/nextjs-mornington:
     specifiers:
+      '@babel/core': ^7.19.3
+      '@babel/preset-env': ^7.19.3
+      '@babel/preset-typescript': ^7.18.6
+      '@testing-library/react': ^13.4.0
+      '@types/jest': ^29.1.1
+      '@types/react': ^18.0.21
       '@types/styled-components': ^5.1.26
+      '@types/styled-jsx': ^3.4.4
       axios: ^0.27.2
+      babel-jest: ^29.1.2
+      eslint-config-next: ^12.3.1
+      eslint-config-standard-typescript: ^1.0.3
+      eslint-plugin-standard: ^5.0.0
       next: ^12.3.1
-      react: 18.2.0
-      react-dom: 18.2.0
+      react: ^18.2.0
+      react-dom: ^18.2.0
       react-is: ^18.2.0
       reselect: ^4.1.6
       styled-components: ^5.3.6
+      ts-loader: ^9.4.1
       typescript: ^4.8.4
     dependencies:
       axios: 0.27.2
@@ -195,7 +233,19 @@ importers:
       reselect: 4.1.6
       styled-components: 5.3.6_fa3acc110621e003f368ed3f60914608
     devDependencies:
+      '@babel/core': 7.19.3
+      '@babel/preset-env': 7.19.3_@babel+core@7.19.3
+      '@babel/preset-typescript': 7.18.6_@babel+core@7.19.3
+      '@testing-library/react': 13.4.0_react-dom@18.2.0+react@18.2.0
+      '@types/jest': 29.1.1
+      '@types/react': 18.0.21
       '@types/styled-components': 5.1.26
+      '@types/styled-jsx': 3.4.4_@babel+core@7.19.3+react@18.2.0
+      babel-jest: 29.1.2_@babel+core@7.19.3
+      eslint-config-next: 12.3.1_eslint@8.24.0+typescript@4.8.4
+      eslint-config-standard-typescript: 1.0.3_@typescript-eslint+parser@5.38.1
+      eslint-plugin-standard: 5.0.0_eslint@8.24.0
+      ts-loader: 9.4.1_typescript@4.8.4+webpack@5.74.0
       typescript: 4.8.4
 
   apps/nextjs-snake:
