@@ -15,24 +15,22 @@ export function Game(model: Model) {
   const { inputQueue } = model;
   // subscribe to key events, send as DirectionInput
   useEffect(() => {
-    if (process.browser) {
-      const keyListener = (e: KeyboardEvent) => {
-        const { code, type } = e;
-        const active = type === "keydown";
-        const directionName = directionMap[code];
-        if (!directionName) {
-          return;
-        }
-        const directionInput: DirectionInput = [directionName, active];
-        inputQueue.send(directionInput);
-      };
-      document.addEventListener("keydown", keyListener);
-      document.addEventListener("keyup", keyListener);
-      return () => {
-        document.removeEventListener("keydown", keyListener);
-        document.removeEventListener("keyup", keyListener);
-      };
-    }
+    const keyListener = (e: KeyboardEvent) => {
+      const { code, type } = e;
+      const active = type === "keydown";
+      const directionName = directionMap[code];
+      if (!directionName) {
+        return;
+      }
+      const directionInput: DirectionInput = [directionName, active];
+      inputQueue.send(directionInput);
+    };
+    document.addEventListener("keydown", keyListener);
+    document.addEventListener("keyup", keyListener);
+    return () => {
+      document.removeEventListener("keydown", keyListener);
+      document.removeEventListener("keyup", keyListener);
+    };
   }, [inputQueue]);
 
   return (
