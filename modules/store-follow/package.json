@@ -9,7 +9,7 @@
     "prepublishOnly": "pnpm run test && pnpm run build"
   },
   "devDependencies": {
-    "typescript": "^4.8.3"
+    "typescript": "^4.8.4"
   },
   "files": [
     "README.md",
@@ -66,8 +66,8 @@
     }
   },
   "dependencies": {
-    "@lauf/queue": "^1.1.0-alpha.0",
-    "@lauf/store": "^1.1.0-alpha.0"
+    "@lauf/queue": "^1.0.1",
+    "@lauf/store": "^1.0.1"
   },
   "main": "src/index.ts"
 }
