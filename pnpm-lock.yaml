@@ -106,8 +106,8 @@ importers:
       '@babel/core': ^7.19.3
       '@babel/preset-env': ^7.19.3
       '@babel/preset-react': ^7.18.6
-      '@lauf/store': ^1.0.1
-      '@lauf/store-react': ^1.0.1
+      '@lauf/store': ^1.1.0-alpha.0
+      '@lauf/store-react': ^1.1.0-alpha.0
       '@playwright/test': ^1.26.1
       '@types/react': ^18.0.21
       '@types/react-dom': ^18.0.6
@@ -127,8 +127,8 @@ importers:
       webpack-cli: ^4.10.0
       webpack-dev-server: ^4.11.1
     dependencies:
-      '@lauf/store': 1.0.1
-      '@lauf/store-react': 1.0.1_react@18.2.0
+      '@lauf/store': link:../../modules/store
+      '@lauf/store-react': link:../../modules/store-react
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
     devDependencies:
@@ -157,8 +157,8 @@ importers:
       '@babel/core': ^7.19.3
       '@babel/preset-env': ^7.19.3
       '@babel/preset-typescript': ^7.18.6
-      '@lauf/store': ^1.0.1
-      '@lauf/store-react': ^1.0.1
+      '@lauf/store': ^1.1.0-alpha.0
+      '@lauf/store-react': ^1.1.0-alpha.0
       '@testing-library/react': ^13.4.0
       '@types/jest': ^29.1.1
       '@types/react': ^18.0.21
@@ -177,8 +177,8 @@ importers:
       ts-loader: ^9.4.1
       typescript: ^4.8.4
     dependencies:
-      '@lauf/store': 1.0.1
-      '@lauf/store-react': 1.0.1_react@18.2.0
+      '@lauf/store': link:../../modules/store
+      '@lauf/store-react': link:../../modules/store-react
       next: 12.3.1_f4f28c5f6321d4e221346896f53dcb38
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
@@ -253,10 +253,10 @@ importers:
       '@babel/core': ^7.19.3
       '@babel/preset-env': ^7.19.3
       '@babel/preset-typescript': ^7.18.6
-      '@lauf/queue': ^1.0.1
-      '@lauf/store': ^1.0.1
-      '@lauf/store-follow': ^1.0.1
-      '@lauf/store-react': ^1.0.1
+      '@lauf/queue': ^1.1.0-alpha.0
+      '@lauf/store': ^1.1.0-alpha.0
+      '@lauf/store-follow': ^1.1.0-alpha.0
+      '@lauf/store-react': ^1.1.0-alpha.0
       '@testing-library/react': ^13.4.0
       '@types/jest': ^29.1.1
       '@types/react': ^18.0.21
@@ -274,10 +274,10 @@ importers:
       ts-loader: ^9.4.1
       typescript: ^4.8.4
     dependencies:
-      '@lauf/queue': 1.0.1
-      '@lauf/store': 1.0.1
-      '@lauf/store-follow': 1.0.1
-      '@lauf/store-react': 1.0.1_react@18.2.0
+      '@lauf/queue': link:../../modules/queue
+      '@lauf/store': link:../../modules/store
+      '@lauf/store-follow': link:../../modules/store-follow
+      '@lauf/store-react': link:../../modules/store-react
       next: 12.3.1_f4f28c5f6321d4e221346896f53dcb38
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
@@ -304,9 +304,9 @@ importers:
       '@babel/core': ^7.19.3
       '@babel/preset-env': ^7.19.3
       '@babel/preset-react': ^7.18.6
-      '@lauf/store': ^1.0.1
-      '@lauf/store-follow': ^1.0.1
-      '@lauf/store-react': ^1.0.1
+      '@lauf/store': ^1.1.0-alpha.0
+      '@lauf/store-follow': ^1.1.0-alpha.0
+      '@lauf/store-react': ^1.1.0-alpha.0
       '@types/react': ^18.0.21
       '@types/react-dom': ^18.0.6
       babel-loader: ^8.2.5
@@ -323,9 +323,9 @@ importers:
       webpack-cli: ^4.10.0
       webpack-dev-server: ^4.11.1
     dependencies:
-      '@lauf/store': 1.0.1
-      '@lauf/store-follow': 1.0.1
-      '@lauf/store-react': 1.0.1_react@18.2.0
+      '@lauf/store': link:../../modules/store
+      '@lauf/store-follow': link:../../modules/store-follow
+      '@lauf/store-react': link:../../modules/store-react
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
     devDependencies:
@@ -355,13 +355,13 @@ importers:
   modules/lauf-runner-primitives:
     specifiers:
       '@lauf/lauf-runner': ^0.1.2
-      '@lauf/queue': ^1.0.1
-      '@lauf/store': ^1.0.1
+      '@lauf/queue': ^1.1.0-alpha.0
+      '@lauf/store': ^1.1.0-alpha.0
       typescript: ^4.8.4
     dependencies:
       '@lauf/lauf-runner': link:../lauf-runner
-      '@lauf/queue': 1.0.1
-      '@lauf/store': 1.0.1
+      '@lauf/queue': link:../queue
+      '@lauf/store': link:../store
     devDependencies:
       typescript: 4.8.4
 
@@ -399,24 +399,24 @@ importers:
 
   modules/store-follow:
     specifiers:
-      '@lauf/queue': ^1.0.1
-      '@lauf/store': ^1.0.1
+      '@lauf/queue': ^1.1.0-alpha.0
+      '@lauf/store': ^1.1.0-alpha.0
       typescript: ^4.8.4
     dependencies:
-      '@lauf/queue': 1.0.1
-      '@lauf/store': 1.0.1
+      '@lauf/queue': link:../queue
+      '@lauf/store': link:../store
     devDependencies:
       typescript: 4.8.4
 
   modules/store-react:
     specifiers:
-      '@lauf/store': ^1.0.1
+      '@lauf/store': ^1.1.0-alpha.0
       '@testing-library/dom': ^8.18.1
       '@testing-library/react': ^13.4.0
       '@testing-library/user-event': ^14.4.3
       typescript: ^4.8.4
     dependencies:
-      '@lauf/store': 1.0.1
+      '@lauf/store': link:../store
     devDependencies:
       '@testing-library/dom': 8.18.1
       '@testing-library/react': 13.4.0_react-dom@18.2.0+react@18.2.0
@@ -2770,32 +2770,6 @@ packages:
       '@jridgewell/resolve-uri': 3.1.0
       '@jridgewell/sourcemap-codec': 1.4.14
     dev: true
-
-  /@lauf/queue/1.0.1:
-    resolution: {integrity: sha512-8ckQeqT/hzm+n3Ch3Xf5ccRcWdbB1G/W1I73tdhzl2fW5EWZr08sTljZXlPcUQ/zyMPJ4S5ry9X1t8Yp2dkE9w==}
-    dev: false
-
-  /@lauf/store-follow/1.0.1:
-    resolution: {integrity: sha512-z0KE7uoktziRH5Ki7ZLlPk6pA86h5dh/6qIMN8LTkVrWccs7SVFNlrvIF/gxum8/Lv8bm3z3skZF7g1vLm+wZw==}
-    dependencies:
-      '@lauf/queue': 1.0.1
-      '@lauf/store': 1.0.1
-    dev: false
-
-  /@lauf/store-react/1.0.1_react@18.2.0:
-    resolution: {integrity: sha512-SDONHNTfTSyLX38JnASgoXWkvh4pUytmjDT04pPsQSs+kbQouvKTUzCzAojwG+CG2wFs+1sPp/DXQMdWH+/42w==}
-    peerDependencies:
-      react: ^17.0.2
-    dependencies:
-      '@lauf/store': 1.0.1
-      react: 18.2.0
-    dev: false
-
-  /@lauf/store/1.0.1:
-    resolution: {integrity: sha512-xLsiDgGJHbXUcG4me8OGkGbBDxcm5ppRVSlfiK8fHPbO/QWx7pbmmg22JyW+Wzsj3QAWdWtMsOO/UfAk3pZSMA==}
-    dependencies:
-      immer: 8.0.4
-    dev: false
 
   /@leichtgewicht/ip-codec/2.0.4:
     resolution: {integrity: sha512-Hcv+nVC0kZnQ3tD9GVu5xSMR4VVYOteQIr/hwFPVEvPdlXqgGEuRjiheChHgdM+JyqdgNcmzZOX/tnl0JOiI7A==}
@@ -7777,10 +7751,6 @@ packages:
     resolution: {integrity: sha512-CmxgYGiEPCLhfLnpPp1MoRmifwEIOgjcHXxOBjv7mY96c+eWScsOP9c112ZyLdWHi0FxHjI+4uVhKYp/gcdRmQ==}
     engines: {node: '>= 4'}
     dev: true
-
-  /immer/8.0.4:
-    resolution: {integrity: sha512-jMfL18P+/6P6epANRvRk6q8t+3gGhqsJ9EuJ25AXE+9bNTYtssvzeYbEd0mXRYWCmmXSIbnlpz6vd6iJlmGGGQ==}
-    dev: false
 
   /immer/9.0.15:
     resolution: {integrity: sha512-2eB/sswms9AEUSkOm4SbV5Y7Vmt/bKRwByd52jfLkW4OLYeaTP3EEiJ9agqU0O/tq6Dk62Zfj+TJSqfm1rLVGQ==}
@@ -12838,7 +12808,7 @@ packages:
       micromatch: 4.0.5
       semver: 7.3.7
       typescript: 4.8.4
-      webpack: 5.74.0_webpack-cli@4.10.0
+      webpack: 5.74.0
     dev: true
 
   /ts-node/10.9.1_typescript@4.8.4:
