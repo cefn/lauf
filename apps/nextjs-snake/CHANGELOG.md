@@ -1,5 +1,15 @@
 # next-snake
 
+## 0.1.7-alpha.0
+
+### Patch Changes
+
+- Updated dependencies
+  - @lauf/queue@1.1.0-alpha.0
+  - @lauf/store@1.1.0-alpha.0
+  - @lauf/store-follow@1.1.0-alpha.0
+  - @lauf/store-react@1.1.0-alpha.0
+
 ## 0.1.6
 
 ### Patch Changes
