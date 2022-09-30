@@ -11,10 +11,10 @@
     "check": "tsc --noEmit"
   },
   "dependencies": {
-    "@lauf/queue": "workspace:^1.0.1",
-    "@lauf/store": "workspace:^1.0.1",
-    "@lauf/store-follow": "workspace:^1.0.1",
-    "@lauf/store-react": "workspace:^1.0.1",
+    "@lauf/queue": "^1.0.1",
+    "@lauf/store": "^1.0.1",
+    "@lauf/store-follow": "^1.0.1",
+    "@lauf/store-react": "^1.0.1",
     "next": "^12.3.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

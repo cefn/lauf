@@ -14,7 +14,7 @@
     "prepublishOnly": "pnpm run test && pnpm run build"
   },
   "dependencies": {
-    "@lauf/store": "workspace:^1.0.1"
+    "@lauf/store": "^1.0.1"
   },
   "peerDependencies": {
     "react": "^18.2.0"

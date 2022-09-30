@@ -106,8 +106,8 @@ importers:
       '@babel/core': ^7.19.1
       '@babel/preset-env': ^7.19.1
       '@babel/preset-react': ^7.18.6
-      '@lauf/store': workspace:^1.0.1
-      '@lauf/store-react': workspace:^1.0.1
+      '@lauf/store': ^1.0.1
+      '@lauf/store-react': ^1.0.1
       '@playwright/test': ^1.26.0
       '@types/react': ^18.0.21
       '@types/react-dom': ^18.0.6
@@ -154,8 +154,8 @@ importers:
 
   apps/nextjs-mixer:
     specifiers:
-      '@lauf/store': workspace:^1.0.1
-      '@lauf/store-react': workspace:^1.0.1
+      '@lauf/store': ^1.0.1
+      '@lauf/store-react': ^1.0.1
       '@types/styled-components': ^5.1.26
       next: ^12.3.1
       react: 18.2.0
@@ -203,10 +203,10 @@ importers:
       '@babel/core': ^7.19.1
       '@babel/preset-env': ^7.19.1
       '@babel/preset-typescript': ^7.18.6
-      '@lauf/queue': workspace:^1.0.1
-      '@lauf/store': workspace:^1.0.1
-      '@lauf/store-follow': workspace:^1.0.1
-      '@lauf/store-react': workspace:^1.0.1
+      '@lauf/queue': ^1.0.1
+      '@lauf/store': ^1.0.1
+      '@lauf/store-follow': ^1.0.1
+      '@lauf/store-react': ^1.0.1
       '@testing-library/react': ^13.4.0
       '@types/jest': ^29.0.3
       '@types/react': ^18.0.21
@@ -254,9 +254,9 @@ importers:
       '@babel/core': ^7.19.1
       '@babel/preset-env': ^7.19.1
       '@babel/preset-react': ^7.18.6
-      '@lauf/store': workspace:^1.0.1
-      '@lauf/store-follow': workspace:^1.0.1
-      '@lauf/store-react': workspace:^1.0.1
+      '@lauf/store': ^1.0.1
+      '@lauf/store-follow': ^1.0.1
+      '@lauf/store-react': ^1.0.1
       '@types/react': ^18.0.21
       '@types/react-dom': ^18.0.6
       babel-loader: ^8.2.5
@@ -305,8 +305,8 @@ importers:
   modules/lauf-runner-primitives:
     specifiers:
       '@lauf/lauf-runner': workspace:^0.1.2
-      '@lauf/queue': workspace:^1.0.1
-      '@lauf/store': workspace:^1.0.1
+      '@lauf/queue': ^1.0.1
+      '@lauf/store': ^1.0.1
       typescript: ^4.8.3
     dependencies:
       '@lauf/lauf-runner': link:../lauf-runner
@@ -349,8 +349,8 @@ importers:
 
   modules/store-follow:
     specifiers:
-      '@lauf/queue': workspace:^1.0.1
-      '@lauf/store': workspace:^1.0.1
+      '@lauf/queue': ^1.0.1
+      '@lauf/store': ^1.0.1
       typescript: ^4.8.3
     dependencies:
       '@lauf/queue': link:../queue
@@ -360,7 +360,7 @@ importers:
 
   modules/store-react:
     specifiers:
-      '@lauf/store': workspace:^1.0.1
+      '@lauf/store': ^1.0.1
       '@testing-library/dom': ^8.18.1
       '@testing-library/react': ^13.4.0
       '@testing-library/user-event': ^14.4.3
@@ -369,7 +369,7 @@ importers:
       '@lauf/store': link:../store
     devDependencies:
       '@testing-library/dom': 8.18.1
-      '@testing-library/react': 13.4.0
+      '@testing-library/react': 13.4.0_react-dom@18.2.0+react@18.2.0
       '@testing-library/user-event': 14.4.3_@testing-library+dom@8.18.1
       typescript: 4.8.3
 
@@ -3208,18 +3208,6 @@ packages:
       react-error-boundary: 3.1.4_react@18.2.0
     dev: true
 
-  /@testing-library/react/13.4.0:
-    resolution: {integrity: sha512-sXOGON+WNTh3MLE9rve97ftaZukN3oNf2KjDy7YTx6hcTO2uuLHuCGynMDhFwGw/jYf4OJ2Qk0i4i79qMNNkyw==}
-    engines: {node: '>=12'}
-    peerDependencies:
-      react: ^18.0.0
-      react-dom: ^18.0.0
-    dependencies:
-      '@babel/runtime': 7.19.0
-      '@testing-library/dom': 8.18.1
-      '@types/react-dom': 18.0.6
-    dev: true
-
   /@testing-library/react/13.4.0_react-dom@18.2.0+react@18.2.0:
     resolution: {integrity: sha512-sXOGON+WNTh3MLE9rve97ftaZukN3oNf2KjDy7YTx6hcTO2uuLHuCGynMDhFwGw/jYf4OJ2Qk0i4i79qMNNkyw==}
     engines: {node: '>=12'}
@@ -4531,7 +4519,7 @@ packages:
       babel-plugin-syntax-jsx: 6.18.0
       lodash: 4.17.21
       picomatch: 2.3.1
-      styled-components: 5.3.5_react-dom@18.2.0+react@18.2.0
+      styled-components: 5.3.5_fa3acc110621e003f368ed3f60914608
     dev: false
 
   /babel-plugin-syntax-jsx/6.18.0:

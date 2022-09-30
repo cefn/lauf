@@ -66,8 +66,8 @@
     }
   },
   "dependencies": {
-    "@lauf/queue": "workspace:^1.0.1",
-    "@lauf/store": "workspace:^1.0.1"
+    "@lauf/queue": "^1.0.1",
+    "@lauf/store": "^1.0.1"
   },
   "main": "src/index.ts"
 }
