@@ -81,7 +81,7 @@ export const ColorMixer: FC<{ colorStore: Store<AppState> }> = ({
 };
 
 export function ColorApp() {
-  const colorStore = useStore(INITIAL_STATE);
+  const colorStore = useStore<AppState>(INITIAL_STATE);
   return process.browser ? (
     <ColorMixer {...{ colorStore }} />
   ) : (
