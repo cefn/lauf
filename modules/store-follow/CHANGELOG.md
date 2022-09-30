@@ -1,5 +1,17 @@
 # @lauf/store-follow
 
+## 1.1.0-alpha.0
+
+### Minor Changes
+
+- Align and test with Typescript 4.8, Jest 29, Next 12 etc.
+
+### Patch Changes
+
+- Updated dependencies
+  - @lauf/queue@1.1.0-alpha.0
+  - @lauf/store@1.1.0-alpha.0
+
 ## 1.0.1
 
 ### Patch Changes

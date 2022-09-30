@@ -16,5 +16,7 @@
     "@lauf/store-follow": "1.0.1",
     "@lauf/store-react": "1.0.1"
   },
-  "changesets": []
+  "changesets": [
+    "moody-flowers-poke"
+  ]
 }
