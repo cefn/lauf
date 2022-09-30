@@ -1,5 +1,18 @@
 # @lauf/store-react
 
+## 1.1.0
+
+### Minor Changes
+
+- ba8de9a: Align and test with Typescript 4.8, Jest 29, Next 12 etc.
+
+### Patch Changes
+
+- 5c7cd0a: Adopt esbuild for bundling.
+- Updated dependencies [5c7cd0a]
+- Updated dependencies [ba8de9a]
+  - @lauf/store@1.1.0
+
 ## 1.1.0-alpha.1
 
 ### Patch Changes

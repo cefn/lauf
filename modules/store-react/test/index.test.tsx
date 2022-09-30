@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import React, { useMemo } from "react";
+import React from "react";
 import { useRootState, useSelected, useStore } from "../src";
 import { render, waitFor, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";

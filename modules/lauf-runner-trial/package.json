@@ -68,8 +68,8 @@
     }
   },
   "dependencies": {
-    "@lauf/lauf-runner": "^0.1.2",
-    "@lauf/lauf-runner-trial": "^0.1.2"
+    "@lauf/lauf-runner": "workspace:^0.1.2",
+    "@lauf/lauf-runner-trial": "workspace:^0.1.2"
   },
   "main": "src/index.ts"
 }

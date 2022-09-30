@@ -1,5 +1,15 @@
 # @lauf/lock
 
+## 1.1.0
+
+### Minor Changes
+
+- ba8de9a: Align and test with Typescript 4.8, Jest 29, Next 12 etc.
+
+### Patch Changes
+
+- 5c7cd0a: Adopt esbuild for bundling.
+
 ## 1.1.0-alpha.1
 
 ### Patch Changes

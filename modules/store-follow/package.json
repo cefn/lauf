@@ -1,6 +1,6 @@
 {
   "name": "@lauf/store-follow",
-  "version": "1.1.0-alpha.1",
+  "version": "1.1.0",
   "license": "MIT",
   "scripts": {
     "test": "jest --passWithNoTests",
@@ -66,8 +66,8 @@
     }
   },
   "dependencies": {
-    "@lauf/queue": "^1.1.0-alpha.1",
-    "@lauf/store": "^1.1.0-alpha.1"
+    "@lauf/queue": "^1.1.0",
+    "@lauf/store": "^1.1.0"
   },
   "main": "src/index.ts"
 }
