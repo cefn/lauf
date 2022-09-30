@@ -1,7 +1,7 @@
 {
   "name": "@lauf/store",
   "description": "State Management for Javascript with Typescript support.",
-  "version": "1.1.0-alpha.0",
+  "version": "1.1.0-alpha.1",
   "files": [
     "README.md",
     "dist"
@@ -10,7 +10,7 @@
   "scripts": {
     "test": "jest",
     "check": "tsc --noEmit",
-    "build": "tsc --build ./tsconfig.build.json",
+    "build": "rimraf dist && node ./esbuild.js && tsc --declaration --emitDeclarationOnly --outDir dist --project ./tsconfig.build.json",
     "prepublishOnly": "pnpm run test && pnpm run build"
   },
   "dependencies": {

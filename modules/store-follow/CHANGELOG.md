@@ -1,5 +1,14 @@
 # @lauf/store-follow
 
+## 1.1.0-alpha.1
+
+### Patch Changes
+
+- Adopt esbuild for bundling.
+- Updated dependencies
+  - @lauf/queue@1.1.0-alpha.1
+  - @lauf/store@1.1.0-alpha.1
+
 ## 1.1.0-alpha.0
 
 ### Minor Changes
