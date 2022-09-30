@@ -304,7 +304,7 @@ importers:
 
   modules/lauf-runner-primitives:
     specifiers:
-      '@lauf/lauf-runner': workspace:^0.1.2
+      '@lauf/lauf-runner': ^0.1.2
       '@lauf/queue': ^1.1.0-alpha.0
       '@lauf/store': ^1.1.0-alpha.0
       typescript: ^4.8.3
@@ -317,8 +317,8 @@ importers:
 
   modules/lauf-runner-trial:
     specifiers:
-      '@lauf/lauf-runner': workspace:^0.1.2
-      '@lauf/lauf-runner-trial': workspace:^0.1.2
+      '@lauf/lauf-runner': ^0.1.2
+      '@lauf/lauf-runner-trial': ^0.1.2
       typescript: ^4.8.3
     dependencies:
       '@lauf/lauf-runner': link:../lauf-runner
