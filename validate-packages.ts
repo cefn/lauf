@@ -11,9 +11,9 @@ import fs from "fs";
 import glob from "glob";
 import { isDeepStrictEqual } from "util";
 import yargs from "yargs";
+import { hideBin } from "yargs/helpers";
 import minimatch from "minimatch";
-import { get as lodashGet } from "lodash-es";
-import { set as lodashSet } from "lodash-es";
+import { get as lodashGet, set as lodashSet } from "lodash-es";
 import chalk from "chalk";
 
 type ExpectedValueFactory = (options: {
@@ -124,7 +124,7 @@ const RULES: readonly PackageJsonRule[] = [
       if (name === "counter-js") {
         return undefined;
       }
-      return "^4.8.3";
+      return "^4.8.4";
     },
     status: "warning",
   },
@@ -191,7 +191,8 @@ const RULES: readonly PackageJsonRule[] = [
   },
   {
     path: "scripts.build",
-    expected: "tsc --build ./tsconfig.build.json",
+    expected:
+      "rimraf dist && node ./esbuild.js && tsc --declaration --emitDeclarationOnly --outDir dist --project ./tsconfig.build.json",
     packagePaths: "modules/**",
     status: "error",
   },
@@ -263,7 +264,9 @@ function matchesExpectation(actualValue: unknown, expectedValue: unknown) {
 }
 
 async function run() {
-  const { strategy, filterPackagePaths, filterPropertyPaths } = await yargs()
+  const { strategy, filterPackagePaths, filterPropertyPaths } = await yargs(
+    hideBin(process.argv)
+  )
     .option("strategy", {
       description: "Select alignment strategy",
       type: "string",
@@ -279,13 +282,14 @@ async function run() {
       type: "string",
     })
     .help()
-    .alias("help", "h").argv;
+    .alias("help", "h")
+    .parse();
 
   const packageJsonPaths = glob
     .sync("**/package.json", {
       ignore: "**/node_modules/**/package.json",
     })
-    .sort();
+    .sort((a, b) => a.localeCompare(b));
 
   let failed = false;
 
@@ -298,19 +302,19 @@ async function run() {
       }
     }
 
-    //skip workspace root
+    // skip workspace root
     if (packageJson.name === "lauf-monorepo") {
       console.log(chalk.green(`Skipping workspace root ${packageJson.name}`));
       continue;
     }
 
-    //traverse package json tree, checking and (optionally) fixing
-    type Violation = {
+    // traverse package json tree, checking and (optionally) fixing
+    interface Violation {
       actualValue: any;
       expectedValue: Expected;
       fixed: boolean;
       status: Status;
-    };
+    }
     const found: Record<Rule["path"], Violation> = {};
     let rewritePackageJson = false;
     for (const { path, expected, status, packagePaths } of RULES) {
@@ -333,31 +337,31 @@ async function run() {
 
       const actualValue = lodashGet(packageJson, path);
       if (!matchesExpectation(actualValue, expectedValue)) {
-        //record violation
+        // record violation
         let violationColor: typeof chalk.redBright = chalk.redBright;
         if (status === "error") {
-          //exit status
+          // exit status
           failed = true;
         } else if (status === "warning") {
           violationColor = chalk.yellow;
         } else {
-          throw `Unexpected status`;
+          throw new Error("Unexpected status");
         }
         const message = `${violationColor(
           status.toUpperCase()
         )} ${path} was '${chalk.red(actualValue)}' not '${chalk.green(
           JSON.stringify(expectedValue)
         )}'`;
-        //check strategy, possibly skip fix depending on rule status
-        const fixed = !(
-          (status === "error" && ["dryRun"].includes(strategy)) ||
-          (status === "warning" && ["dryRun", "fixErrors"].includes(strategy))
-        );
+        // check strategy, possibly skip fix depending on rule status
+        const fixed =
+          (status === "error" && ["fixErrors"].includes(strategy)) ||
+          (status === "warning" &&
+            ["fixErrors", "fixWarnings"].includes(strategy));
 
         found[path] = { actualValue, expectedValue, status, fixed };
 
         if (fixed) {
-          //proceed with fix
+          // proceed with fix
           console.log(`${message} FIXING`);
           lodashSet(packageJson, path, expectedValue);
           rewritePackageJson = true;
@@ -386,7 +390,7 @@ async function run() {
     // const packageDir = dirname(packageJsonPath);
     // const tsconfigBuildPath = `${packageDir}/tsconfig.build.json`;
     // const tsconfigBuild = JSON.parse(fs.readFileSync(packageJsonPath).toString());
-    //Implement this using a `skel` folder instead
+    // Implement this using a `skel` folder instead
 
     if (rewritePackageJson) {
       fs.writeFileSync(

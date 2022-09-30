@@ -1,11 +1,11 @@
 {
   "name": "@lauf/store-follow",
-  "version": "1.1.0-alpha.0",
+  "version": "1.1.0-alpha.1",
   "license": "MIT",
   "scripts": {
     "test": "jest --passWithNoTests",
     "check": "tsc --noEmit",
-    "build": "tsc --build ./tsconfig.build.json",
+    "build": "rimraf dist && node ./esbuild.js && tsc --declaration --emitDeclarationOnly --outDir dist --project ./tsconfig.build.json",
     "prepublishOnly": "pnpm run test && pnpm run build"
   },
   "devDependencies": {
@@ -66,8 +66,8 @@
     }
   },
   "dependencies": {
-    "@lauf/queue": "^1.1.0-alpha.0",
-    "@lauf/store": "^1.1.0-alpha.0"
+    "@lauf/queue": "^1.1.0-alpha.1",
+    "@lauf/store": "^1.1.0-alpha.1"
   },
   "main": "src/index.ts"
 }

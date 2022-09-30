@@ -1,5 +1,13 @@
 # @lauf/store-react
 
+## 1.1.0-alpha.1
+
+### Patch Changes
+
+- Adopt esbuild for bundling.
+- Updated dependencies
+  - @lauf/store@1.1.0-alpha.1
+
 ## 1.1.0-alpha.0
 
 ### Minor Changes

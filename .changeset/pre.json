@@ -17,6 +17,7 @@
     "@lauf/store-react": "1.0.1"
   },
   "changesets": [
+    "famous-pugs-prove",
     "moody-flowers-poke"
   ]
 }
