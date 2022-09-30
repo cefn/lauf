@@ -6,13 +6,10 @@ import { Game } from "../src/ui";
 export default function render() {
   const [appModel, setAppModel] = useState<Model>();
   useEffect(() => {
-    // only launch application client-side
-    if (process.browser) {
-      // create model and launch routines
-      const appModel = mainPlan();
-      // pass model to renderer
-      setAppModel(appModel);
-    }
+    // create model and launch routines
+    const appModel = mainPlan();
+    // pass model to renderer
+    setAppModel(appModel);
   }, []);
   return appModel ? <Game {...appModel} /> : <p>Loading...</p>;
 }

@@ -17,7 +17,7 @@
     "immer": "^9.0.15"
   },
   "devDependencies": {
-    "typescript": "^4.8.3"
+    "typescript": "^4.8.4"
   },
   "gitHead": "03bd2f443dd739f47240c303214f24d611aa4ddc",
   "publishConfig": {
