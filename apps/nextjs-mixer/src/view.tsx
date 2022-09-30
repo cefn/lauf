@@ -13,35 +13,32 @@ export const ColorMixer: FC<{ colorStore: Store<AppState> }> = ({
   const [red, green, blue] = useSelected(colorStore, (state) => state.color);
 
   useEffect(() => {
-    if (process.browser) {
-      const keyListener = ({ code }: KeyboardEvent) => {
-        switch (code) {
-          case "KeyR":
-            increaseColor(colorStore, RED);
-            break;
-          case "KeyG":
-            increaseColor(colorStore, GREEN);
-            break;
-          case "KeyB":
-            increaseColor(colorStore, BLUE);
-            break;
-          case "KeyE":
-            decreaseColor(colorStore, RED);
-            break;
-          case "KeyF":
-            decreaseColor(colorStore, GREEN);
-            break;
-          case "KeyV":
-            decreaseColor(colorStore, BLUE);
-            break;
-          default:
-            break;
-        }
-      };
-      document.addEventListener("keydown", keyListener);
-      return () => document.removeEventListener("keydown", keyListener);
-    }
-    return undefined;
+    const keyListener = ({ code }: KeyboardEvent) => {
+      switch (code) {
+        case "KeyR":
+          increaseColor(colorStore, RED);
+          break;
+        case "KeyG":
+          increaseColor(colorStore, GREEN);
+          break;
+        case "KeyB":
+          increaseColor(colorStore, BLUE);
+          break;
+        case "KeyE":
+          decreaseColor(colorStore, RED);
+          break;
+        case "KeyF":
+          decreaseColor(colorStore, GREEN);
+          break;
+        case "KeyV":
+          decreaseColor(colorStore, BLUE);
+          break;
+        default:
+          break;
+      }
+    };
+    document.addEventListener("keydown", keyListener);
+    return () => document.removeEventListener("keydown", keyListener);
   }, [colorStore]);
 
   return (
@@ -82,9 +79,5 @@ export const ColorMixer: FC<{ colorStore: Store<AppState> }> = ({
 
 export function ColorApp() {
   const colorStore = useStore<AppState>(INITIAL_STATE);
-  return process.browser ? (
-    <ColorMixer {...{ colorStore }} />
-  ) : (
-    <p>Loading...</p>
-  );
+  return <ColorMixer {...{ colorStore }} />;
 }
