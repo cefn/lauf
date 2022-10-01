@@ -70,8 +70,14 @@ describe("Parent Stores and Child Store Partitions", () => {
     const { deferred, deferredResolve } = createDeferredMock<ChildState>();
     const { parentStore, childStore } = createPartitionedStores();
     childStore.watch(deferredResolve);
-    parentStore.edit((draft) => {
-      draft.partition.roses = "white";
+    // set a deep value
+    const parentState = parentStore.read();
+    parentStore.write({
+      ...parentState,
+      partition: {
+        ...parentState["partition"],
+        roses: "white",
+      },
     });
     expect(await deferred).toBe(childStore.read());
   });
@@ -80,8 +86,14 @@ describe("Parent Stores and Child Store Partitions", () => {
     const watcher = jest.fn();
     const { parentStore, childStore } = createPartitionedStores();
     childStore.watch(watcher);
-    parentStore.edit((draft) => {
-      draft.other.violets = "purple";
+    // set a deep value
+    const parentState = parentStore.read();
+    parentStore.write({
+      ...parentState,
+      other: {
+        ...parentState["other"],
+        violets: "purple",
+      },
     });
     await new Promise((resolve) => setTimeout(resolve, 10));
     expect(watcher).toHaveBeenCalledTimes(0);
@@ -91,7 +103,12 @@ describe("Parent Stores and Child Store Partitions", () => {
     const { deferred, deferredResolve } = createDeferredMock<ParentState>();
     const { parentStore, childStore } = createPartitionedStores();
     parentStore.watch(deferredResolve);
-    childStore.edit((draft) => (draft.roses = "white"));
+    // set a deep value
+    const childState = childStore.read();
+    childStore.write({
+      ...childState,
+      roses: "white",
+    });
     expect(await deferred).toBe(parentStore.read());
   });
 

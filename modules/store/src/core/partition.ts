@@ -46,10 +46,12 @@ class DefaultStorePartition<
   };
 
   write = (state: Immutable<ParentState[Key]>) => {
-    this.store.edit((draft) => {
-      (draft as any)[this.key] = state as any;
+    const parentState = this.store.read();
+    this.store.write({
+      ...parentState,
+      [this.key]: state,
     });
-    return this.read();
+    return state;
   };
 
   edit = (editor: Editor<ParentState[Key]>) => {
