@@ -145,7 +145,7 @@ const RULES: readonly PackageJsonRule[] = [
         return "npm-run-all test:unit test:integration";
       }
       if (name === "counter-js") {
-        return "react-scripts test";
+        return undefined;
       }
       if (
         [

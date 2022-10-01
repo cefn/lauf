@@ -16,6 +16,7 @@ import {
   DIRECTION_VECTORS,
   DIRECTION_OPPOSITES,
   STEP_MS,
+  setMotion,
 } from "./state";
 
 export function mainPlan(): Model {
@@ -103,12 +104,12 @@ async function fruitRoutine(appModel: Model) {
 async function inputDirectionRoutine(appModel: Model): Promise<never> {
   const { gameStore, inputQueue } = appModel;
   const { receive } = inputQueue;
-  const { edit, select } = gameStore;
   while (true) {
     //block for next instruction
     const [inputDirection, active] = await receive(); // newly instructed direction
-    const motionDirection = select(selectMotion); // direction currently moving (or undefined if still)
-    const { direction: headDirection } = select(selectHead); // direction the head is pointing
+    const gameState = gameStore.read();
+    const motionDirection = selectMotion(gameState); // direction currently moving (or undefined if still)
+    const { direction: headDirection } = selectHead(gameState); // direction the head is pointing
     if (active) {
       if (inputDirection === motionDirection) {
         continue; //ignore - no change needed - probably key repeat
@@ -117,38 +118,39 @@ async function inputDirectionRoutine(appModel: Model): Promise<never> {
         continue; //incompatible - can't reverse course
       }
       //set snake in motion
-      edit((state) => {
-        state.motion = inputDirection;
-      });
+      setMotion(gameStore, inputDirection);
     } else {
       //direction was released
       if (inputDirection !== motionDirection) {
         continue; //ignore release of other directions
       }
       //stop snake
-      edit((state) => {
-        state.motion = null;
-      });
+      setMotion(gameStore, null);
     }
   }
 }
 
-function eatFruit({ gameStore: { edit } }: Model) {
-  edit((state, castDraft) => {
-    state.score += 1;
-    state.length += 1;
-    // place new fruit outside snake
-    let nextPos = null;
-    while (nextPos === null) {
-      nextPos = randomPoint();
-      for (const segment of state.segments) {
-        if (isVectorEqual(nextPos, segment.pos)) {
-          nextPos = null; // landed on the snake - try again
-          break;
-        }
+function eatFruit({ gameStore }: Model) {
+  const state = gameStore.read();
+  const { score, length } = state;
+
+  // place new fruit outside snake
+  let nextPos = null;
+  while (nextPos === null) {
+    nextPos = randomPoint();
+    for (const segment of state.segments) {
+      if (isVectorEqual(nextPos, segment.pos)) {
+        nextPos = null; // landed on the snake - try again
+        break;
       }
     }
-    state.fruitPos = castDraft(nextPos);
+  }
+
+  gameStore.write({
+    ...state,
+    score: score + 1,
+    length: length + 1,
+    fruitPos: nextPos,
   });
 }
 
@@ -180,17 +182,18 @@ function stepSnake(appModel: Model, direction: Direction) {
   }
 }
 
-function addHead({ gameStore: { edit } }: Model, head: Segment) {
-  edit((draftState, castDraft) => {
-    const { segments } = draftState;
-    //add head
-    let newSegments = castDraft([head, ...segments]);
-    // remove tail (unless snake is growing)
-    if (draftState.length < newSegments.length) {
-      newSegments = newSegments.slice(0, draftState.length);
-    }
-    // castDraft workaround (allows mutable widening of readonly Vector)
-    draftState.segments = newSegments;
+function addHead({ gameStore }: Model, head: Segment) {
+  const state = gameStore.read();
+  let { segments } = state;
+  //add head
+  segments = [head, ...segments];
+  // remove tail (unless snake is growing)
+  if (state.length < segments.length) {
+    segments = segments.slice(0, state.length);
+  }
+  gameStore.write({
+    ...state,
+    segments,
   });
 }
 

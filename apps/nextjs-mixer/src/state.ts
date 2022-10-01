@@ -2,10 +2,12 @@ import { Immutable } from "@lauf/store";
 
 export type Rgb = [number, number, number];
 
-export type Hue = Immutable<[0 | 1, 0 | 1, 0 | 1]>;
-export const RED: Hue = [1, 0, 0] as const;
-export const GREEN: Hue = [0, 1, 0] as const;
-export const BLUE: Hue = [0, 0, 1] as const;
+export const RED = [1, 0, 0] as const;
+export const GREEN = [0, 1, 0] as const;
+export const BLUE = [0, 0, 1] as const;
+
+const HUES = [RED, GREEN, BLUE] as const;
+export type Hue = typeof HUES[number];
 
 export interface AppState {
   color: Rgb;

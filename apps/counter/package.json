@@ -15,6 +15,8 @@
   },
   "devDependencies": {
     "@babel/core": "^7.19.3",
+    "@babel/plugin-syntax-flow": "^7.18.6",
+    "@babel/plugin-transform-react-jsx": "^7.19.0",
     "@babel/preset-env": "^7.19.3",
     "@babel/preset-react": "^7.18.6",
     "@playwright/test": "^1.26.1",
@@ -93,8 +95,8 @@
   "author": "Cefn Hoile <github.com@cefn.com> (https://cefn.com)",
   "repository": "github:cefn/lauf",
   "dependencies": {
-    "@lauf/store": "^1.1.0",
-    "@lauf/store-react": "^1.1.0",
+    "@lauf/store": "^1.1.1",
+    "@lauf/store-react": "^1.1.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   }

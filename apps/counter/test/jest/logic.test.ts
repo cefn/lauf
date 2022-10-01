@@ -4,8 +4,7 @@ import { INITIAL_STATE, increment, decrement } from "../../src/logic";
 describe("Counter App Business Logic", () => {
   test("Counter is initially 0", () => {
     const store = createStore(INITIAL_STATE);
-    let counter: number;
-    ({ counter } = store.read());
+    const { counter } = store.read();
     expect(counter).toBe(0);
   });
 
@@ -16,7 +15,7 @@ describe("Counter App Business Logic", () => {
     ({ counter } = store.read());
     expect(counter).toBe(0);
 
-    store.edit(increment);
+    increment(store);
 
     ({ counter } = store.read());
     expect(counter).toBe(1);
@@ -29,7 +28,7 @@ describe("Counter App Business Logic", () => {
     ({ counter } = store.read());
     expect(counter).toBe(0);
 
-    store.edit(decrement);
+    decrement(store);
 
     ({ counter } = store.read());
     expect(counter).toBe(-1);
@@ -43,7 +42,7 @@ describe("Counter App Business Logic", () => {
     expect(counter).toBe(0);
     const repeats = 100;
     for (let step = 0; step < repeats; step++) {
-      store.edit(increment);
+      increment(store);
     }
 
     ({ counter } = store.read());
