@@ -1,5 +1,14 @@
 # @lauf/store-follow
 
+## 1.1.1
+
+### Patch Changes
+
+- d21ec94: Fixes a bundling issue which caused deps to be included.
+- Updated dependencies [d21ec94]
+  - @lauf/queue@1.1.1
+  - @lauf/store@1.1.1
+
 ## 1.1.0
 
 ### Minor Changes
