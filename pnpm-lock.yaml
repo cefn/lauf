@@ -110,8 +110,8 @@ importers:
       '@babel/plugin-transform-react-jsx': ^7.19.0
       '@babel/preset-env': ^7.19.3
       '@babel/preset-react': ^7.18.6
-      '@lauf/store': workspace:^1.1.0
-      '@lauf/store-react': workspace:^1.1.0
+      '@lauf/store': ^1.1.0
+      '@lauf/store-react': ^1.1.0
       '@playwright/test': ^1.26.1
       '@types/react': ^18.0.21
       '@types/react-dom': ^18.0.6
@@ -163,8 +163,8 @@ importers:
       '@babel/core': ^7.19.3
       '@babel/preset-env': ^7.19.3
       '@babel/preset-typescript': ^7.18.6
-      '@lauf/store': workspace:^1.1.0
-      '@lauf/store-react': workspace:^1.1.0
+      '@lauf/store': ^1.1.0
+      '@lauf/store-react': ^1.1.0
       '@testing-library/react': ^13.4.0
       '@types/jest': ^29.1.1
       '@types/react': ^18.0.21
@@ -251,10 +251,10 @@ importers:
       '@babel/core': ^7.19.3
       '@babel/preset-env': ^7.19.3
       '@babel/preset-typescript': ^7.18.6
-      '@lauf/queue': workspace:^1.1.0
-      '@lauf/store': workspace:^1.1.0
-      '@lauf/store-follow': workspace:^1.1.0
-      '@lauf/store-react': workspace:^1.1.0
+      '@lauf/queue': ^1.1.0
+      '@lauf/store': ^1.1.0
+      '@lauf/store-follow': ^1.1.0
+      '@lauf/store-react': ^1.1.0
       '@testing-library/react': ^13.4.0
       '@types/jest': ^29.1.1
       '@types/react': ^18.0.21
@@ -302,9 +302,9 @@ importers:
       '@babel/plugin-transform-react-jsx': ^7.19.0
       '@babel/preset-env': ^7.19.3
       '@babel/preset-react': ^7.18.6
-      '@lauf/store': workspace:^1.1.0
-      '@lauf/store-follow': workspace:^1.1.0
-      '@lauf/store-react': workspace:^1.1.0
+      '@lauf/store': ^1.1.0
+      '@lauf/store-follow': ^1.1.0
+      '@lauf/store-react': ^1.1.0
       '@types/react': ^18.0.21
       '@types/react-dom': ^18.0.6
       babel-loader: ^8.2.5
@@ -355,8 +355,8 @@ importers:
   modules/lauf-runner-primitives:
     specifiers:
       '@lauf/lauf-runner': workspace:^0.1.2
-      '@lauf/queue': workspace:^1.1.0
-      '@lauf/store': workspace:^1.1.0
+      '@lauf/queue': ^1.1.0
+      '@lauf/store': ^1.1.0
       typescript: ^4.8.4
     dependencies:
       '@lauf/lauf-runner': link:../lauf-runner
@@ -399,8 +399,8 @@ importers:
 
   modules/store-follow:
     specifiers:
-      '@lauf/queue': workspace:^1.1.0
-      '@lauf/store': workspace:^1.1.0
+      '@lauf/queue': ^1.1.0
+      '@lauf/store': ^1.1.0
       typescript: ^4.8.4
     dependencies:
       '@lauf/queue': link:../queue
@@ -410,7 +410,7 @@ importers:
 
   modules/store-react:
     specifiers:
-      '@lauf/store': workspace:^1.1.0
+      '@lauf/store': ^1.1.0
       '@testing-library/dom': ^8.18.1
       '@testing-library/react': ^13.4.0
       '@testing-library/user-event': ^14.4.3
@@ -8002,7 +8002,7 @@ packages:
       pretty-format: 27.5.1
       slash: 3.0.0
       strip-json-comments: 3.1.1
-      ts-node: 10.9.1_typescript@4.8.4
+      ts-node: 10.9.1_304e5084908b97f2dd176e42a0d00db9
     transitivePeerDependencies:
       - bufferutil
       - canvas
@@ -10264,7 +10264,7 @@ packages:
     dependencies:
       lilconfig: 2.0.6
       postcss: 8.4.17
-      ts-node: 10.9.1_typescript@4.8.4
+      ts-node: 10.9.1_304e5084908b97f2dd176e42a0d00db9
       yaml: 1.10.2
     dev: true
 
@@ -12300,7 +12300,7 @@ packages:
       schema-utils: 3.1.1
       serialize-javascript: 6.0.0
       terser: 5.15.0
-      webpack: 5.74.0_esbuild@0.15.10
+      webpack: 5.74.0_bd7c4a5dbfaf2d076ca6d4fb8d7ff6e8
     dev: true
 
   /terser/5.15.0:
@@ -12478,36 +12478,6 @@ packages:
       '@tsconfig/node14': 1.0.3
       '@tsconfig/node16': 1.0.3
       '@types/node': 18.7.23
-      acorn: 8.8.0
-      acorn-walk: 8.2.0
-      arg: 4.1.3
-      create-require: 1.1.1
-      diff: 4.0.2
-      make-error: 1.3.6
-      typescript: 4.8.4
-      v8-compile-cache-lib: 3.0.1
-      yn: 3.1.1
-    dev: true
-
-  /ts-node/10.9.1_typescript@4.8.4:
-    resolution: {integrity: sha512-NtVysVPkxxrwFGUUxGYhfux8k78pQB3JqYBXlLRZgdGUqTO5wU/UyHop5p70iEbGhB7q5KmiZiU0Y3KlJrScEw==}
-    hasBin: true
-    peerDependencies:
-      '@swc/core': '>=1.2.50'
-      '@swc/wasm': '>=1.2.50'
-      '@types/node': '*'
-      typescript: '>=2.7'
-    peerDependenciesMeta:
-      '@swc/core':
-        optional: true
-      '@swc/wasm':
-        optional: true
-    dependencies:
-      '@cspotcode/source-map-support': 0.8.1
-      '@tsconfig/node10': 1.0.9
-      '@tsconfig/node12': 1.0.11
-      '@tsconfig/node14': 1.0.3
-      '@tsconfig/node16': 1.0.3
       acorn: 8.8.0
       acorn-walk: 8.2.0
       arg: 4.1.3

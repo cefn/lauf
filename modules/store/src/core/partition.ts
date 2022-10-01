@@ -1,4 +1,3 @@
-import { castDraft, Draft } from "immer";
 import {
   Editor,
   Immutable,
