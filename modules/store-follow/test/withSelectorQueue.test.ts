@@ -1,4 +1,4 @@
-import { createStore, Immutable } from "@lauf/store";
+import { createStore, Immutable, Store } from "@lauf/store";
 import { withSelectorQueue } from "@lauf/store-follow";
 
 import { manyTicks } from "./util";
@@ -17,6 +17,14 @@ const INITIAL_STATE: Immutable<AppState> = {
   near: { name: "London", distance: 100 },
   far: { name: "Sydney", distance: 10000 },
 };
+
+function setNear(store: Store<AppState>, near: Location) {
+  const state = store.read();
+  store.write({
+    ...state,
+    near,
+  });
+}
 
 const timbuktu = {
   name: "Timbuktu",
@@ -52,8 +60,14 @@ describe("withSelectorQueue behaviour", () => {
         }
       }
     );
-    store.edit((draft) => (draft.near = birmingham));
-    store.edit((draft) => (draft.near = manchester));
+    store.write({
+      ...store.read(),
+      near: birmingham,
+    });
+    store.write({
+      ...store.read(),
+      near: manchester,
+    });
 
     await manyTicks();
     expect(notified.length).toBe(3);
@@ -78,7 +92,12 @@ describe("withSelectorQueue behaviour", () => {
         }
       }
     );
-    store.edit((draft) => (draft.near = INITIAL_STATE.near));
+
+    const { near } = INITIAL_STATE;
+    store.write({
+      ...store.read(),
+      near,
+    });
 
     await manyTicks();
     expect(notified.length).toBe(1);
@@ -105,8 +124,14 @@ describe("withSelectorQueue behaviour", () => {
       }
     );
 
-    store.edit((draft) => (draft.near = birmingham));
-    store.edit((draft) => (draft.near = manchester));
+    store.write({
+      ...store.read(),
+      near: birmingham,
+    });
+    store.write({
+      ...store.read(),
+      near: manchester,
+    });
 
     await manyTicks();
     expect(notified.length).toBe(2);

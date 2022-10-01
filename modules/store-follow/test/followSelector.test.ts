@@ -1,4 +1,4 @@
-import { createStore, Immutable } from "@lauf/store";
+import { createStore, Immutable, Store } from "@lauf/store";
 import { followSelector } from "@lauf/store-follow";
 
 import { manyTicks } from "./util";
@@ -48,8 +48,14 @@ describe("followSelector behaviour", () => {
       }
     );
 
-    store.edit((draft) => (draft.far = timbuktu));
-    store.edit((draft) => (draft.far = beijing));
+    store.write({
+      ...store.read(),
+      far: timbuktu,
+    });
+    store.write({
+      ...store.read(),
+      far: beijing,
+    });
 
     await manyTicks();
 
@@ -71,8 +77,14 @@ describe("followSelector behaviour", () => {
       }
     );
 
-    store.edit((draft) => (draft.near = manchester));
-    store.edit((draft) => (draft.near = birmingham));
+    store.write({
+      ...store.read(),
+      near: manchester,
+    });
+    store.write({
+      ...store.read(),
+      near: birmingham,
+    });
 
     await manyTicks();
 
@@ -93,8 +105,14 @@ describe("followSelector behaviour", () => {
       }
     );
 
-    store.edit((draft) => (draft.far = timbuktu));
-    store.edit((draft) => (draft.far = beijing));
+    store.write({
+      ...store.read(),
+      far: timbuktu,
+    });
+    store.write({
+      ...store.read(),
+      far: beijing,
+    });
 
     const ending = await promiseEnding;
 
@@ -112,8 +130,14 @@ describe("followSelector behaviour", () => {
       }
     );
 
-    store.edit((draft) => (draft.far = timbuktu));
-    store.edit((draft) => (draft.far = beijing));
+    store.write({
+      ...store.read(),
+      far: timbuktu,
+    });
+    store.write({
+      ...store.read(),
+      far: beijing,
+    });
 
     await manyTicks();
 
@@ -138,8 +162,14 @@ describe("followSelector behaviour", () => {
       }
     );
 
-    store.edit((draft) => (draft.far = timbuktu));
-    store.edit((draft) => (draft.far = beijing));
+    store.write({
+      ...store.read(),
+      far: timbuktu,
+    });
+    store.write({
+      ...store.read(),
+      far: beijing,
+    });
 
     await manyTicks();
 

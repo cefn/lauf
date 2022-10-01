@@ -75,7 +75,10 @@ describe("store-react :", () => {
       expect(
         await waitFor(() => screen.getByText(/This is planet earth/))
       ).toBeDefined();
-      store.edit((draft) => (draft.planet = "mars"));
+      store.write({
+        ...store.read(),
+        planet: "mars",
+      });
       expect(
         await waitFor(() => screen.getByText(/This is planet mars/))
       ).toBeDefined();
@@ -123,12 +126,15 @@ describe("store-react :", () => {
           return state.coord;
         };
 
-        const ComponentWithInlineEdit = (props: {
+        const ComponentWithInlineWrite = (props: {
           store: Store<TestState>;
         }) => {
           const coord = useSelected(props.store, selectCoord);
-          // edit the value when first rendered
-          store.edit((draft) => (draft.coord = [3, 4]));
+          // write the value when first rendered
+          store.write({
+            ...store.read(),
+            coord: [3, 4],
+          });
           return <div data-testid="component">{JSON.stringify(coord)}</div>;
         };
 
@@ -136,9 +142,9 @@ describe("store-react :", () => {
           coord: [0, 0],
         } as const);
 
-        // render caches original value then edits it
-        // render schedules a useEffect which will later detect edits
-        render(<ComponentWithInlineEdit store={store} />);
+        // render caches original value then writes it
+        // render schedules a useEffect which will later detect the write
+        render(<ComponentWithInlineWrite store={store} />);
         expect((await screen.findByTestId("component")).textContent).toBe(
           "[3,4]"
         );
@@ -211,7 +217,7 @@ describe("store-react :", () => {
       });
     });
 
-    test("Render count as expected before and after store edits", async () => {
+    test("Render count as expected before and after store writes", async () => {
       const rootRenderSpy = jest.fn();
       const branchRenderSpy = jest.fn();
 
@@ -231,8 +237,9 @@ describe("store-react :", () => {
             <p>This is planet {planet}</p>
             <button
               onClick={() =>
-                store.edit((draft) => {
-                  draft.planet = "mars";
+                store.write({
+                  ...store.read(),
+                  planet: "mars",
                 })
               }
             >
@@ -240,8 +247,9 @@ describe("store-react :", () => {
             </button>
             <button
               onClick={() =>
-                store.edit((draft) => {
-                  draft.haveAmulet = true;
+                store.write({
+                  ...store.read(),
+                  haveAmulet: true,
                 })
               }
             >
@@ -257,7 +265,7 @@ describe("store-react :", () => {
       expect(rootRenderSpy).toHaveBeenCalledTimes(1); // root rendered
       expect(branchRenderSpy).toHaveBeenCalledTimes(1); // branch rendered
 
-      // edit some state rendered in Branch
+      // write some state rendered in Branch
       rootRenderSpy.mockClear();
       branchRenderSpy.mockClear();
       userEvent.click(screen.getByText("Set Mars"));
@@ -266,7 +274,7 @@ describe("store-react :", () => {
       expect(rootRenderSpy).toHaveBeenCalledTimes(0); // root not re-rendered
       expect(branchRenderSpy).toHaveBeenCalledTimes(1); // branch is re-rendered
 
-      // edit some state not rendered Anywhere
+      // write some state not rendered Anywhere
       rootRenderSpy.mockClear();
       branchRenderSpy.mockClear();
       userEvent.click(screen.getByText("Secure Amulet"));
