@@ -148,12 +148,7 @@ const RULES: readonly PackageJsonRule[] = [
         return undefined;
       }
       if (
-        [
-          "@lauf/store-follow",
-          "nextjs-mixer",
-          "nextjs-mornington",
-          "noredux-async",
-        ].includes(name)
+        ["@lauf/store-follow", "nextjs-mixer", "noredux-async"].includes(name)
       ) {
         return "jest --passWithNoTests";
       }
