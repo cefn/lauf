@@ -8,10 +8,11 @@ export function clamp(value: number, min: number, max: number) {
 }
 
 function changeColor(colorStore: Store<AppState>, rgb: Hue, amount: number) {
-  colorStore.edit((draft) => {
-    draft.color = draft.color.map((brightness, index) =>
+  const { color } = colorStore.read();
+  colorStore.write({
+    color: color.map((brightness, index) =>
       clamp(brightness + (rgb[index] || 0) * amount, 0, 255)
-    ) as Rgb;
+    ) as Rgb,
   });
 }
 

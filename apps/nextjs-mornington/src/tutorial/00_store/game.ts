@@ -27,12 +27,16 @@ export function createGame(): Game {
     moves: [],
   });
 
-  const addMove = (station: Station) =>
-    store.edit((state) => {
-      const { players, turn } = state;
-      const player = players[turn] as Player;
-      state.moves = [...state.moves, { player, station }];
+  const addMove = (station: Station) => {
+    const state = store.read();
+    let { turn, players, moves } = state;
+    const player = players[turn] as Player;
+    moves = [...moves, { player, station }];
+    store.write({
+      ...state,
+      moves,
     });
+  };
 
   return {
     store,

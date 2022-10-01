@@ -51,6 +51,14 @@ export const selectHead: Selector<Game, Segment> = ({ segments }) =>
 export const selectFruitPos: Selector<Game, Vector> = ({ fruitPos }) =>
   fruitPos;
 
+export function setMotion(store: Store<Game>, motion: Motion) {
+  const state = store.read();
+  store.write({
+    ...state,
+    motion,
+  });
+}
+
 export type SegmentPosition = {
   segments: Segment[];
   index: number;

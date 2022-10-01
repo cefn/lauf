@@ -25,9 +25,8 @@
   "devDependencies": {
     "@babel/core": "^7.19.3",
     "@babel/preset-typescript": "^7.18.6",
-    "@changesets/cli": "^2.24.4",
+    "@changesets/cli": "^2.25.0",
     "@testing-library/react": "^13.4.0",
-    "@testing-library/react-hooks": "^8.0.1",
     "@types/glob": "^8.0.0",
     "@types/jest": "^29.1.1",
     "@types/lodash-es": "^4.17.6",
@@ -42,7 +41,6 @@
     "eslint": "^8.24.0",
     "eslint-config-airbnb-typescript": "^17.0.0",
     "eslint-config-prettier": "^8.5.0",
-    "eslint-config-standard-with-typescript": "^23.0.0",
     "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-jest": "^27.0.4",
     "eslint-plugin-jsx-a11y": "^6.6.1",
@@ -62,17 +60,16 @@
     "reload": "^3.2.0",
     "rimraf": "^3.0.2",
     "ts-jest": "^29.0.3",
-    "ts-loader": "^9.4.1",
     "ts-node": "^10.9.1",
     "typedoc": "^0.23.15",
-    "typescript": "^4.8.4",
-    "webpack": "^5.74.0"
+    "typescript": "^4.8.4"
   },
   "dependencies": {
+    "@types/node": "^18.7.23",
     "lodash-es": "^4.17.21",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.4.1",
-    "yargs": "^17.5.1"
+    "yargs": "^17.6.0"
   }
 }

@@ -4,4 +4,4 @@ packages:
   - "modules/**"
   # exclude
   - "!modules/draft/**"
-  - "!apps/counter-js/**"
+  # - "!apps/counter-js/**"

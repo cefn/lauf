@@ -8,40 +8,79 @@ async function fetchSubreddit(name: SubredditName): Promise<Post[]> {
   return json.data.children.map((child: any) => child.data);
 }
 
-export async function refreshFocusedSubreddit({ read, edit }: Store<AppState>) {
-  const { focus } = read();
+function setCacheLoading(store: Store<AppState>) {
+  const state = store.read();
 
-  // lazy create cache
-  // assert fetching status
-  edit(({ caches }) => {
-    caches[focus] = {
-      ...(caches[focus] || {
-        posts: [],
-        lastUpdated: null
-      }),
-      isFetching: true,
-      failedFetching: false
-    };
+  const { focus, caches } = state;
+
+  const focusedCache = {
+    ...(caches[focus] || {
+      posts: [],
+      lastUpdated: null,
+    }),
+    isFetching: true,
+    failedFetching: false,
+  };
+
+  store.write({
+    ...state,
+    caches: {
+      ...caches,
+      [focus]: focusedCache,
+    },
   });
+}
+
+function setCacheLoaded(store: Store<AppState>, posts: Post[]) {
+  const state = store.read();
+  const { focus, caches } = state;
+  store.write({
+    ...state,
+    caches: {
+      ...caches,
+      [focus]: {
+        posts,
+        lastUpdated: new Date().getTime(),
+        isFetching: false,
+        failedFetching: false,
+      },
+    },
+  });
+}
+
+function setCacheFailed(store: Store<AppState>) {
+  const state = store.read();
+  const { focus, caches } = state;
+  const focusCache = caches[focus];
+
+  store.write({
+    ...state,
+    caches: {
+      ...caches,
+      [focus]: {
+        ...focusCache,
+        isFetching: false,
+        failedFetching: true,
+      },
+    },
+  });
+}
+
+export async function refreshFocusedSubreddit(store: Store<AppState>) {
+  // lazy create cache and
+  // assert fetching status
+  setCacheLoading(store);
+
+  const { focus } = store.read();
 
   try {
     // try to retrieve
     const posts = await fetchSubreddit(focus);
+    setCacheLoaded(store, posts);
     // populate cache
-    edit(({ caches }) => {
-      caches[focus] = {
-        posts,
-        lastUpdated: new Date().getTime(),
-        isFetching: false,
-        failedFetching: false
-      };
-    });
   } catch (error) {
     // assert failure status
-    edit(({ caches }) => {
-      caches[focus].isFetching = false;
-      caches[focus].failedFetching = true;
-    });
+    setCacheFailed(store);
   }
 }
 
@@ -62,8 +101,9 @@ export async function trackFocus(store: Store<AppState>) {
   );
 }
 
-export function setFocus({ edit }: Store<AppState>, focus: SubredditName) {
-  edit((draft) => {
-    draft.focus = focus;
+export function setFocus(store: Store<AppState>, focus: SubredditName) {
+  store.write({
+    ...store.read(),
+    focus,
   });
 }
