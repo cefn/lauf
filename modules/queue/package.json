@@ -15,7 +15,6 @@
     "README.md",
     "dist"
   ],
-  "gitHead": "03bd2f443dd739f47240c303214f24d611aa4ddc",
   "publishConfig": {
     "access": "public",
     "main": "dist/index.js",

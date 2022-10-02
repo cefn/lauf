@@ -5,8 +5,8 @@ import {
   RootState,
   Watcher,
 } from "@lauf/store";
-import { createDeferredMock } from "../util";
-import { createStoreSuite, StoreFactory } from "./storeSuite";
+import { createStoreSuite, StoreFactory } from "../storeSuite";
+import { createDeferred } from "../util";
 
 /** TEST PARTITIONS AS A GENERAL STORE */
 
@@ -67,7 +67,7 @@ describe("Parent Stores and Child Store Partitions", () => {
     };
   }
   test("Child watchers notified of parent store assignments inside partition", async () => {
-    const { deferred, deferredResolve } = createDeferredMock<ChildState>();
+    const { deferred, deferredResolve } = createDeferred<ChildState>();
     const { parentStore, childStore } = createPartitionedStores();
     childStore.watch(deferredResolve);
     // set a deep value
@@ -100,7 +100,7 @@ describe("Parent Stores and Child Store Partitions", () => {
   });
 
   test("Parent watchers notified of child store assignments inside partition", async () => {
-    const { deferred, deferredResolve } = createDeferredMock<ParentState>();
+    const { deferred, deferredResolve } = createDeferred<ParentState>();
     const { parentStore, childStore } = createPartitionedStores();
     parentStore.watch(deferredResolve);
     // set a deep value
@@ -113,17 +113,15 @@ describe("Parent Stores and Child Store Partitions", () => {
   });
 
   test("Parent watchers notified if child store overwrites partition", async () => {
-    const { deferred, deferredResolve } = createDeferredMock<ParentState>();
+    const { deferred, deferredResolve } = createDeferred<ParentState>();
     const { parentStore, childStore } = createPartitionedStores();
     parentStore.watch(deferredResolve);
     childStore.write({ roses: "white" });
     expect(await deferred).toBe(parentStore.read());
   });
 
-  test("Child select and Parent select results correspond", () => {
+  test("Child path and Parent path results correspond", () => {
     const { parentStore, childStore } = createPartitionedStores();
-    expect(childStore.select((state) => state.roses)).toBe(
-      parentStore.select((state) => state.partition.roses)
-    );
+    expect(childStore.read().roses).toBe(parentStore.read().partition.roses);
   });
 });
