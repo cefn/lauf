@@ -106,8 +106,8 @@ importers:
       '@babel/plugin-transform-react-jsx': ^7.19.0
       '@babel/preset-env': ^7.19.3
       '@babel/preset-react': ^7.18.6
-      '@lauf/store': ^1.1.1
-      '@lauf/store-react': ^1.1.1
+      '@lauf/store': ^2.0.0-alpha.0
+      '@lauf/store-react': ^2.0.0-alpha.0
       '@playwright/test': ^1.26.1
       '@types/react': ^18.0.21
       '@types/react-dom': ^18.0.6
@@ -158,8 +158,8 @@ importers:
     specifiers:
       '@babel/plugin-syntax-flow': ^7.18.6
       '@babel/plugin-transform-react-jsx': ^7.19.0
-      '@lauf/store': 1.1.1
-      '@lauf/store-react': 1.1.1
+      '@lauf/store': 2.0.0-alpha.0
+      '@lauf/store-react': 2.0.0-alpha.0
       react: ^18.2.0
       react-dom: ^18.2.0
       react-scripts: 5.0.1
@@ -180,8 +180,8 @@ importers:
       '@babel/core': ^7.19.3
       '@babel/preset-env': ^7.19.3
       '@babel/preset-typescript': ^7.18.6
-      '@lauf/store': ^1.1.1
-      '@lauf/store-react': ^1.1.1
+      '@lauf/store': ^2.0.0-alpha.0
+      '@lauf/store-react': ^2.0.0-alpha.0
       '@testing-library/react': ^13.4.0
       '@types/jest': ^29.1.1
       '@types/react': ^18.0.21
@@ -227,10 +227,10 @@ importers:
       '@babel/core': ^7.19.3
       '@babel/preset-env': ^7.19.3
       '@babel/preset-typescript': ^7.18.6
-      '@lauf/queue': ^1.1.1
-      '@lauf/store': ^1.1.1
-      '@lauf/store-follow': ^1.1.1
-      '@lauf/store-react': ^1.1.1
+      '@lauf/queue': ^2.0.0-alpha.0
+      '@lauf/store': ^2.0.0-alpha.0
+      '@lauf/store-follow': ^2.0.0-alpha.0
+      '@lauf/store-react': ^2.0.0-alpha.0
       '@testing-library/react': ^13.4.0
       '@types/jest': ^29.1.1
       '@types/react': ^18.0.21
@@ -280,9 +280,9 @@ importers:
       '@babel/plugin-transform-react-jsx': ^7.19.0
       '@babel/preset-env': ^7.19.3
       '@babel/preset-react': ^7.18.6
-      '@lauf/store': ^1.1.1
-      '@lauf/store-follow': ^1.1.1
-      '@lauf/store-react': ^1.1.1
+      '@lauf/store': ^2.0.0-alpha.0
+      '@lauf/store-follow': ^2.0.0-alpha.0
+      '@lauf/store-react': ^2.0.0-alpha.0
       '@types/react': ^18.0.21
       '@types/react-dom': ^18.0.6
       babel-loader: ^8.2.5
