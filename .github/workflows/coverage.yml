@@ -10,8 +10,7 @@ jobs:
 
     strategy:
       matrix:
-        module-name:
-          [store, store-react, store-follow, queue, lock, lauf-runner]
+        module-name: [store, store-react, store-follow, queue, lock]
 
     steps:
       - uses: actions/checkout@master
