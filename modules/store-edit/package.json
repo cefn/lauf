@@ -2,7 +2,7 @@
   "name": "@lauf/store-edit",
   "description": "Intuitive mechanism to draft and write an edited @lauf/store state, (based on Immer)",
   "private": true,
-  "version": "1.1.1",
+  "version": "2.0.0-alpha.0",
   "files": [
     "README.md",
     "dist"
@@ -15,7 +15,7 @@
     "prepublishOnly": "pnpm run test && pnpm run build"
   },
   "dependencies": {
-    "@lauf/store": "^1.1.1",
+    "@lauf/store": "^2.0.0-alpha.0",
     "immer": "^9.0.15"
   },
   "devDependencies": {
