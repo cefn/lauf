@@ -141,10 +141,10 @@ const RULES: readonly PackageJsonRule[] = [
   {
     path: "scripts.test",
     expected: ({ packageJson: { name } }) => {
-      if (name === "counter") {
+      if (name === "counter-react-ts") {
         return "npm-run-all test:unit test:integration";
       }
-      if (name === "counter-js") {
+      if (["counter-dom-js", "counter-react-js"].includes(name)) {
         return undefined;
       }
       if (["@lauf/stepmachine", "@lauf/stopwatch"].includes(name)) {
@@ -162,7 +162,7 @@ const RULES: readonly PackageJsonRule[] = [
   {
     path: "scripts.check",
     expected: ({ packageJson: { name } }) => {
-      if (name === "counter-js") {
+      if (["counter-dom-js", "counter-react-js"].includes(name)) {
         return undefined;
       }
       return "tsc --noEmit";
