@@ -87,12 +87,11 @@ async function stepWhileMoving(
 
 async function fruitRoutine(appModel: Model) {
   const { gameStore } = appModel;
-  const { select } = gameStore;
   await followSelector(
     gameStore,
     selectHead,
     async function (head): Promise<void> {
-      const fruitPos = select(selectFruitPos);
+      const fruitPos = selectFruitPos(gameStore.read());
       if (isVectorEqual(fruitPos, head.pos)) {
         eatFruit(appModel);
       }
@@ -156,12 +155,11 @@ function eatFruit({ gameStore }: Model) {
 
 async function snakeCollisionRoutine(appModel: Model) {
   const { gameStore } = appModel;
-  const { select } = gameStore;
   await followSelector(
     gameStore,
     selectHead,
     async function (head): Promise<void> {
-      const segments = select(selectSegments);
+      const segments = selectSegments(gameStore.read());
       for (const segment of segments) {
         if (segment !== head && isVectorEqual(head.pos, segment.pos)) {
           resetGame(appModel);
@@ -172,10 +170,8 @@ async function snakeCollisionRoutine(appModel: Model) {
 }
 
 function stepSnake(appModel: Model, direction: Direction) {
-  const {
-    gameStore: { select },
-  } = appModel;
-  const head = select(selectHead);
+  const { gameStore } = appModel;
+  const head = selectHead(gameStore.read());
   if (head) {
     const pos = wrap(plus(head.pos, DIRECTION_VECTORS[direction]));
     addHead(appModel, { pos, direction });

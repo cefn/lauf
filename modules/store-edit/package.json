@@ -1,6 +1,12 @@
 {
-  "name": "@lauf/lock",
+  "name": "@lauf/store-edit",
+  "description": "Intuitive mechanism to draft and write an edited @lauf/store state, (based on Immer)",
+  "private": true,
   "version": "1.1.1",
+  "files": [
+    "README.md",
+    "dist"
+  ],
   "license": "MIT",
   "scripts": {
     "test": "jest",
@@ -8,19 +14,19 @@
     "build": "rimraf dist && node ./esbuild.js && tsc --declaration --emitDeclarationOnly --outDir dist --project ./tsconfig.build.json",
     "prepublishOnly": "pnpm run test && pnpm run build"
   },
+  "dependencies": {
+    "@lauf/store": "^1.1.1",
+    "immer": "^9.0.15"
+  },
   "devDependencies": {
     "typescript": "^4.8.4"
   },
-  "files": [
-    "README.md",
-    "dist"
-  ],
   "publishConfig": {
     "access": "public",
     "main": "dist/index.js",
     "typings": "dist/index.d.ts"
   },
-  "homepage": "https://github.com/cefn/lauf/tree/main/modules/lock#readme",
+  "homepage": "https://github.com/cefn/lauf/tree/main/modules/store-edit#readme",
   "bugs": {
     "url": "https://github.com/cefn/lauf/issues",
     "email": "lauf@cefn.com"

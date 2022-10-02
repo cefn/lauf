@@ -338,9 +338,17 @@ importers:
 
   modules/store:
     specifiers:
+      typescript: ^4.8.4
+    devDependencies:
+      typescript: 4.8.4
+
+  modules/store-edit:
+    specifiers:
+      '@lauf/store': ^1.1.1
       immer: ^9.0.15
       typescript: ^4.8.4
     dependencies:
+      '@lauf/store': link:../store
       immer: 9.0.15
     devDependencies:
       typescript: 4.8.4

@@ -1,6 +1,4 @@
-import { castDraft, Draft } from "immer";
 import {
-  Editor,
   Immutable,
   PartitionableState,
   Selector,
@@ -52,13 +50,6 @@ class DefaultStorePartition<
       [this.key]: state,
     });
     return state;
-  };
-
-  edit = (editor: Editor<ParentState[Key]>) => {
-    this.store.edit((draft, toDraft) => {
-      editor((draft as any)[this.key], toDraft);
-    });
-    return this.read();
   };
 
   select = <Selected>(selector: Selector<ParentState[Key], Selected>) => {
