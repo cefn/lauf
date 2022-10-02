@@ -1,7 +1,6 @@
 {
   "name": "@lauf/store-edit",
   "description": "Intuitive mechanism to draft and write an edited @lauf/store state, (based on Immer)",
-  "private": true,
   "version": "2.0.0-alpha.0",
   "files": [
     "README.md",
