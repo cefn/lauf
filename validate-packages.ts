@@ -147,6 +147,9 @@ const RULES: readonly PackageJsonRule[] = [
       if (name === "counter-js") {
         return undefined;
       }
+      if (["@lauf/stepmachine", "@lauf/stopwatch"].includes(name)) {
+        return "vitest run";
+      }
       if (
         ["@lauf/store-follow", "nextjs-mixer", "noredux-async"].includes(name)
       ) {

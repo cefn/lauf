@@ -1,0 +1,70 @@
+{
+  "name": "@lauf/stepmachine",
+  "version": "0.1.0",
+  "license": "MIT",
+  "scripts": {
+    "test": "vitest run",
+    "check": "tsc --noEmit",
+    "build": "rimraf dist && node ./esbuild.js && tsc --declaration --emitDeclarationOnly --outDir dist --project ./tsconfig.build.json",
+    "prepublishOnly": "pnpm run test && pnpm run build"
+  },
+  "devDependencies": {
+    "typescript": "^4.8.4",
+    "vitest": "^0.24.1"
+  },
+  "files": [
+    "README.md",
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public",
+    "main": "dist/index.js",
+    "typings": "dist/index.d.ts"
+  },
+  "homepage": "https://github.com/cefn/lauf/tree/main/modules/stepmachine#readme",
+  "bugs": {
+    "url": "https://github.com/cefn/lauf/issues",
+    "email": "lauf@cefn.com"
+  },
+  "author": "Cefn Hoile <github.com@cefn.com> (https://cefn.com)",
+  "repository": "github:cefn/lauf",
+  "eslintConfig": {
+    "ignorePatterns": [
+      "dist/**"
+    ],
+    "rules": {
+      "no-param-reassign": [
+        "error",
+        {
+          "props": true,
+          "ignorePropertyModificationsFor": [
+            "draft"
+          ]
+        }
+      ],
+      "no-restricted-syntax": [
+        "error",
+        "ForInStatement",
+        "LabeledStatement",
+        "WithStatement"
+      ],
+      "no-void": [
+        "error",
+        {
+          "allowAsStatement": true
+        }
+      ],
+      "@typescript-eslint/no-unused-vars": [
+        "error",
+        {
+          "varsIgnorePattern": "^_"
+        }
+      ],
+      "import/prefer-default-export": "off",
+      "@typescript-eslint/explicit-module-boundary-types": "off",
+      "@typescript-eslint/explicit-function-return-type": "off",
+      "react/prop-types": "off"
+    }
+  },
+  "main": "src/index.ts"
+}
