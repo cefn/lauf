@@ -1,61 +1,108 @@
 import { describe, test, expect } from "vitest";
 import { fromAsync } from "../../stopwatch/test/util";
 import { createPerformance, promiseEnding } from "../src/perform";
-import { step } from "../src/types";
+import { Plan, Sequence, step } from "../src/types";
 
 describe("Plan utility functions: ", () => {
-  describe("Synchronous addition", () => {
-    const add = (x: number, y: number) => x + y;
+  describe("Single operation type", () => {
+    describe("Synchronous addition", () => {
+      const add = (x: number, y: number) => x + y;
 
-    const plan = function* () {
-      let value = 0;
-      while (value < 3) {
-        value = yield step(add, value, 1);
-      }
-      return value;
-    };
+      const plan = function* () {
+        let value = 0;
+        while (value < 3) {
+          value = yield step(add, value, 1);
+        }
+        return value;
+      };
 
-    test("promiseEnding() resolves to ending", async () => {
-      const ending = await promiseEnding(plan);
-      expect(ending).toBe(3);
+      test("promiseEnding() resolves to ending", async () => {
+        const ending = await promiseEnding(plan);
+        expect(ending).toBe(3);
+      });
+
+      test("createPerformance() return value can be iterated to perform plan", async () => {
+        const performance = createPerformance(plan);
+        const steps = await fromAsync(performance);
+        expect(steps).toMatchObject([
+          [[add, 0, 1], 1],
+          [[add, 1, 1], 2],
+          [[add, 2, 1], 3],
+        ]);
+      });
     });
 
-    test("createPerformance() return value can be iterated to perform plan", async () => {
-      const performance = createPerformance(plan);
-      const steps = await fromAsync(performance);
-      expect(steps).toMatchObject([
-        [[add, 0, 1], 1],
-        [[add, 1, 1], 2],
-        [[add, 2, 1], 3],
-      ]);
+    describe("Asynchronous addition", () => {
+      const add = (x: number, y: number) =>
+        new Promise((resolve) => setTimeout(resolve, 0, x + y));
+
+      const plan = function* () {
+        let value = 0;
+        while (value < 3) {
+          value = yield step(add, value, 1);
+        }
+        return value;
+      };
+
+      test("promiseEnding() resolves to ending", async () => {
+        const ending = await promiseEnding(plan);
+        expect(ending).toBe(3);
+      });
+
+      test("createPerformance() return value can be iterated to perform plan", async () => {
+        const performance = createPerformance(plan);
+        const steps = await fromAsync(performance);
+        expect(steps).toMatchObject([
+          [[add, 0, 1], 1],
+          [[add, 1, 1], 2],
+          [[add, 2, 1], 3],
+        ]);
+      });
     });
   });
 
-  describe("Asynchronous addition", () => {
-    const add = (x: number, y: number) =>
-      new Promise((resolve) => setTimeout(resolve, 0, x + y));
+  describe("Single operation type", () => {
+    describe("Asynchronous count messages", () => {
+      const promiseAdd = (x: number, y: number) =>
+        new Promise<number>((resolve) => setTimeout(resolve, 0, x + y));
+      const promiseCountMessage = (x: number) =>
+        new Promise<string>((resolve) =>
+          setTimeout(resolve, 0, `${x} pencil${x === 1 ? "" : "s"}`)
+        );
+      const promiseLog = (message: string) =>
+        new Promise<void>((resolve) =>
+          setTimeout(() => resolve(console.log(message)), 0)
+        );
 
-    const plan = function* () {
-      let value = 0;
-      while (value < 3) {
-        value = yield step(add, value, 1);
-      }
-      return value;
-    };
+      type TestPlan = Plan<
+        number,
+        typeof promiseAdd | typeof promiseCountMessage | typeof promiseLog
+      >;
 
-    test("promiseEnding() resolves to ending", async () => {
-      const ending = await promiseEnding(plan);
-      expect(ending).toBe(3);
-    });
+      const plan: TestPlan = function* () {
+        let value = 0;
+        while (value < 3) {
+          value = yield step(promiseAdd, value, 1);
+          const message = yield step(promiseCountMessage, value);
+          yield step(promiseLog, message);
+        }
+        return value;
+      };
 
-    test("createPerformance() return value can be iterated to perform plan", async () => {
-      const performance = createPerformance(plan);
-      const steps = await fromAsync(performance);
-      expect(steps).toMatchObject([
-        [[add, 0, 1], 1],
-        [[add, 1, 1], 2],
-        [[add, 2, 1], 3],
-      ]);
+      test("promiseEnding() resolves to ending", async () => {
+        const ending = await promiseEnding(plan);
+        expect(ending).toBe(3);
+      });
+
+      test("createPerformance() return value can be iterated to perform plan", async () => {
+        const performance = createPerformance(plan);
+        const steps = await fromAsync(performance);
+        expect(steps).toMatchObject([
+          [[promiseAdd, 0, 1], 1],
+          [[promiseAdd, 1, 1], 2],
+          [[promiseAdd, 2, 1], 3],
+        ]);
+      });
     });
   });
 });

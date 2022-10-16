@@ -1,5 +1,5 @@
 export function step<Op extends (...args: any[]) => any>(
-  ...step: [Op, ...Parameters<Op>]
+  ...step: [op: Op, ...params: Parameters<Op>]
 ) {
   return step;
 }
