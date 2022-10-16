@@ -1,7 +1,7 @@
 import { describe, test, expect } from "vitest";
 import { fromAsync } from "../../stopwatch/test/util";
-import { createPerformance, promiseEnding } from "../src/perform";
-import { Plan, Sequence, step } from "../src/types";
+import { createPerformance, promiseEnding, step } from "../src/perform";
+import { Plan } from "../src/types";
 
 describe("Plan utility functions: ", () => {
   describe("Single operation type", () => {
@@ -11,7 +11,7 @@ describe("Plan utility functions: ", () => {
       const plan = function* () {
         let value = 0;
         while (value < 3) {
-          value = yield step(add, value, 1);
+          value = yield* step(add, value, 1);
         }
         return value;
       };
@@ -34,12 +34,12 @@ describe("Plan utility functions: ", () => {
 
     describe("Asynchronous addition", () => {
       const add = (x: number, y: number) =>
-        new Promise((resolve) => setTimeout(resolve, 0, x + y));
+        new Promise<number>((resolve) => setTimeout(resolve, 0, x + y));
 
       const plan = function* () {
         let value = 0;
         while (value < 3) {
-          value = yield step(add, value, 1);
+          value = yield* step(add, value, 1);
         }
         return value;
       };
@@ -81,17 +81,17 @@ describe("Plan utility functions: ", () => {
 
       const plan: TestPlan = function* () {
         let value = 0;
-        while (value < 3) {
-          value = yield step(promiseAdd, value, 1);
-          const message = yield step(promiseCountMessage, value);
-          yield step(promiseLog, message);
+        while (value < 2) {
+          value = yield* step(promiseAdd, value, 1);
+          const message = yield* step(promiseCountMessage, value);
+          yield* step(promiseLog, message);
         }
         return value;
       };
 
       test("promiseEnding() resolves to ending", async () => {
         const ending = await promiseEnding(plan);
-        expect(ending).toBe(3);
+        expect(ending).toBe(2);
       });
 
       test("createPerformance() return value can be iterated to perform plan", async () => {
@@ -99,8 +99,11 @@ describe("Plan utility functions: ", () => {
         const steps = await fromAsync(performance);
         expect(steps).toMatchObject([
           [[promiseAdd, 0, 1], 1],
+          [[promiseCountMessage, 1], "1 pencil"],
+          [[promiseLog, "1 pencil"], undefined],
           [[promiseAdd, 1, 1], 2],
-          [[promiseAdd, 2, 1], 3],
+          [[promiseCountMessage, 2], "2 pencils"],
+          [[promiseLog, "2 pencils"], undefined],
         ]);
       });
     });

@@ -1,4 +1,10 @@
-import { Plan } from "./types";
+import { Command, Plan } from "./types";
+
+export function* step<Op extends (...args: any[]) => any>(
+  ...command: Command<Op>
+) {
+  return (yield command) as Awaited<ReturnType<Op>>;
+}
 
 /** Presents an async iterator which  */
 export async function* createPerformance<
@@ -23,10 +29,9 @@ export async function* createPerformance<
   }
 }
 
-export async function promiseEnding<
-  Ending,
-  Op extends (...args: any[]) => any = (...args: unknown[]) => unknown
->(plan: Plan<Ending, Op>) {
+export async function promiseEnding<Ending, Op extends (...args: any[]) => any>(
+  plan: Plan<Ending, Op>
+) {
   const performance = createPerformance(plan);
   for (;;) {
     const result = await performance.next();
