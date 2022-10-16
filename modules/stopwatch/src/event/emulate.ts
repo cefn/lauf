@@ -1,6 +1,6 @@
 import { CalledEvent, GeneratedEvent } from "./types";
 
-export function emulateGenerator<T, TReturn>(
+export function emulateGenerated<T, TReturn>(
   event: GeneratedEvent<T, TReturn>
 ) {
   const { generated } = event;
@@ -12,15 +12,15 @@ export function emulateGenerator<T, TReturn>(
   }
 }
 
-export function* emulateGeneratorSequence<T, TReturn>(
+export function* emulateGeneratedSequence<T, TReturn>(
   events: Iterable<GeneratedEvent<T, TReturn>>
 ) {
   for (const event of events) {
-    yield emulateGenerator(event);
+    yield emulateGenerated(event);
   }
 }
 
-export function emulateCaller<T, TReturn, TNext>(
+export function emulateCalled<T, TReturn, TNext>(
   event: CalledEvent<TReturn, TNext>,
   generator: Generator<T, TReturn, TNext>
 ) {
@@ -35,11 +35,11 @@ export function emulateCaller<T, TReturn, TNext>(
   }
 }
 
-export function* emulateCallerSequence<T, TReturn, TNext>(
+export function* emulateCalledSequence<T, TReturn, TNext>(
   events: Iterable<CalledEvent<TReturn, TNext>>,
   generator: Generator<T, TReturn, TNext>
 ) {
   for (const event of events) {
-    yield emulateCaller(event, generator);
+    yield emulateCalled(event, generator);
   }
 }

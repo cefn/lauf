@@ -1,5 +1,5 @@
 import { Immutable } from "@lauf/store";
-import { emulateGenerator } from "../event/emulate";
+import { emulateGenerated } from "../event/emulate";
 import { CalledEvent, GeneratedReturn, CaptureEvent } from "../event/types";
 import {
   validatedNextCall,
@@ -48,27 +48,27 @@ export class EventPlayer<T, TReturn, TNext>
   next(...args: [TNext] | []) {
     const event = this.getNextEvent();
     if (!this.validateCalls) {
-      return emulateGenerator(event);
+      return emulateGenerated(event);
     } else {
-      return emulateGenerator(validatedNextCall(event, ...args));
+      return emulateGenerated(validatedNextCall(event, ...args));
     }
   }
 
   return(returnValue: TReturn) {
     const event = this.getNextEvent();
     if (!this.validateCalls) {
-      return emulateGenerator(event);
+      return emulateGenerated(event);
     } else {
-      return emulateGenerator(validatedReturnCall(event, returnValue));
+      return emulateGenerated(validatedReturnCall(event, returnValue));
     }
   }
 
   throw(thrownValue: unknown) {
     const event = this.getNextEvent();
     if (!this.validateCalls) {
-      return emulateGenerator(event);
+      return emulateGenerated(event);
     } else {
-      return emulateGenerator(validatedThrowCall(event, thrownValue));
+      return emulateGenerated(validatedThrowCall(event, thrownValue));
     }
   }
 
