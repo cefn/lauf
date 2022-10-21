@@ -1,5 +1,17 @@
 # @lauf/store
 
+## 2.0.0-alpha.0
+
+### Major Changes
+
+- Remove edit and select from core store. Publish store-edit instead. Change build flags
+
+### Patch Changes
+
+- Updated dependencies
+- Updated dependencies [f410379]
+  - @lauf/store@2.0.0-alpha.0
+
 ## 1.1.1
 
 ### Patch Changes

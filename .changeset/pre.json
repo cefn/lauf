@@ -1,0 +1,21 @@
+{
+  "mode": "pre",
+  "tag": "alpha",
+  "initialVersions": {
+    "counter": "0.1.7",
+    "counter-js": "0.1.0",
+    "nextjs-mixer": "0.1.7",
+    "next-snake": "0.1.7",
+    "noredux-async": "0.1.6",
+    "@lauf/lock": "1.1.1",
+    "@lauf/queue": "1.1.1",
+    "@lauf/store": "1.1.1",
+    "@lauf/store-edit": "1.1.1",
+    "@lauf/store-follow": "1.1.1",
+    "@lauf/store-react": "1.1.1"
+  },
+  "changesets": [
+    "brave-needles-heal",
+    "popular-sheep-press"
+  ]
+}
