@@ -49,6 +49,7 @@ importers:
       ts-node: ^10.9.1
       typedoc: ^0.23.15
       typescript: ^4.8.4
+      vitest: ^0.24.1
       yargs: ^17.6.0
     dependencies:
       '@types/node': 18.7.23
@@ -98,6 +99,7 @@ importers:
       ts-node: 10.9.1_304e5084908b97f2dd176e42a0d00db9
       typedoc: 0.23.15_typescript@4.8.4
       typescript: 4.8.4
+      vitest: 0.24.1
 
   apps/counter:
     specifiers:
