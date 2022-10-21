@@ -25,9 +25,12 @@ describe("Plan utility functions: ", () => {
         const performance = createPerformance(plan);
         const steps = await fromAsync(performance);
         expect(steps).toMatchObject([
-          [[add, 0, 1], 1],
-          [[add, 1, 1], 2],
-          [[add, 2, 1], 3],
+          [add, 0, 1],
+          1,
+          [add, 1, 1],
+          2,
+          [add, 2, 1],
+          3,
         ]);
       });
     });
@@ -53,9 +56,12 @@ describe("Plan utility functions: ", () => {
         const performance = createPerformance(plan);
         const steps = await fromAsync(performance);
         expect(steps).toMatchObject([
-          [[add, 0, 1], 1],
-          [[add, 1, 1], 2],
-          [[add, 2, 1], 3],
+          [add, 0, 1],
+          1,
+          [add, 1, 1],
+          2,
+          [add, 2, 1],
+          3,
         ]);
       });
     });
@@ -98,12 +104,18 @@ describe("Plan utility functions: ", () => {
         const performance = createPerformance(plan);
         const steps = await fromAsync(performance);
         expect(steps).toMatchObject([
-          [[promiseAdd, 0, 1], 1],
-          [[promiseCountMessage, 1], "1 pencil"],
-          [[promiseLog, "1 pencil"], undefined],
-          [[promiseAdd, 1, 1], 2],
-          [[promiseCountMessage, 2], "2 pencils"],
-          [[promiseLog, "2 pencils"], undefined],
+          [promiseAdd, 0, 1],
+          1,
+          [promiseCountMessage, 1],
+          "1 pencil",
+          [promiseLog, "1 pencil"],
+          undefined,
+          [promiseAdd, 1, 1],
+          2,
+          [promiseCountMessage, 2],
+          "2 pencils",
+          [promiseLog, "2 pencils"],
+          undefined,
         ]);
       });
     });

@@ -12,19 +12,18 @@ export async function* createPerformance<
   Op extends (...args: any[]) => any = (...args: unknown[]) => unknown
 >(plan: Plan<Ending, Op>) {
   const sequence = plan();
-  let nextValue: Awaited<ReturnType<Op>> | undefined = undefined;
+  let result: Awaited<ReturnType<Op>> | undefined = undefined;
   for (;;) {
-    const instructionResult = nextValue
-      ? sequence.next(nextValue)
-      : sequence.next();
+    const instructionResult = result ? sequence.next(result) : sequence.next();
     if (instructionResult.done) {
       return instructionResult.value;
     } else {
       const instruction = instructionResult.value;
+      yield instruction;
       const [op, ...args] = instruction;
       // Tautological cast required by circularity issue (Typescript bug?)
-      nextValue = (await op(...args)) as Awaited<ReturnType<Op>>;
-      yield [instruction, nextValue] as const;
+      result = (await op(...args)) as Awaited<ReturnType<Op>>;
+      yield result;
     }
   }
 }
