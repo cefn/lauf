@@ -6,11 +6,19 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "build:tailwind": "tailwindcss -i src/input.css -o src/assets/output.css"
   },
   "dependencies": {
+    "@headlessui/react": "^1.7.3",
+    "@heroicons/react": "^2.0.12",
+    "@lauf/stepmachine": "workspace:^0.1.0",
+    "@lauf/store": "workspace:^1.1.1",
+    "@lauf/store-edit": "workspace:^1.1.1",
+    "@lauf/store-react": "workspace:^1.1.1",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "tailwindcss": "^3.2.1"
   },
   "devDependencies": {
     "@types/react": "^18.0.17",
