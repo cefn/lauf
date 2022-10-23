@@ -3,13 +3,15 @@
 const defaultTheme = require("tailwindcss/defaultTheme");
 
 module.exports = {
-  content: ["./src/**/*.{html,ts}"],
+  content: [
+    // local code
+    "./src/**/*.{html,tsx}",
+    // advised by react-daisyui
+    "node_modules/daisyui/dist/**/*.js",
+    "node_modules/react-daisyui/dist/**/*.js",
+  ],
   theme: {
-    extend: {
-      fontFamily: {
-        sans: ["Inter var", ...defaultTheme.fontFamily.sans],
-      },
-    },
+    extend: {},
   },
-  plugins: [],
+  plugins: [require("@tailwindcss/typography"), require("daisyui")],
 };

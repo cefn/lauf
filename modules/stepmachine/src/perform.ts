@@ -2,11 +2,14 @@ import { Command, Plan } from "./types";
 
 export function* step<Op extends (...args: any[]) => any>(
   ...command: Command<Op>
-) {
+): Generator<Command<Op>, Awaited<ReturnType<Op>>, any> {
   return (yield command) as Awaited<ReturnType<Op>>;
 }
 
-/** Presents an async iterator which  */
+/** Creates an async iterator,
+ * The first iteration causes an command to be read from the plan and yields the command
+ * The second iteration causes the command to be carried out and yields the result
+ */
 export async function* createPerformance<
   Ending,
   Op extends (...args: any[]) => any = (...args: unknown[]) => unknown
@@ -21,9 +24,15 @@ export async function* createPerformance<
       const instruction = instructionResult.value;
       yield instruction;
       const [op, ...args] = instruction;
-      // Tautological cast required by circularity issue (Typescript bug?)
-      result = (await op(...args)) as Awaited<ReturnType<Op>>;
-      yield result;
+      try {
+        // Tautological cast required by circularity issue (Typescript bug?)
+        result = (await op(...args)) as Awaited<ReturnType<Op>>;
+        yield result;
+      } catch (error) {
+        // pass to plan stack. If plan doesn't catch it, it will throw in the
+        // following iteration (while yielding the next command)
+        sequence.throw(error);
+      }
     }
   }
 }
