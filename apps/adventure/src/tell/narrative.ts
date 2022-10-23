@@ -16,18 +16,18 @@ export type Narrative<Rtn> = Sequence<Rtn, Tell | Prompt>;
 
 /** Visits narrative if named boolean is false (also setting the boolean) */
 export function* lazyVisitNarrative<
-  GuardingState extends { [k in GuardKey]: boolean },
-  GuardKey extends string
+  FlaggedState extends { [k in FlagName]: boolean },
+  FlagName extends string
 >(
-  store: Store<GuardingState>,
-  guardName: GuardKey,
+  store: Store<FlaggedState>,
+  flagName: FlagName,
   narrative: () => Narrative<void>
 ): Narrative<boolean> {
-  if (!store.read()[guardName]) {
+  if (!store.read()[flagName]) {
     yield* narrative();
     store.write({
       ...store.read(),
-      [guardName]: true,
+      [flagName]: true,
     });
     return true;
   }

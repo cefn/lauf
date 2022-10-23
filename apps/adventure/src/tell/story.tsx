@@ -98,6 +98,8 @@ export function* tellStory(
       </>
     );
 
-    break;
+    yield* step(tell, <>Tell the story again</>);
+
+    store.write(initStoryState());
   }
 }
