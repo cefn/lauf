@@ -107,16 +107,20 @@ importers:
       '@lauf/store': workspace:^1.1.1
       '@lauf/store-edit': workspace:^1.1.1
       '@lauf/store-react': workspace:^1.1.1
+      '@rexxars/react-json-inspector': ^8.0.1
       '@tailwindcss/typography': ^0.5.7
+      '@types/object-inspect': ^1.8.1
       '@types/react': ^18.0.17
       '@types/react-dom': ^18.0.6
       '@vitejs/plugin-react': ^2.1.0
       autoprefixer: ^10.4.12
       daisyui: ^2.33.0
+      object-inspect: ^1.12.2
       postcss: ^8.4.18
       react: ^18.2.0
       react-daisyui: ^2.4.4
       react-dom: ^18.2.0
+      react-inspector: ^6.0.1
       tailwindcss: ^3.2.1
       typescript: ^4.6.4
       vite: ^3.1.0
@@ -125,11 +129,15 @@ importers:
       '@lauf/store': link:../../modules/store
       '@lauf/store-edit': link:../../modules/store-edit
       '@lauf/store-react': link:../../modules/store-react
+      '@rexxars/react-json-inspector': 8.0.1_react@18.2.0
+      object-inspect: 1.12.2
       react: 18.2.0
       react-daisyui: 2.4.4_978eaf117b8b1d0a105189071a9ff677
       react-dom: 18.2.0_react@18.2.0
+      react-inspector: 6.0.1_react@18.2.0
     devDependencies:
       '@tailwindcss/typography': 0.5.7_tailwindcss@3.2.1
+      '@types/object-inspect': 1.8.1
       '@types/react': 18.0.21
       '@types/react-dom': 18.0.6
       '@vitejs/plugin-react': 2.1.0_vite@3.1.7
@@ -2882,6 +2890,17 @@ packages:
     engines: {node: '>=14'}
     dev: false
 
+  /@rexxars/react-json-inspector/8.0.1_react@18.2.0:
+    resolution: {integrity: sha512-XAsgQwqG8fbDGpWnsvOesRMgPfvwuU7Cx3/cUf/fNIRmGP8lj2YYIf5La/4ayvZLWlSw4tTb4BPCKdmK9D8RuQ==}
+    peerDependencies:
+      react: ^15 || ^16 || ^17 || ^18
+    dependencies:
+      create-react-class: 15.7.0
+      debounce: 1.0.0
+      md5-o-matic: 0.1.1
+      react: 18.2.0
+    dev: false
+
   /@rollup/plugin-babel/5.3.1_@babel+core@7.19.3+rollup@2.79.1:
     resolution: {integrity: sha512-WFfdLWU/xVWKeRQnKmIAQULUI7Il0gZnBIH/ZFO069wYIfPu+8zrfp/KMW0atmELoRDq8FbiP3VCss9MhCut7Q==}
     engines: {node: '>= 10.0.0'}
@@ -3349,6 +3368,10 @@ packages:
 
   /@types/normalize-package-data/2.4.1:
     resolution: {integrity: sha512-Gj7cI7z+98M282Tqmp2K5EIsoouUEzbBJhQQzDE3jSIRk6r9gsz0oUokqIUR4u1R3dMHo0pDHM7sNOHyhulypw==}
+    dev: true
+
+  /@types/object-inspect/1.8.1:
+    resolution: {integrity: sha512-0JTdf3CGV0oWzE6Wa40Ayv2e2GhpP3pEJMcrlM74vBSJPuuNkVwfDnl0SZxyFCXETcB4oKA/MpTVfuYSMOelBg==}
     dev: true
 
   /@types/parse-json/4.0.0:
@@ -4749,6 +4772,13 @@ packages:
       path-type: 4.0.0
       yaml: 1.10.2
 
+  /create-react-class/15.7.0:
+    resolution: {integrity: sha512-QZv4sFWG9S5RUvkTYWbflxeZX+JG7Cz0Tn33rQBJ+WFQTqTfUTjMjiv9tnfXazjsO5r0KhPs+AqCjyrQX6h2ng==}
+    dependencies:
+      loose-envify: 1.4.0
+      object-assign: 4.1.1
+    dev: false
+
   /create-require/1.1.1:
     resolution: {integrity: sha512-dcKFX3jn0MpIaXjisoRvexIJVEKzaq7z2rZKxf+MSr9TkdmHmsU4m2lcLojrj/FHl8mk5VxMmYA+ftRkP/3oKQ==}
 
@@ -5078,6 +5108,16 @@ packages:
       whatwg-mimetype: 3.0.0
       whatwg-url: 11.0.0
     dev: true
+
+  /date-now/1.0.1:
+    resolution: {integrity: sha512-yiizelQCqYLUEVT4zqYihOW6Ird7Qyc6fD3Pv5xGxk4+Jz0rsB1dMN2KyNV6jgOHYh5K+sPGCSOknQN4Upa3pg==}
+    dev: false
+
+  /debounce/1.0.0:
+    resolution: {integrity: sha512-4FCfBL8uZFIh3BShn4AlxH4O9F5v+CVriJfiwW8Me/MhO7NqBE5JO5WO48NasbsY9Lww/KYflB79MejA3eKhxw==}
+    dependencies:
+      date-now: 1.0.1
+    dev: false
 
   /debug/2.6.9:
     resolution: {integrity: sha512-bC7ElrdJaJnPbAP+1EotYvqZsb3ecl5wi6Bfi6BJTUcNowp6cvspg0jXznRTKDjm/E7AdgFBVeAPVMNcKGsHMA==}
@@ -8731,6 +8771,10 @@ packages:
     hasBin: true
     dev: true
 
+  /md5-o-matic/0.1.1:
+    resolution: {integrity: sha512-QBJSFpsedXUl/Lgs4ySdB2XCzUEcJ3ujpbagdZCkRaYIaC0kFnID8jhc84KEiVv6dNFtIrmW7bqow0lDxgJi6A==}
+    dev: false
+
   /mdn-data/2.0.14:
     resolution: {integrity: sha512-dn6wd0uw5GsdswPFfsgMp5NSB0/aDe6fK94YJV/AJDYXL6HVLWBsxeq7js7Ad+mU2K9LAlwpk6kN2D5mwCPVow==}
 
@@ -10374,6 +10418,14 @@ packages:
 
   /react-error-overlay/6.0.11:
     resolution: {integrity: sha512-/6UZ2qgEyH2aqzYZgQPxEnz33NJ2gNsnHA2o5+o4wW9bLM/JYQitNP9xPhsXwC08hMMovfGe/8retsdDsczPRg==}
+
+  /react-inspector/6.0.1_react@18.2.0:
+    resolution: {integrity: sha512-cxKSeFTf7jpSSVddm66sKdolG90qURAX3g1roTeaN6x0YEbtWc8JpmFN9+yIqLNH2uEkYerWLtJZIXRIFuBKrg==}
+    peerDependencies:
+      react: ^16.8.4 || ^17.0.0 || ^18.0.0
+    dependencies:
+      react: 18.2.0
+    dev: false
 
   /react-is/16.13.1:
     resolution: {integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==}

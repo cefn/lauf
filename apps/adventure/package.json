@@ -15,12 +15,16 @@
     "@lauf/store": "workspace:^1.1.1",
     "@lauf/store-edit": "workspace:^1.1.1",
     "@lauf/store-react": "workspace:^1.1.1",
+    "@rexxars/react-json-inspector": "^8.0.1",
+    "object-inspect": "^1.12.2",
     "react": "^18.2.0",
     "react-daisyui": "^2.4.4",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "react-inspector": "^6.0.1"
   },
   "devDependencies": {
     "@tailwindcss/typography": "^0.5.7",
+    "@types/object-inspect": "^1.8.1",
     "@types/react": "^18.0.17",
     "@types/react-dom": "^18.0.6",
     "@vitejs/plugin-react": "^2.1.0",

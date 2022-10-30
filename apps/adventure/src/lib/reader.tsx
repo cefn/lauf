@@ -3,6 +3,12 @@ import { useSelected } from "@lauf/store-react";
 import { Button, Card } from "react-daisyui";
 import { Prompt, Tell } from "./narrative";
 
+// TODO - hoist the Reader 'model' including queues for input into React Context
+// (eliminates the unconventional pattern of close coupling in component
+// creation in launchReader()).
+
+/** Async functions that present interfaces and await input, along with the View
+ * that can be used to render them. */
 export interface Reader {
   tell: Tell;
   prompt: Prompt;
@@ -51,8 +57,8 @@ export function launchReader(): Reader {
     new Promise((resolve) => {
       const page = <div className="flex-grow">{intro}</div>;
 
-      const buttons = choices.map((choice) => (
-        <Button color="secondary" onClick={() => resolve(choice)}>
+      const buttons = choices.map((choice, key) => (
+        <Button key={key} color="secondary" onClick={() => resolve(choice)}>
           {choice}
         </Button>
       ));

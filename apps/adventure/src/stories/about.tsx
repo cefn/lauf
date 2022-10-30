@@ -2,7 +2,7 @@ import { Store } from "@lauf/store";
 import { step } from "@lauf/stepmachine";
 import { Narrative, Prompt, Tell, lazyVisitNarrative } from "../lib/narrative";
 
-interface StoryState {
+export interface StoryState {
   hasBrowsedDesktop: boolean;
   hasBrowsedWeb: boolean;
   hasViewedTodo: boolean;
@@ -55,10 +55,10 @@ export function* tellStory(
       );
 
       if (deskChoice === CHOOSE_TODO) {
-        store.write({
-          ...store.read(),
+        store.patch((state) => ({
+          ...state,
           hasViewedTodo: true,
-        });
+        }));
 
         yield* step(
           tell,
