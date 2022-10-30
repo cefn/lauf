@@ -13,7 +13,7 @@ import { Command, createPerformance } from "@lauf/stepmachine";
 
 /** Narrative story support */
 import { StoryState } from "../stories/about";
-import { History, IncompleteMoment, initHistory, Moment } from "./history";
+import { History, CurrentMoment, initHistory, Moment } from "./history";
 import { Narrative, NarrativeOp } from "./narrative";
 
 /** Store containing the complete record of commands and transient states to jog through. */
@@ -21,7 +21,9 @@ interface TrackerState {
   history: History<NarrativeOp, StoryState>;
   inspected: {
     label: string;
-    value: ValueOf<Moment<NarrativeOp, StoryState>>;
+    value:
+      | ValueOf<Moment<NarrativeOp, StoryState>>
+      | ValueOf<Moment<NarrativeOp, StoryState>["snapshots"]>;
   } | null;
 }
 
@@ -40,18 +42,23 @@ export async function trackStory(
     // grab current history to combine into later edits
     const commandHistory = trackerStore.read()["history"];
     // this will be progressively populated to a complete Moment as the command proceeds
-    let commandMoment: Immutable<IncompleteMoment<NarrativeOp, StoryState>>;
+    let commandMoment: Immutable<CurrentMoment<NarrativeOp, StoryState>>;
 
     // command yield phase
     {
+      const afterPrevious = storyStore.read();
       const commandResult = await performance.next();
+      const afterCommanded = storyStore.read();
       if (commandResult.done) {
         return commandResult.value;
       }
       const commanded = commandResult.value as Command<NarrativeOp>;
       commandMoment = {
         commanded,
-        snapshotBefore: storyStore.read(),
+        snapshots: {
+          afterPrevious,
+          afterCommanded,
+        },
       };
       // record the part-complete moment to history
       trackerStore.patch((state) => ({
@@ -71,7 +78,10 @@ export async function trackStory(
       commandMoment = {
         ...commandMoment,
         returned,
-        snapshotAfter: storyStore.read(),
+        snapshots: {
+          ...commandMoment.snapshots,
+          afterResolved: storyStore.read(),
+        },
       };
       // record the moment to history
       trackerStore.patch((state) => ({
@@ -153,12 +163,12 @@ export function launchTracker(
                       ...state,
                       inspected: {
                         label: "State",
-                        value: moment.snapshotAfter,
+                        value: moment.snapshots.afterResolved,
                       },
                     }))
                   }
                 >
-                  {JSON.stringify(moment.snapshotAfter)}
+                  {inspect(moment.snapshots.afterResolved)}
                 </td>
               </tr>
             );
