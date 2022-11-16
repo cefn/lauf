@@ -1,6 +1,5 @@
 import { Command } from "@lauf/stepmachine";
 import { RootState } from "@lauf/store";
-import { SelectivePartial } from "../util";
 
 /** Records a yielded command, its return value and snapshots at specific lifecycle points. */
 export interface Moment<
@@ -10,23 +9,27 @@ export interface Moment<
   commanded: Command<Op>;
   returned: Awaited<ReturnType<Op>>;
   snapshots: {
-    /** Before calling next on the generator, (yielding the next Command through step() ). */
-    afterPrevious: State;
-    /** After command is yielded, but before performing the sync or async command (to get a Return value). */
-    afterCommanded: State;
-    /** After sync or async operation has returned a value and any returned Promise has resolved. */
-    afterResolved: State;
+    /** Before calling next on the generator, (to yield the next Command through
+     * a step() call ). */
+    onResumed: State;
+    /** After command is yielded, but before performing the sync or async
+     * command to populate a Return value. */
+    onCommanded: State;
+    /** After sync or async operation has returned a value and any returned
+     * Promise has resolved. */
+    onResolved: State;
   };
 }
 
-/** Allow CurrentMoment to be half-complete (after command issued, before return resolved) */
-export type CurrentMoment<
+/** Provide looser IncompleteMoment type (it is half-complete after command
+ * issued and before return resolved) */
+export type IncompleteMoment<
   Op extends (...args: any[]) => any,
   State extends RootState
 > = Omit<Moment<Op, State>, "snapshots" | "returned"> & {
-  returned?: Moment<Op, State>["returned"];
-  snapshots: Omit<Moment<Op, State>["snapshots"], "afterResolved"> & {
-    afterResolved?: Moment<Op, State>["snapshots"]["afterResolved"];
+  returned?: never;
+  snapshots: Omit<Moment<Op, State>["snapshots"], "onResolved"> & {
+    onResolved?: never;
   };
 };
 
@@ -36,7 +39,7 @@ export type CurrentMoment<
 export type History<
   Op extends (...args: any[]) => any,
   State extends RootState
-> = [...Moment<Op, State>[], ...([CurrentMoment<Op, State>] | [])];
+> = [...Moment<Op, State>[], ...([IncompleteMoment<Op, State>] | [])];
 
 /** Create an empty (but correctly typed) History value */
 export function initHistory<

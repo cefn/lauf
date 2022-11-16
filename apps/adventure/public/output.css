@@ -8100,6 +8100,10 @@ body[dir="rtl"] .\!checkbox:checked,
   display: none;
 }
 
+.h-full {
+  height: 100%;
+}
+
 .h-1\/2 {
   height: 50%;
 }
@@ -8122,10 +8126,6 @@ body[dir="rtl"] .\!checkbox:checked,
 
 .h-10 {
   height: 2.5rem;
-}
-
-.h-full {
-  height: 100%;
 }
 
 .w-1\/2 {
@@ -8152,21 +8152,8 @@ body[dir="rtl"] .\!checkbox:checked,
   width: 2.5rem;
 }
 
-.max-w-xs {
-  max-width: 20rem;
-}
-
-.max-w-min {
-  max-width: -moz-min-content;
-  max-width: min-content;
-}
-
 .flex-1 {
   flex: 1 1 0%;
-}
-
-.flex-auto {
-  flex: 1 1 auto;
 }
 
 .shrink {
@@ -8266,6 +8253,10 @@ body[dir="rtl"] .\!checkbox:checked,
 
 .divide-x-reverse > :not([hidden]) ~ :not([hidden]) {
   --tw-divide-x-reverse: 1;
+}
+
+.overflow-y-scroll {
+  overflow-y: scroll;
 }
 
 .truncate {

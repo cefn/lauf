@@ -45,21 +45,23 @@ export function* tellStory(
     });
 
     if (!store.read().hasViewedTodo) {
-      const CHOOSE_TODO = "Click to open TODO.md ?";
-      const CHOOSE_BROWSER = "Launch a web browser ?";
-
-      const deskChoice = yield* step(
+      const clickChoice = yield* step(
         prompt,
-        "A prominent file labelled TODO.md is visible in the workspace. Will you...",
-        [CHOOSE_TODO, CHOOSE_BROWSER]
+        <>
+          A prominent file labelled TODO.md is visible in the workspace. Will
+          you...
+        </>,
+        {
+          name: "web",
+          passage: <>Launch a web browser ?</>,
+        },
+        {
+          name: "todo",
+          passage: <>Click to open TODO.md ?</>,
+        }
       );
 
-      if (deskChoice === CHOOSE_TODO) {
-        store.patch((state) => ({
-          ...state,
-          hasViewedTodo: true,
-        }));
-
+      if (clickChoice.name === "todo") {
         yield* step(
           tell,
           <>
@@ -80,6 +82,10 @@ export function* tellStory(
             </ul>
           </>
         );
+        store.write({
+          ...store.read(),
+          hasViewedTodo: true,
+        });
       }
     }
 
@@ -96,6 +102,14 @@ export function* tellStory(
     });
 
     if (!store.read().hasViewedTodo) {
+      // don't let the reader escape until they have seen the TODO file
+      yield* step(
+        tell,
+        <>
+          You're left with the feeling that there's something you still have to
+          do.
+        </>
+      );
       continue;
     }
 

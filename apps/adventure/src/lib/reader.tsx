@@ -53,13 +53,13 @@ export function launchReader(): Reader {
       });
     });
 
-  const prompt: Prompt = (intro, choices) =>
+  const prompt: Prompt = (intro, ...choices) =>
     new Promise((resolve) => {
       const page = <div className="flex-grow">{intro}</div>;
 
       const buttons = choices.map((choice, key) => (
         <Button key={key} color="secondary" onClick={() => resolve(choice)}>
-          {choice}
+          {choice.passage}
         </Button>
       ));
 

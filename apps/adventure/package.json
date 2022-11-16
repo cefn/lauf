@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "dev:tidy": "lsof -i :5173 -t | xargs -n1 sudo kill -9",
     "build": "tsc && vite build",
     "preview": "vite preview",
     "build:tailwind": "tailwindcss -i src/input.css -o public/output.css",

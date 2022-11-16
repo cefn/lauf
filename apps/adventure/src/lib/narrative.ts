@@ -1,4 +1,4 @@
-import { Store } from "@lauf/store";
+import { Immutable, Store } from "@lauf/store";
 import { Sequence, step } from "@lauf/stepmachine";
 
 /** Definitions for @lauf/stepmachine for a simple Interactive Fiction engine.
@@ -17,16 +17,25 @@ export type NarrativeOp = Tell | Prompt;
 /** A passage of content (string or React fragment) that can be presented. */
 export type Passage = string | JSX.Element;
 
+export interface Choice {
+  name: string;
+  passage: Passage;
+  narrative?: NarrativeFn;
+}
+
+/** Type ensures at least two choices */
+export type Choices = Immutable<[Choice, Choice, ...Choice[]]>;
+
 /** An action that displays a passage and awaits clicking 'Next' */
 export type Tell = (passage: Passage) => Promise<void>;
 
 /** An action that displays an intro passage and provides a choice to the user,
  * awaits clicking a choice.
  */
-export type Prompt = <Choices extends Readonly<[string, string, ...string[]]>>(
+export type Prompt = <C extends Choices>(
   intro: Passage,
-  choices: Choices
-) => Promise<Choices[number]>;
+  ...choices: C
+) => Promise<C[number]>;
 
 /** A stepmachine Sequence that will Tell passages and Prompt choices and return
  * some outcome - an atom of interactive fiction. */
@@ -45,36 +54,12 @@ export function* lazyVisitNarrative<
   createNarrative: NarrativeFn
 ): Narrative<boolean> {
   if (!store.read()[flagName]) {
-    store.patch((state) => ({
-      ...state,
+    store.write({
+      ...store.read(),
       [flagName]: true,
-    }));
+    });
     yield* createNarrative();
     return true;
   }
   return false;
-}
-
-// TODO change this to use an Immutable array of Choice objects (each having a key, narrative and optionally label )
-// return type will be Narrative<Choices[number]['key']>
-// this means that the key isn't the whole length of the 'descriptive text'
-// Narrative can return chosen key
-
-/** Sequences different narratives depending on the choice made by the user */
-export function* visitChosenNarrative<
-  Choice extends string,
-  Lookup extends { [key in Choice]: NarrativeFn }
->(prompt: Prompt, intro: Passage, lookup: Lookup): Narrative<void> {
-  const choices = Object.keys(lookup);
-  if (choices.length < 2) {
-    throw new Error(`Not enough choices in ${JSON.stringify(lookup)}`);
-  }
-  const chosenLabel = (yield* step(
-    prompt,
-    intro,
-    choices as [Choice, Choice, ...Choice[]]
-  )) as Choice;
-
-  const narrative = lookup[chosenLabel];
-  yield* narrative();
 }
