@@ -21,8 +21,6 @@ export interface Watchable<T> {
 export interface WatchableState<T> extends Watchable<T> {
   /** Store a new state. */
   write: (state: T) => T;
-  /** Store a new state based on existing state  */
-  patch: (fn: (state: T) => T) => T;
   /** Retrieve the current state. */
   read: () => T;
 }

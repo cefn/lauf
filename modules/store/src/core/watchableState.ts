@@ -3,8 +3,7 @@ import { DefaultWatchable } from "./watchable";
 
 export class DefaultWatchableState<State>
   extends DefaultWatchable<State>
-  implements WatchableState<State>
-{
+  implements WatchableState<State> {
   protected value!: State;
   constructor(value: State, watchers?: ReadonlyArray<Watcher<State>>) {
     super(watchers);
@@ -15,11 +14,6 @@ export class DefaultWatchableState<State>
     this.value = value;
     void this.notify(value);
     return value;
-  };
-
-  patch = (fn: (state: State) => State) => {
-    const { value } = this;
-    return this.write(fn(value));
   };
 
   read = () => {
