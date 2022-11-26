@@ -20,74 +20,82 @@ for state-management, providing a simple substitute for Flux/Redux based on
 [Immer](https://immerjs.github.io/immer/).
 
 Browse the [API](https://cefn.com/lauf/api/modules/_lauf_store_react.html) or the Typescript example inlined below from our [Counter
-App](https://github.com/cefn/lauf/tree/main/apps/counter).
+App](https://github.com/cefn/lauf/tree/main/apps/counter-react-ts).
 
 The Counter example below shows how `useSelected` binds a selected part of a
 `Store`'s state to a component, and how events can `edit` the state.
 
 You can see the app
-running in an online sandbox; [in javascript](https://codesandbox.io/s/github/cefn/lauf/tree/main/apps/counter-js),
-or [in typescript](https://codesandbox.io/s/github/cefn/lauf/tree/main/apps/counter).
+running in an online sandbox; [in typescript](https://githubbox.com/cefn/lauf/tree/main/apps/counter-react-ts) or [in javascript](https://githubbox.com/cefn/lauf/tree/main/apps/counter-react-js).
 
 #### App Behaviour
 
 - `AppState` defines the state structure for the Store.
 - `StoreProps` passes the `Store` to React components.
 - The `Display` React component has a `useSelected` hook to re-render when `counter` changes.
-- The `Increment` and `Decrement` buttons don't re-render on any state changes, but they DO trigger an `edit` to the `counter` state when clicked.
+- The `Increment` and `Decrement` buttons don't re-render on any state changes, but they DO trigger a `write` to the `counter` state when clicked.
 - `App` calls `useStore` passing in an `INITIAL_STATE` to initialise a `Store` on first load.
 - `App` inserts the three components, passing each one the store to do its work.
 
 ```typescript
-import React from "react";
-import ReactDOM from "react-dom";
-import { Store, Immutable } from "@lauf/store";
-import { useStore, useSelected } from "@lauf/store-react";
+// logic.ts
+import { Immutable, Store } from "@lauf/store";
 
-interface AppState {
+export interface AppState {
   counter: number;
 }
 
-const INITIAL_STATE: Immutable<AppState> = {
+export const INITIAL_STATE: Immutable<AppState> = {
   counter: 0,
 } as const;
+
+export function increment(store: Store<AppState>) {
+  const { counter } = store.read();
+  store.write({
+    counter: counter + 1,
+  });
+}
+
+export function decrement(store: Store<AppState>) {
+  const { counter } = store.read();
+  store.write({
+    counter: counter - 1,
+  });
+}
+```
+
+```typescript
+// ui.ts
+import React from "react";
+import { Store } from "@lauf/store";
+import { useSelected, useStore } from "@lauf/store-react";
+import { AppState, INITIAL_STATE, decrement, increment } from "./logic";
 
 interface StoreProps {
   store: Store<AppState>;
 }
 
-const Display = ({ store }: StoreProps) => {
+export const Display = ({ store }: StoreProps) => {
   const counter = useSelected(store, (state) => state.counter);
   return <h1>{counter}</h1>;
 };
 
-const Increment = ({ store }: StoreProps) => (
-  <button onClick={() => store.edit((draft) => (draft.counter += 1))}>
-    Increase
-  </button>
+export const IncreaseButton = ({ store }: StoreProps) => (
+  <button onClick={() => increment(store)}>Increase</button>
 );
 
-const Decrement = ({ store }: StoreProps) => (
-  <button onClick={() => store.edit((draft) => (draft.counter -= 1))}>
-    Decrease
-  </button>
+export const DecreaseButton = ({ store }: StoreProps) => (
+  <button onClick={() => decrement(store)}>Decrease</button>
 );
 
-const App = () => {
+export const App = () => {
   const store = useStore(INITIAL_STATE);
   return (
     <>
       <Display store={store} />
-      <Increment store={store} />
-      <Decrement store={store} />
+      <IncreaseButton store={store} />
+      <DecreaseButton store={store} />
     </>
   );
 };
-
-ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById("root")
-);
 ```

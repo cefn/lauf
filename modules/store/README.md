@@ -8,6 +8,7 @@
 <br></br>
 
 [![codecov](https://codecov.io/gh/cefn/lauf/branch/main/graph/badge.svg?token=H4O0Wmvho5&flag=store)](https://codecov.io/gh/cefn/lauf)
+[![snyk](https://snyk-widget.herokuapp.com/badge/npm/%40lauf%2Fstore-react/badge.svg)](https://snyk.io/advisor/npm-package/@lauf/store-react)
 
 ### Install
 

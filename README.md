@@ -1,9 +1,11 @@
-<img src="https://github.com/cefn/lauf/raw/main/vector/logo.png" alt="Logo - Image of Runner" align="left"><br></br>
+# Lightweight Application Update Framework
 
-# Lauf
+<img src="https://github.com/cefn/lauf/raw/main/vector/logo.png" alt="Logo - Image of Runner" align="left"><br></br>
 
 <sub><sup>Logo - Diego Naive, Noun Project.</sup></sub>
 <br></br>
+
+[![Known Vulnerabilities](https://snyk.io/test/github/cefn/lauf/badge.svg)]
 
 Lauf strictly isolates business logic and state management from UI.
 
@@ -26,28 +28,34 @@ export const INITIAL_STATE = {
   counter: 0,
 };
 
-export const increment = (draft) => (draft.counter += 1);
+export function increment(store) {
+  const { counter } = store.read();
+  store.write({
+    counter: counter + 1,
+  });
+}
 
-export const decrement = (draft) => (draft.counter -= 1);
+export function decrement(store) {
+  const { counter } = store.read();
+  store.write({
+    counter: counter - 1,
+  });
+}
 ```
 
 ```javascript
 // ui.js
-import React from "react";
-import { useSelected, useStore } from "@lauf/store-react";
-import { INITIAL_STATE, increment, decrement } from "./logic";
-
-const Display = ({ store }) => {
+export const Display = ({ store }) => {
   const counter = useSelected(store, (state) => state.counter);
   return <h1>{counter}</h1>;
 };
 
-const Increment = ({ store }) => (
-  <button onClick={() => store.edit(increment)}>Increase</button>
+export const IncreaseButton = ({ store }) => (
+  <button onClick={() => increment(store)}>Increase</button>
 );
 
-const Decrement = ({ store }) => (
-  <button onClick={() => store.edit(decrement)}>Decrease</button>
+export const DecreaseButton = ({ store }) => (
+  <button onClick={() => decrement(store)}>Decrease</button>
 );
 
 export const App = () => {
@@ -55,16 +63,17 @@ export const App = () => {
   return (
     <>
       <Display store={store} />
-      <Increment store={store} />
-      <Decrement store={store} />
+      <IncreaseButton store={store} />
+      <DecreaseButton store={store} />
     </>
   );
 };
 ```
 
 You can experiment with the Counter app running in a sandbox;
-([javascript version](https://codesandbox.io/s/github/cefn/lauf/tree/main/apps/counter-js)),
-([typescript version](https://codesandbox.io/s/github/cefn/lauf/tree/main/apps/counter)).
+([javascript pure version](https://codesandbox.io/s/github/cefn/lauf/tree/main/apps/counter-dom-js)),
+([javascript react version](https://codesandbox.io/s/github/cefn/lauf/tree/main/apps/counter-react-js)),
+([typescript react version](https://codesandbox.io/s/github/cefn/lauf/tree/main/apps/counter-react-ts)).
 
 A more complex business logic example is the [NextJS Snake app](https://codesandbox.io/s/github/cefn/lauf/tree/main/apps/nextjs-snake).
 An example incorporating an network API and local cache is our [clone of the Redux Async example](https://codesandbox.io/s/github/cefn/lauf/tree/main/apps/noredux-async). An event queue example is the [Color Mixer](https://github.com/cefn/lauf/tree/main/apps/nextjs-mixer).

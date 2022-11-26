@@ -101,7 +101,43 @@ importers:
       typescript: 4.8.4
       vitest: 0.24.1
 
-  apps/counter:
+  apps/counter-dom-js:
+    specifiers:
+      '@lauf/store': ^1.1.1
+      '@lauf/store-follow': ^1.1.1
+      typescript: ^4.8.4
+      vite: ^3.1.0
+    dependencies:
+      '@lauf/store': link:../../modules/store
+      '@lauf/store-follow': link:../../modules/store-follow
+    devDependencies:
+      typescript: 4.8.4
+      vite: 3.1.7
+
+  apps/counter-react-js:
+    specifiers:
+      '@babel/plugin-syntax-flow': ^7.18.6
+      '@babel/plugin-transform-react-jsx': ^7.19.0
+      '@lauf/store': 1.1.1
+      '@lauf/store-react': 1.1.1
+      react: ^18.2.0
+      react-dom: ^18.2.0
+      react-scripts: 5.0.1
+      typescript: ^4.8.4
+      webpack: ^5.74.0
+    dependencies:
+      '@lauf/store': link:../../modules/store
+      '@lauf/store-react': link:../../modules/store-react
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
+      react-scripts: 5.0.1_5a9ec505e443b75f8744b32d9bcb4a3c
+      webpack: 5.74.0_esbuild@0.15.10
+    devDependencies:
+      '@babel/plugin-syntax-flow': 7.18.6_@babel+core@7.19.3
+      '@babel/plugin-transform-react-jsx': 7.19.0_@babel+core@7.19.3
+      typescript: 4.8.4
+
+  apps/counter-react-ts:
     specifiers:
       '@babel/core': ^7.19.3
       '@babel/plugin-syntax-flow': ^7.18.6
@@ -155,27 +191,6 @@ importers:
       webpack: 5.74.0_bd7c4a5dbfaf2d076ca6d4fb8d7ff6e8
       webpack-cli: 4.10.0_ab58687d37ee52acb975995ff60cbd8a
       webpack-dev-server: 4.11.1_ed7de2690da194b35567e1e94055cb2c
-
-  apps/counter-js:
-    specifiers:
-      '@babel/plugin-syntax-flow': ^7.18.6
-      '@babel/plugin-transform-react-jsx': ^7.19.0
-      '@lauf/store': 1.1.1
-      '@lauf/store-react': 1.1.1
-      react: ^18.2.0
-      react-dom: ^18.2.0
-      react-scripts: 5.0.1
-      webpack: ^5.74.0
-    dependencies:
-      '@lauf/store': link:../../modules/store
-      '@lauf/store-react': link:../../modules/store-react
-      react: 18.2.0
-      react-dom: 18.2.0_react@18.2.0
-      react-scripts: 5.0.1_5a9ec505e443b75f8744b32d9bcb4a3c
-      webpack: 5.74.0_esbuild@0.15.10
-    devDependencies:
-      '@babel/plugin-syntax-flow': 7.18.6_@babel+core@7.19.3
-      '@babel/plugin-transform-react-jsx': 7.19.0_@babel+core@7.19.3
 
   apps/nextjs-mixer:
     specifiers:
@@ -4705,12 +4720,12 @@ packages:
     peerDependencies:
       webpack: ^5.0.0
     dependencies:
-      icss-utils: 5.1.0_postcss@8.4.17
-      postcss: 8.4.17
-      postcss-modules-extract-imports: 3.0.0_postcss@8.4.17
-      postcss-modules-local-by-default: 4.0.0_postcss@8.4.17
-      postcss-modules-scope: 3.0.0_postcss@8.4.17
-      postcss-modules-values: 4.0.0_postcss@8.4.17
+      icss-utils: 5.1.0_postcss@8.4.18
+      postcss: 8.4.18
+      postcss-modules-extract-imports: 3.0.0_postcss@8.4.18
+      postcss-modules-local-by-default: 4.0.0_postcss@8.4.18
+      postcss-modules-scope: 3.0.0_postcss@8.4.18
+      postcss-modules-values: 4.0.0_postcss@8.4.18
       postcss-value-parser: 4.2.0
       semver: 7.3.7
       webpack: 5.74.0_bd7c4a5dbfaf2d076ca6d4fb8d7ff6e8
@@ -6916,13 +6931,13 @@ packages:
     dependencies:
       safer-buffer: 2.1.2
 
-  /icss-utils/5.1.0_postcss@8.4.17:
+  /icss-utils/5.1.0_postcss@8.4.18:
     resolution: {integrity: sha512-soFhflCVWLfRNOPU3iv5Z9VUdT44xFRbzjLsEzSr5AQmgqPMTHdU3PMT1Cf1ssx8fLNJDA1juftYl+PUcv3MqA==}
     engines: {node: ^10 || ^12 || >= 14}
     peerDependencies:
       postcss: ^8.1.0
     dependencies:
-      postcss: 8.4.17
+      postcss: 8.4.18
 
   /idb/7.1.0:
     resolution: {integrity: sha512-Wsk07aAxDsntgYJY4h0knZJuTxM73eQ4reRAO+Z1liOh8eMCJ/MoDS8fCui1vGT9mnjtl1sOu3I2i/W1swPYZg==}
@@ -9585,42 +9600,42 @@ packages:
       postcss: 8.4.17
       postcss-selector-parser: 6.0.10
 
-  /postcss-modules-extract-imports/3.0.0_postcss@8.4.17:
+  /postcss-modules-extract-imports/3.0.0_postcss@8.4.18:
     resolution: {integrity: sha512-bdHleFnP3kZ4NYDhuGlVK+CMrQ/pqUm8bx/oGL93K6gVwiclvX5x0n76fYMKuIGKzlABOy13zsvqjb0f92TEXw==}
     engines: {node: ^10 || ^12 || >= 14}
     peerDependencies:
       postcss: ^8.1.0
     dependencies:
-      postcss: 8.4.17
+      postcss: 8.4.18
 
-  /postcss-modules-local-by-default/4.0.0_postcss@8.4.17:
+  /postcss-modules-local-by-default/4.0.0_postcss@8.4.18:
     resolution: {integrity: sha512-sT7ihtmGSF9yhm6ggikHdV0hlziDTX7oFoXtuVWeDd3hHObNkcHRo9V3yg7vCAY7cONyxJC/XXCmmiHHcvX7bQ==}
     engines: {node: ^10 || ^12 || >= 14}
     peerDependencies:
       postcss: ^8.1.0
     dependencies:
-      icss-utils: 5.1.0_postcss@8.4.17
-      postcss: 8.4.17
+      icss-utils: 5.1.0_postcss@8.4.18
+      postcss: 8.4.18
       postcss-selector-parser: 6.0.10
       postcss-value-parser: 4.2.0
 
-  /postcss-modules-scope/3.0.0_postcss@8.4.17:
+  /postcss-modules-scope/3.0.0_postcss@8.4.18:
     resolution: {integrity: sha512-hncihwFA2yPath8oZ15PZqvWGkWf+XUfQgUGamS4LqoP1anQLOsOJw0vr7J7IwLpoY9fatA2qiGUGmuZL0Iqlg==}
     engines: {node: ^10 || ^12 || >= 14}
     peerDependencies:
       postcss: ^8.1.0
     dependencies:
-      postcss: 8.4.17
+      postcss: 8.4.18
       postcss-selector-parser: 6.0.10
 
-  /postcss-modules-values/4.0.0_postcss@8.4.17:
+  /postcss-modules-values/4.0.0_postcss@8.4.18:
     resolution: {integrity: sha512-RDxHkAiEGI78gS2ofyvCsu7iycRv7oqw5xMWn9iMoR0N/7mf9D50ecQqUo5BZ9Zh2vH4bCUR/ktCqbB9m8vJjQ==}
     engines: {node: ^10 || ^12 || >= 14}
     peerDependencies:
       postcss: ^8.1.0
     dependencies:
-      icss-utils: 5.1.0_postcss@8.4.17
-      postcss: 8.4.17
+      icss-utils: 5.1.0_postcss@8.4.18
+      postcss: 8.4.18
 
   /postcss-nested/5.0.6_postcss@8.4.17:
     resolution: {integrity: sha512-rKqm2Fk0KbA8Vt3AdGN0FB9OBOMDVajMG6ZCf/GoHgdxUJ4sBFp0A/uMIRm+MJUdo33YXEtjqIz8u7DAp8B7DA==}
@@ -9923,6 +9938,14 @@ packages:
 
   /postcss/8.4.17:
     resolution: {integrity: sha512-UNxNOLQydcOFi41yHNMcKRZ39NeXlr8AxGuZJsdub8vIb12fHzcq37DTU/QtbI6WLxNg2gF9Z+8qtRwTj1UI1Q==}
+    engines: {node: ^10 || ^12 || >=14}
+    dependencies:
+      nanoid: 3.3.4
+      picocolors: 1.0.0
+      source-map-js: 1.0.2
+
+  /postcss/8.4.18:
+    resolution: {integrity: sha512-Wi8mWhncLJm11GATDaQKobXSNEYGUHeQLiQqDFG1qQ5UTDPTEvKw0Xt5NsTpktGTwLps3ByrWsBrG0rB8YQ9oA==}
     engines: {node: ^10 || ^12 || >=14}
     dependencies:
       nanoid: 3.3.4
@@ -11946,7 +11969,7 @@ packages:
         optional: true
     dependencies:
       esbuild: 0.15.10
-      postcss: 8.4.17
+      postcss: 8.4.18
       resolve: 1.22.1
       rollup: 2.78.1
     optionalDependencies:
